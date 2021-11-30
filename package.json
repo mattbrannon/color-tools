@@ -1,0 +1,27 @@
+{
+  "name": "color-tools",
+  "version": "1.0.0",
+  "description": "a set of utilities for working with color spaces",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattbrannon/color-tools.git"
+  },
+  "keywords": [
+    "color",
+    "css",
+    "rgb",
+    "hsl",
+    "hex",
+    "contrast"
+  ],
+  "author": "Matt Brannon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mattbrannon/color-tools/issues"
+  },
+  "homepage": "https://github.com/mattbrannon/color-tools#readme"
+}
