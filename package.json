@@ -2,7 +2,8 @@
   "name": "color-tools",
   "version": "1.0.0",
   "description": "a set of utilities for working with color spaces",
-  "main": "index.js",
+  "main": "main.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,5 +24,10 @@
   "bugs": {
     "url": "https://github.com/mattbrannon/color-tools/issues"
   },
-  "homepage": "https://github.com/mattbrannon/color-tools#readme"
+  "homepage": "https://github.com/mattbrannon/color-tools#readme",
+  "devDependencies": {
+    "eslint": "7",
+    "eslint-plugin-prettierx": "^0.18.0",
+    "prettier": "aMarCruz/prettier"
+  }
 }
