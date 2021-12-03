@@ -1,0 +1,47 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module"
+  },
+  "settings": {
+    "prettierx": {
+      "usePrettierrc": true,
+      "editorconfig": false,
+      "ignorePath": ".prettierignore",
+      "pluginSearchDirs": [],
+      "plugins": [],
+      "withNodeModules": false,
+      "useCache": true
+    }
+  },
+  "extends": ["eslint:recommended", "plugin:prettierx/default"],
+  "plugins": ["prettierx"],
+  "rules": {
+    "no-var": "error",
+    "no-unused-vars": "warn",
+    "no-multiple-empty-lines": [
+      "off",
+      {
+        "max": 8,
+        "maxEOF": 2
+      }
+    ],
+    "prettierx/options": [
+      "warn",
+      {
+        "arrayBracketSpacing": true,
+        "breakBeforeElse": true,
+        "semi": true,
+        "printWidth": 100,
+        "offsetTernaryExpressions": false,
+        "singleQuote": true,
+        "breakLongMethodChains": true
+      }
+    ]
+  }
+}
