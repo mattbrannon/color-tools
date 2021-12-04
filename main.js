@@ -1,14 +1,27 @@
 import convert from './converter/index.js';
-import { validateHex } from './lib/hex.js';
+
+import { validateHex, hexToArray, hexToObject } from './lib/hex.js';
+
 import { parseHSL } from './lib/hsl.js';
 import { parseRGB } from './lib/rgb.js';
-import { isValidHex, isObject, toObject, toString, toFloat, isNamedColor } from './utils/index.js';
+
+import {
+  isValidHex,
+  isObject,
+  toObject,
+  toString,
+  toFloat,
+  isNamedColor,
+} from './utils/index.js';
+
 import { REDX, WARNING, OK, CHECKMARK } from './constants/unicodes.js';
 
 export default class Color {
   constructor(initialValue) {
     this.initialValue = initialValue;
     this.init(initialValue);
+    this.adjust = null;
+    this.set = null;
   }
 
   static random() {
@@ -25,6 +38,84 @@ export default class Color {
     const brightest = Math.max(lum1, lum2);
     const darkest = Math.min(lum1, lum2);
     return toFloat((brightest + 0.05) / (darkest + 0.05));
+  }
+
+  get hex() {
+    return this._hex;
+  }
+
+  get hsl() {
+    return this._hsl;
+  }
+
+  get rgb() {
+    return this._rgb;
+  }
+
+  get adjust() {
+    return this._adjust;
+  }
+
+  get set() {
+    return this._set;
+  }
+
+  set hex(value) {
+    this._hex = {
+      css: () => value,
+      array: () => hexToArray(value),
+      object: () => hexToObject(value),
+      shades: (step, limit) => this.shades(step, limit, 'hex'),
+      tints: (step, limit) => this.tints(step, limit, 'hex'),
+      faded: (step, limit) => this.faded(step, limit, 'hex'),
+      vibrant: (step, limit) => this.vibrant(step, limit, 'hex'),
+    };
+  }
+
+  set rgb(methods) {
+    this._rgb = {
+      css: () => methods.css(),
+      array: () => methods.array(),
+      object: () => methods.object(),
+      shades: (step, limit) => this.shades(step, limit, 'rgb'),
+      tints: (step, limit) => this.tints(step, limit, 'rgb'),
+      faded: (step, limit) => this.faded(step, limit, 'rgb'),
+      vibrant: (step, limit) => this.vibrant(step, limit, 'rgb'),
+    };
+  }
+
+  set hsl(methods) {
+    this._hsl = {
+      css: () => methods.css(),
+      array: () => methods.array(),
+      object: () => methods.object(),
+      shades: (step, limit) => this.shades(step, limit, 'hsl'),
+      tints: (step, limit) => this.tints(step, limit, 'hsl'),
+      faded: (step, limit) => this.faded(step, limit, 'hsl'),
+      vibrant: (step, limit) => this.vibrant(step, limit, 'hsl'),
+    };
+  }
+
+  set adjust(_) {
+    this._adjust = {
+      hue: (amount) => this.hue(amount, true),
+      saturation: (amount) => this.saturation(amount, true),
+      lightness: (amount) => this.lightness(amount, true),
+      red: (amount) => this.red(amount, true),
+      green: (amount) => this.green(amount, true),
+      blue: (amount) => this.blue(amount, true),
+    };
+  }
+
+  set set(_) {
+    this._set = {
+      hue: (amount) => this.hue(amount, true, true),
+      saturation: (amount) => this.saturation(amount, true, true),
+      lightness: (amount) => this.lightness(amount, true, true),
+      red: (amount) => this.red(amount, true, true),
+      green: (amount) => this.green(amount, true, true),
+      blue: (amount) => this.blue(amount, true, true),
+    };
   }
 
   init(input) {
@@ -57,65 +148,27 @@ export default class Color {
     const hex = validateHex(string);
     const rgb = parseRGB(toString(convert.hex2rgb(hex)));
     const hsl = parseHSL(toString(convert.hex2hsl(hex)));
-
     this.hex = hex;
-
-    this.rgb = {
-      css: () => rgb.css(),
-      object: () => rgb.object(),
-      array: () => rgb.array(),
-    };
-
-    this.hsl = {
-      css: () => hsl.css(),
-      object: () => hsl.object(),
-      array: () => hsl.array(),
-    };
-
-    Object.freeze(this);
+    this.rgb = rgb;
+    this.hsl = hsl;
   }
 
   convertFromRgb(input) {
     const rgb = parseRGB(toString(input));
     const hsl = parseHSL(toString(convert.rgb2hsl(rgb.object())));
     const hex = convert.rgb2hex(rgb.object());
-
-    this.rgb = {
-      css: () => rgb.css(),
-      object: () => rgb.object(),
-      array: () => rgb.array(),
-    };
-
-    this.hsl = {
-      css: () => hsl.css(),
-      object: () => hsl.object(),
-      array: () => hsl.array(),
-    };
-
     this.hex = hex;
-    Object.freeze(this);
+    this.rgb = rgb;
+    this.hsl = hsl;
   }
 
   convertFromHsl(input) {
     const hsl = parseHSL(toString(input));
     const rgb = parseRGB(toString(convert.hsl2rgb(hsl.object())));
     const hex = convert.hsl2hex(hsl.object());
-
     this.hex = hex;
-
-    this.rgb = {
-      css: () => rgb.css(),
-      object: () => rgb.object(),
-      array: () => rgb.array(),
-    };
-
-    this.hsl = {
-      css: () => hsl.css(),
-      object: () => hsl.object(),
-      array: () => hsl.array(),
-    };
-
-    Object.freeze(this);
+    this.rgb = rgb;
+    this.hsl = hsl;
   }
 
   luminance(rgb) {
@@ -136,38 +189,124 @@ export default class Color {
     return toFloat((brightest + 0.05) / (darkest + 0.05));
   }
 
-  shades(l = 100, type = 'hex', step = 0.1) {
+  hue(amount, clone, set) {
+    let { h, s, l, a } = this.hsl.object();
+    h = set ? amount : h + amount;
+    if (clone || set) {
+      return new Color({ h, s, l, a });
+    }
+    this.convertFromHsl({ h, s, l, a });
+    return this;
+  }
+
+  saturation(amount, clone, set) {
+    let { h, s, l, a } = this.hsl.object();
+    s = set ? amount : s + amount;
+    if (clone || set) {
+      return new Color({ h, s, l, a });
+    }
+    this.convertFromHsl({ h, s, l, a });
+    return this;
+  }
+
+  lightness(amount, clone, set) {
+    let { h, s, l, a } = this.hsl.object();
+    l = set ? amount : l + amount;
+    if (clone || set) {
+      return new Color({ h, s, l, a });
+    }
+    this.convertFromHsl({ h, s, l, a });
+    return this;
+  }
+
+  red(amount, clone, set) {
+    let { r, g, b, a } = this.rgb.object();
+    r = set ? amount : r + amount;
+    if (clone || set) {
+      return new Color({ r, g, b, a });
+    }
+    this.convertFromRgb({ r, g, b, a });
+    return this;
+  }
+
+  green(amount, clone, set) {
+    let { r, g, b, a } = this.rgb.object();
+    g = set ? amount : g + amount;
+    if (clone || set) {
+      return new Color({ r, g, b, a });
+    }
+    this.convertFromRgb({ r, g, b, a });
+    return this;
+  }
+
+  blue(amount, clone, set) {
+    let { r, g, b, a } = this.rgb.object();
+    b = set ? amount : b + amount;
+    if (clone || set) {
+      return new Color({ r, g, b, a });
+    }
+    this.convertFromRgb({ r, g, b, a });
+    return this;
+  }
+
+  shades(step = 0.2, limit, colorSpace = 'hex') {
     const shades = [];
-    const { h, s } = this.hsl.object();
-    while (l >= 0) {
-      const shade = new Color({ h, s, l });
-      type === 'hex' ? shades.push(shade.hex) : shades.push(shade[type].css());
+    let { h, s, l } = this.hsl.object();
+    while (l > 0) {
       l = toFloat(l - step);
+      const shade = new Color({ h, s, l });
+      shades.push(shade[colorSpace].css());
+      let count = shades.length;
+      if (limit && count === limit) {
+        break;
+      }
     }
     return [ ...new Set(shades) ];
   }
 
-  tints(l = 0, type = 'hex', step = 0.1) {
+  tints(step = 0.2, limit, colorSpace = 'hex') {
     const tints = [];
-    const { h, s } = this.hsl.object();
-    while (l <= 100) {
-      const tint = new Color({ h, s, l });
-      type === 'hex' ? tints.push(tint.hex) : tints.push(tint[type].css());
+    let { h, s, l } = this.hsl.object();
+    while (l < 100) {
       l = toFloat(l + step);
+      const tint = new Color({ h, s, l });
+      tints.push(tint[colorSpace].css());
+      let count = tints.length;
+      if (limit && count === limit) {
+        break;
+      }
     }
     return [ ...new Set(tints) ];
   }
 
-  chromas(type = 'hex', step = 1) {
-    const chromas = [];
-    const { h, l } = this.hsl.object();
-    let s = 100;
+  faded(step = 1, limit, colorSpace = 'hex') {
+    let { h, s, l } = this.hsl.object();
+    const tones = [];
     while (s >= 0) {
-      const chroma = new Color({ h, s, l });
-      type === 'hex' ? chromas.push(chroma.hex) : chromas.push(chroma[type].css());
       s = toFloat(s - step);
+      const tone = new Color({ h, s, l });
+      tones.push(tone[colorSpace].css());
+      let count = tones.length;
+      if (limit && count === limit) {
+        break;
+      }
     }
-    return chromas;
+    return tones;
+  }
+
+  vibrant(step = 1, limit, colorSpace = 'hex') {
+    let { h, s, l } = this.hsl.object();
+    const tones = [];
+    while (s <= 100) {
+      s = toFloat(s + step);
+      const tone = new Color({ h, s, l });
+      tones.push(tone[colorSpace].css());
+      let count = tones.length;
+      if (limit && count === limit) {
+        break;
+      }
+    }
+    return tones;
   }
 
   compare(color) {
@@ -191,6 +330,7 @@ export default class Color {
     else if (ratio >= 7) {
       result = `${CHECKMARK}  contrast ratio:  ${ratio}`;
     }
+    // eslint-disable-next-line no-console
     console.log(result);
   }
 }
