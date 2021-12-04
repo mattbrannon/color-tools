@@ -85,7 +85,9 @@ class Converter {
 
   rgb2hex({ r, g, b, a }) {
     const rgb = [ r, g, b ].map((val) => val.toString(16));
-    const [ h, e, x ] = rgb.map((char) => (char = char.length === 1 ? '0' + char : char));
+    const [ h, e, x ] = rgb.map(
+      (char) => (char = char.length === 1 ? '0' + char : char)
+    );
 
     if (a !== undefined) {
       a = a < 0 ? 0 : a > 1 ? 1 : a;
