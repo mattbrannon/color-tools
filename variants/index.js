@@ -12,16 +12,15 @@ const getCurrentLevels = (ratio) => {
 const getTintsOrShades = (color, accent) => {
   const shadeRatio = Color.contrast('black', accent);
   const tintRatio = Color.contrast('white', accent);
-  const lightness = color.hsl.object().l;
-  const array = shadeRatio > tintRatio ? color.shades(lightness) : color.tints(lightness);
+  const array = shadeRatio > tintRatio ? color.shades(0.2) : color.tints(0.2);
   return array;
 };
 
 const setOutput = (color, colorSpace = 'hex') => {
-  return colorSpace === 'hex' ? color.hex : color[colorSpace].css();
+  return color[colorSpace].css();
 };
 
-export const getVariants = (color, accent, colorSpace) => {
+export const getVariants = (color, accent, colorSpace = 'hex') => {
   color = createColorInstance(color);
   accent = createColorInstance(accent);
 
@@ -63,10 +62,4 @@ export const getVariants = (color, accent, colorSpace) => {
     }
   }
   return variants;
-};
-
-export const testContrast = (color1, color2) => {
-  color1 = createColorInstance(color1);
-  color2 = createColorInstance(color2);
-  color1.compare(color2);
 };
