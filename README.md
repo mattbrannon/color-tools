@@ -69,7 +69,7 @@ console.log(string);
 //  output: '#00ff00'
 ```
 
-Using object and array destructuring, we can easily access individual values
+Using object and array destructuring, we can easily access individual values.
 This makes it super easy to quickly adjust and fine tune some values.
 
 ```javascript
@@ -103,9 +103,9 @@ console.log(forestGreen.rgb.css());
 //  output: rgb(34, 139, 34)
 ```
 
-The `adjust` property signals that we want to create new instance of the `Color` class
-In the code above we are first creating a new color and assigning it the label `forestGreen`
-We then make our modifications on this new instance while leaving the `lime` instance unchanged
+The `adjust` property signals that we want to create new instance of the `Color` class.
+In the code above we are first creating a new color and assigning it the label `forestGreen`.
+We then make our modifications on this new instance while leaving the `lime` instance unchanged.
 
 We can also modify values directly on the instance by removing the `adjust` property.
 
@@ -160,8 +160,8 @@ The `vibrant` method generates an array of colors with increasing saturation val
 
 Each method takes up to 2 arguments.
 
-- `amount` the amount to decrease or increase on each interation
-- `limit` only generate up to this many colors
+- `amount` the amount to decrease or increase on each interation.
+- `limit` only generate up to this many colors.
 
 ### Examples:
 
