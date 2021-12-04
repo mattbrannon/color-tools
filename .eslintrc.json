@@ -23,6 +23,7 @@
   "plugins": ["prettierx"],
   "rules": {
     "no-var": "error",
+    "no-console": "warn",
     "no-unused-vars": "warn",
     "no-multiple-empty-lines": [
       "off",
@@ -37,7 +38,7 @@
         "arrayBracketSpacing": true,
         "breakBeforeElse": true,
         "semi": true,
-        "printWidth": 100,
+        "printWidth": 80,
         "offsetTernaryExpressions": false,
         "singleQuote": true,
         "breakLongMethodChains": true
