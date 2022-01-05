@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "mocha ./tests/*",
+    "test:rgb": "mocha ./tests/rgb.test.js",
     "lint": "eslint ."
   },
   "repository": {
