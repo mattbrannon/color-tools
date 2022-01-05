@@ -1,6 +1,6 @@
+/* eslint-disable no-undef */
+
 import { expect } from 'chai';
-import assert from 'assert';
-// import describe from 'mocha';
 import hex from '../lib/hex.js';
 const {
   addHash,
@@ -68,7 +68,7 @@ describe('hex.js tests', () => {
   describe('hexToArray Test', () => {
     it('should split hex into [r, g, b]', () => {
       const result = hexToArray('#a1b2c3');
-      expect(result).to.deep.equal(['a1', 'b2', 'c3']);
+      expect(result).to.deep.equal([ 'a1', 'b2', 'c3' ]);
     });
   });
   describe('hexToObject Test', () => {

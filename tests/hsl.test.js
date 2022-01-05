@@ -1,6 +1,6 @@
+/* eslint-disable no-undef */
+
 import { expect } from 'chai';
-import assert from 'assert';
-// import describe from 'mocha';
 import * as hsl from '../lib/hsl.js';
 
 const {
@@ -12,14 +12,13 @@ const {
   stripDegFromHue,
   toObject,
   toString,
-  verifyFormat,
 } = hsl;
 
 describe('hsl.js tests', () => {
   describe('getHslValuesFromString, tests', () => {
     it('should return an array of hsl values', () => {
       const result = getHslValuesFromString('hsl(120, 100%, 50%)');
-      expect(result).to.deep.equal([120, 100, 50]);
+      expect(result).to.deep.equal([ 120, 100, 50 ]);
     });
   });
 
@@ -73,7 +72,7 @@ describe('hsl.js tests', () => {
   describe('parseString Test', () => {
     it('should parse an hsl string correctly', () => {
       const result = parseString('hsl(120, 100%, 50%');
-      expect(result).to.deep.equal({ format: 'hsl', values: [120, 100, 50] });
+      expect(result).to.deep.equal({ format: 'hsl', values: [ 120, 100, 50 ] });
     });
     it('should return an object with keys `format` and `values`', () => {
       const obj = parseString('hsl(220, 100, 40');
@@ -95,7 +94,7 @@ describe('hsl.js tests', () => {
     });
     it('should return the correct array values', () => {
       const obj = parseString('hsla(220deg, 100%, 40%, 0.5');
-      expect(obj.values).to.deep.equal([220, 100, 40, 0.5]);
+      expect(obj.values).to.deep.equal([ 220, 100, 40, 0.5 ]);
     });
   });
 
@@ -150,6 +149,38 @@ describe('hsl.js tests', () => {
     it('should return an hsl string from an object', () => {
       const result = toString(input2);
       expect(result).to.deep.equal(output2);
+    });
+  });
+
+  describe('parseHSL', () => {
+    const input = 'hsl(210, 100, 50)';
+
+    it('should be an object', () => {
+      expect(typeof parseHSL(input)).to.equal('object');
+    });
+    it('should have an array method', () => {
+      const parsed = parseHSL(input);
+      expect(parsed).to.haveOwnProperty('array');
+    });
+    it('should have an object method', () => {
+      const parsed = parseHSL(input);
+      expect(parsed).to.haveOwnProperty('object');
+    });
+    it('should have a css method', () => {
+      const parsed = parseHSL(input);
+      expect(parsed).to.haveOwnProperty('css');
+    });
+    it('should return an array of hsl values', () => {
+      const parsed = parseHSL(input);
+      expect(parsed.array()).to.deep.equal([ 210, 100, 50 ]);
+    });
+    it('should return an object of hsl values', () => {
+      const parsed = parseHSL(input);
+      expect(parsed.object()).to.deep.equal({ h: 210, s: 100, l: 50 });
+    });
+    it('should return a valid hsl css string', () => {
+      const parsed = parseHSL(input);
+      expect(parsed.css()).to.equal('hsl(210deg, 100%, 50%)');
     });
   });
 });

@@ -1,7 +1,9 @@
+/* eslint-disable no-undef */
+
 import { expect } from 'chai';
 import * as rgb from '../lib/rgb.js';
 
-const { convertPercentToRgb, parseString, parseRGB, keepRgbInRange } = rgb;
+const { convertPercentToRgb, parseRGB, keepRgbInRange } = rgb;
 
 describe('rgb.js tests', () => {
   describe('convertPercentToRgb', () => {
@@ -47,7 +49,7 @@ describe('rgb.js tests', () => {
     });
     it('should return an array of rgb values', () => {
       const parsed = parseRGB(input);
-      expect(parsed.array()).to.deep.equal([210, 45, 90]);
+      expect(parsed.array()).to.deep.equal([ 210, 45, 90 ]);
     });
     it('should return an object of rgb values', () => {
       const parsed = parseRGB(input);
@@ -60,13 +62,9 @@ describe('rgb.js tests', () => {
 
     it('should handle percentages', () => {
       const parsed = parseRGB(input2);
-      expect(parsed.array()).to.deep.equal([128, 230, 64, 0.25]);
+      expect(parsed.array()).to.deep.equal([ 128, 230, 64, 0.25 ]);
       expect(parsed.object()).to.deep.equal({ r: 128, g: 230, b: 64, a: 0.25 });
       expect(parsed.css()).to.equal('rgba(128, 230, 64, 0.25)');
     });
-  });
-  describe('should break', () => {
-    const parsed = parseRGB('hsl(1,2,4)');
-    expect(parsed).to.deep.equal([]);
   });
 });

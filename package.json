@@ -7,6 +7,8 @@
   "scripts": {
     "test": "mocha ./tests/*",
     "test:rgb": "mocha ./tests/rgb.test.js",
+    "test:hex": "mocha ./tests/hex.test.js",
+    "test:hsl": "mocha ./tests/hsl.test.js",
     "lint": "eslint ."
   },
   "repository": {
