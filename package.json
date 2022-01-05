@@ -11,7 +11,8 @@
     "test:hsl": "mocha ./tests/hsl.test.js",
     "test:convert": "mocha ./tests/convert.test.js",
     "test:color": "mocha ./tests/color.test.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -35,7 +36,13 @@
     "chai": "^4.3.4",
     "eslint": "7",
     "eslint-plugin-prettierx": "^0.18.0",
+    "husky": ">=6",
+    "lint-staged": ">=10",
     "mocha": "^9.1.3",
     "prettier": "aMarCruz/prettier"
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix",
+    "*.{js,css,md}": "prettier --write"
   }
 }

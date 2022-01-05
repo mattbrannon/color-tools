@@ -3,3 +3,4 @@ node_modules
 .prettierrc
 scratchpad.js
 theme
+.eslintcache
