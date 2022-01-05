@@ -27,7 +27,7 @@ export default class Color {
   static random() {
     return `#${Math.random()
       .toString(16)
-      .substr(2, 6)}`;
+      .substring(2, 8)}`;
   }
 
   static contrast(color1, color2) {
