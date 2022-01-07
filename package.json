@@ -9,6 +9,7 @@
     "test:rgb": "mocha ./tests/rgb.test.js",
     "test:hex": "mocha ./tests/hex.test.js",
     "test:hsl": "mocha ./tests/hsl.test.js",
+    "test:hsv": "mocha ./tests/hsv.test.js",
     "test:convert": "mocha ./tests/convert.test.js",
     "test:color": "mocha ./tests/color.test.js",
     "lint": "eslint .",
