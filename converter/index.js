@@ -1,5 +1,5 @@
-import { toFloat } from '../utils/index.js';
-import { removeHash } from '../lib/hex.js';
+import { toFloat } from "../utils/index.js";
+import { removeHash } from "../lib/hex.js";
 
 class Converter {
   hex2rgb(str) {
@@ -12,8 +12,43 @@ class Converter {
     return isNaN(a) ? { r, g, b } : { r, g, b, a };
   }
 
+  rgb2hsv({ r, g, b, a }) {
+    const [R, G, B] = [r, g, b].map((n) => (n /= 255));
+    const max = Math.max(R, G, B);
+    const min = Math.min(R, G, B);
+
+    let h;
+    let s;
+    let v = max;
+
+    if (max == min) {
+      h = 0;
+    } else {
+      const d = max - min;
+      s = max == 0 ? 0 : d / max;
+      switch (max) {
+        case R:
+          h = (G - B) / d + (G < B ? 6 : 0);
+          break;
+        case G:
+          h = (B - R) / d + 2;
+          break;
+        case B:
+          h = (R - G) / d + 4;
+          break;
+      }
+    }
+    h /= 6.0;
+
+    h = Math.round(toFloat(h * 360));
+    s = Math.round(toFloat(s * 100));
+    v = Math.round(toFloat(v * 100));
+
+    return a ? { h, s, v, a } : { h, s, v };
+  }
+
   rgb2hsl({ r, g, b, a }) {
-    const [ R, G, B ] = [ r, g, b ].map((n) => (n /= 255));
+    const [R, G, B] = [r, g, b].map((n) => (n /= 255));
     const max = Math.max(R, G, B);
     const min = Math.min(R, G, B);
 
@@ -24,8 +59,7 @@ class Converter {
     if (max === min) {
       h = 0;
       s = 0;
-    }
-    else {
+    } else {
       const d = max - min;
       s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
       switch (max) {
@@ -61,12 +95,11 @@ class Converter {
 
   hsl2rgb({ h, s, l, a }) {
     let r, g, b;
-    [ h, s, l ] = [ h, s, l ].map((n, i) => (i === 0 ? n / 360 : n / 100));
+    [h, s, l] = [h, s, l].map((n, i) => (i === 0 ? n / 360 : n / 100));
 
     if (s === 0) {
       r = g = b = l;
-    }
-    else {
+    } else {
       const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
 
       const p = 2 * l - q;
@@ -83,16 +116,53 @@ class Converter {
     return a ? { r, g, b, a } : { r, g, b };
   }
 
+  hsv2rgb({ h, s, v }) {
+    let r, g, b;
+    [h, s, v] = [h, s, v].map((n, i) => (i === 0 ? n / 360 : n / 100));
+
+    let i = Math.floor(h * 6);
+    let f = h * 6 - i;
+    let p = v * (1 - s);
+    let q = v * (1 - f * s);
+    let t = v * (1 - (1 - f) * s);
+
+    switch (i % 6) {
+      case 0:
+        (r = v), (g = t), (b = p);
+        break;
+      case 1:
+        (r = q), (g = v), (b = p);
+        break;
+      case 2:
+        (r = p), (g = v), (b = t);
+        break;
+      case 3:
+        (r = p), (g = q), (b = v);
+        break;
+      case 4:
+        (r = t), (g = p), (b = v);
+        break;
+      case 5:
+        (r = v), (g = p), (b = q);
+        break;
+    }
+
+    r = Math.max(0, Math.min(Math.round(r * 255), 255));
+    g = Math.max(0, Math.min(Math.round(g * 255), 255));
+    b = Math.max(0, Math.min(Math.round(b * 255), 255));
+    return { r, g, b };
+  }
+
   rgb2hex({ r, g, b, a }) {
-    const rgb = [ r, g, b ].map((val) => val.toString(16));
-    const [ h, e, x ] = rgb.map(
-      (char) => (char = char.length === 1 ? '0' + char : char)
+    const rgb = [r, g, b].map((val) => val.toString(16));
+    const [h, e, x] = rgb.map(
+      (char) => (char = char.length === 1 ? "0" + char : char)
     );
 
     if (a !== undefined) {
       a = a < 0 ? 0 : a > 1 ? 1 : a;
       a = Math.round(a * 255).toString(16);
-      a = a.length === 1 ? '0' + a : a;
+      a = a.length === 1 ? "0" + a : a;
       return `#${h}${e}${x}${a}`;
     }
     return `#${h}${e}${x}`;
@@ -107,6 +177,27 @@ class Converter {
   hex2hsl(str) {
     const { r, g, b, a } = this.hex2rgb(str);
     const hsl = this.rgb2hsl({ r, g, b, a });
+    return hsl;
+  }
+
+  hex2hsv(str) {
+    const { r, g, b, a } = this.hex2rgb(str);
+    const hsv = this.rgb2hsv({ r, g, b, a });
+    return hsv;
+  }
+  hsv2hex({ h, s, v }) {
+    const { r, g, b } = this.hsv2rgb({ h, s, v });
+    const hex = this.rgb2hex({ r, g, b });
+    return hex;
+  }
+  hsl2hsv({ h, s, l, a }) {
+    const rgb = this.hsl2rgb({ h, s, l, a });
+    const hsv = this.rgb2hsv(rgb);
+    return hsv;
+  }
+  hsv2hsl({ h, s, v }) {
+    const rgb = this.hsv2rgb({ h, s, v });
+    const hsl = this.rgb2hsl(rgb);
     return hsl;
   }
 }
