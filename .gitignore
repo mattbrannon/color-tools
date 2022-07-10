@@ -4,3 +4,5 @@ node_modules
 scratchpad.js
 theme
 .eslintcache
+unused
+hcl.js

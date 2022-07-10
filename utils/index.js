@@ -3,10 +3,7 @@ import { keepRgbInRange, parseRGB } from '../lib/rgb.js';
 import { COLORS } from '../constants/colors.js';
 
 const getDataType = (value) => {
-  return Object.prototype.toString
-    .call(value)
-    .slice(8, -1)
-    .toLowerCase();
+  return Object.prototype.toString.call(value).slice(8, -1).toLowerCase();
 };
 
 const isString = (value) => getDataType(value) === 'string';
@@ -32,14 +29,14 @@ const isNamedColor = (str) => {
   }
 };
 
-const getColorSpaceFromString = (str) =>
-  isString(str) && str.slice(0, str.indexOf('('));
+const getColorSpaceFromString = (str) => {
+  if (isString(str)) {
+    return str.slice(0, str.indexOf('('));
+  }
+};
 
 const sanitize = (str) => {
-  return str
-    .replace(/\s+/g, '')
-    .trim()
-    .toLowerCase();
+  return str.replace(/\s+/g, '').trim().toLowerCase();
 };
 
 const stripPercent = (str) => {
@@ -56,7 +53,7 @@ const convertAlpha = (alpha) => {
   let result;
   if (isPercent(alpha)) {
     const isNegative = Math.sign(stripPercent(alpha)) <= 0;
-    const n = [ stripPercent(alpha) ].map(Number).map((val) => val / 100)[0];
+    const n = [stripPercent(alpha)].map(Number).map((val) => val / 100)[0];
     result = isNegative ? 0 : n;
   }
   else if (Math.sign(alpha) > -1) {
@@ -68,25 +65,53 @@ const convertAlpha = (alpha) => {
   return result > 1 ? 1 : result < 0 ? 0 : result;
 };
 
-const parseString = (str) => {
-  let colorSpace = getColorSpaceFromString(str);
-  const rgb = [ 'rgb', 'rgba' ];
-  const hsl = [ 'hsl', 'hsla' ];
+// const parseString = (str) => {
+//   let colorSpace = getColorSpaceFromString(str);
+//   const rgb = [ 'rgb', 'rgba' ];
+//   const hsl = [ 'hsl', 'hsla' ];
 
-  const color = rgb.includes(colorSpace)
-    ? parseRGB(str)
-    : hsl.includes(colorSpace)
-    ? parseHSL(str)
-    : null;
+//   const color = rgb.includes(colorSpace)
+//     ? parseRGB(str)
+//     : hsl.includes(colorSpace)
+//     ? parseHSL(str)
+//     : null;
 
-  colorSpace = getColorSpaceFromString(color.css());
+//   // colorSpace = getColorSpaceFromString(color.css());
+//   const values = color.array();
+
+//   return { colorSpace, values };
+// };
+
+// const toObject = (str) => {
+//   // const { values, colorSpace } = parseString(str);
+
+//   const { values, colorSpace } = parseString(str);
+
+// return values.reduce((acc, val, i) => {
+//   const key = colorSpace[i];
+//   acc[key] = val;
+//   return acc;
+// }, {});
+// };
+
+const stringToObject = (str) => {
+  let colorSpace = str.split('(')[0];
+  let color;
+  if (colorSpace === 'hsl' || colorSpace === 'hsla') {
+    color = parseHSL(str);
+  }
+  else if (colorSpace === 'rgb' || colorSpace === 'rgba') {
+    color = parseRGB(str);
+  }
+
   const values = color.array();
+  colorSpace =
+    values.length > colorSpace.length
+      ? colorSpace + 'a'
+      : values.length < colorSpace.length
+        ? colorSpace.slice(-1)
+        : colorSpace;
 
-  return { colorSpace, values };
-};
-
-const toObject = (str) => {
-  const { values, colorSpace } = parseString(str);
   return values.reduce((acc, val, i) => {
     const key = colorSpace[i];
     acc[key] = val;
@@ -107,8 +132,8 @@ const toString = (object) => {
   const setter = rgb.includes(colorSpace)
     ? setRgbString
     : hsl.includes(colorSpace)
-    ? setHslString
-    : null;
+      ? setHslString
+      : null;
   const values = Object.values(object).map(setter);
   return `${colorSpace}(${values.join(', ')})`;
 };
@@ -119,7 +144,7 @@ export {
   stripPercent,
   getColorSpaceFromString,
   toFloat,
-  toObject,
+  stringToObject,
   isObject,
   toString,
   isValidHex,

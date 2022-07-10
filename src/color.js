@@ -1,20 +1,56 @@
-import convert from './converter/index.js';
-
-import { validateHex, hexToArray, hexToObject } from './lib/hex.js';
-
-import { parseHSL } from './lib/hsl.js';
-import { parseRGB } from './lib/rgb.js';
-
+import { REDX, WARNING, OK, CHECKMARK } from '../constants/unicodes.js';
+import convert from '../converter/index.js';
+import { hexToArray, hexToObject, validateHex } from '../lib/hex.js';
+import { parseHSL } from '../lib/hsl.js';
+import { parseRGB } from '../lib/rgb.js';
 import {
-  isValidHex,
-  isObject,
-  toObject,
-  toString,
-  toFloat,
   isNamedColor,
-} from './utils/index.js';
+  isObject,
+  isValidHex,
+  toFloat,
+  stringToObject,
+  toString,
+} from '../utils/index.js';
 
-import { REDX, WARNING, OK, CHECKMARK } from './constants/unicodes.js';
+function random(n) {
+  return Math.floor(Math.random() * (n + 1));
+}
+
+function randomAlpha() {
+  return Math.round(Math.random() * 100) / 100;
+}
+
+function randomRgb(alpha) {
+  const length = alpha ? 4 : 3;
+  const values = Array.from({ length }, (_, i) =>
+    alpha && i === 3 ? randomAlpha() : random(255)
+  );
+
+  const color = `rgb(${values.join(', ')})`;
+  return color;
+}
+
+function randomHsl(alpha) {
+  const length = alpha ? 4 : 3;
+  const values = Array.from({ length }, (_, i) =>
+    i === 0
+      ? random(360) + 'deg'
+      : alpha && i === length - 1
+        ? randomAlpha()
+        : random(100) + '%'
+  );
+
+  const type = alpha ? 'hsla' : 'hsl';
+  const color = `${type}(${values.join(', ')})`;
+
+  return color;
+}
+
+function randomHex() {
+  const color = `#${Math.random().toString(16).substring(2, 8)}`;
+
+  return color;
+}
 
 export default class Color {
   constructor(initialValue) {
@@ -24,10 +60,21 @@ export default class Color {
     this.set = null;
   }
 
-  static random() {
-    return `#${Math.random()
-      .toString(16)
-      .substring(2, 8)}`;
+  static random(type) {
+    let color;
+    if (!type || type === 'hex') {
+      return randomHex();
+    }
+    else if (type === 'hsl' || type === 'hsla') {
+      const alpha = type === 'hsla';
+      return randomHsl(alpha);
+    }
+    else if (type === 'rgb' || type === 'rgba') {
+      const alpha = type === 'rgba';
+      return randomRgb(alpha);
+    }
+
+    return color;
   }
 
   static contrast(color1, color2) {
@@ -38,6 +85,10 @@ export default class Color {
     const brightest = Math.max(lum1, lum2);
     const darkest = Math.min(lum1, lum2);
     return toFloat((brightest + 0.05) / (darkest + 0.05));
+  }
+
+  static isNamedColor(color) {
+    return isNamedColor(color);
   }
 
   get hex() {
@@ -69,6 +120,7 @@ export default class Color {
       tints: (step, limit) => this.tints(step, limit, 'hex'),
       faded: (step, limit) => this.faded(step, limit, 'hex'),
       vibrant: (step, limit) => this.vibrant(step, limit, 'hex'),
+      random: () => randomHex(),
     };
   }
 
@@ -81,6 +133,7 @@ export default class Color {
       tints: (step, limit) => this.tints(step, limit, 'rgb'),
       faded: (step, limit) => this.faded(step, limit, 'rgb'),
       vibrant: (step, limit) => this.vibrant(step, limit, 'rgb'),
+      random: (alpha = false) => randomRgb(alpha),
     };
   }
 
@@ -89,10 +142,12 @@ export default class Color {
       css: () => methods.css(),
       array: () => methods.array(),
       object: () => methods.object(),
-      shades: (step, limit) => this.shades(step, limit, 'hsl'),
+      shades: (dataType, step, limit) =>
+        this.shades(dataType, step, limit, 'hsl'),
       tints: (step, limit) => this.tints(step, limit, 'hsl'),
       faded: (step, limit) => this.faded(step, limit, 'hsl'),
       vibrant: (step, limit) => this.vibrant(step, limit, 'hsl'),
+      random: (alpha = false) => randomHsl(alpha),
     };
   }
 
@@ -125,13 +180,22 @@ export default class Color {
     else if (isNamedColor(input)) {
       this.convertFromHex(isNamedColor(input));
     }
-    else {
+    else if (isObject(input)) {
       this.parseColor(input);
+    }
+    else if (typeof input === 'string') {
+      const obj = stringToObject(input);
+      this.parseColor(obj);
+    }
+    else {
+      return this.initialValue;
     }
   }
 
   parseColor(input) {
-    input = isObject(input) ? input : toObject(input);
+    // console.log({ input });
+    // input = isObject(input) ? input : stringToObject(input);
+    // console.log({ input });
     const colorSpace = Object.keys(input).join('');
     if (colorSpace === 'rgb' || colorSpace === 'rgba') {
       this.convertFromRgb(input);
@@ -249,44 +313,44 @@ export default class Color {
     return this;
   }
 
-  shades(step = 0.2, limit, colorSpace = 'hex') {
+  shades(dataType, step = 0.5, limit, colorSpace = 'hex') {
     const shades = [];
-    let { h, s, l } = this.hsl.object();
+    let { h, s, l, a } = this.hsl.object();
     while (l > 0) {
       l = toFloat(l - step);
-      const shade = new Color({ h, s, l });
-      shades.push(shade[colorSpace].css());
-      let count = shades.length;
+      const shade = new Color({ h, s, l, a });
+      shades.push(shade[colorSpace][dataType]());
+      const count = shades.length;
       if (limit && count === limit) {
         break;
       }
     }
-    return [ ...new Set(shades) ];
+    return [...new Set(shades)];
   }
 
   tints(step = 0.2, limit, colorSpace = 'hex') {
     const tints = [];
-    let { h, s, l } = this.hsl.object();
+    let { h, s, l, a } = this.hsl.object();
     while (l < 100) {
       l = toFloat(l + step);
-      const tint = new Color({ h, s, l });
+      const tint = new Color({ h, s, l, a });
       tints.push(tint[colorSpace].css());
-      let count = tints.length;
+      const count = tints.length;
       if (limit && count === limit) {
         break;
       }
     }
-    return [ ...new Set(tints) ];
+    return [...new Set(tints)];
   }
 
   faded(step = 1, limit, colorSpace = 'hex') {
-    let { h, s, l } = this.hsl.object();
+    let { h, s, l, a } = this.hsl.object();
     const tones = [];
     while (s >= 0) {
       s = toFloat(s - step);
-      const tone = new Color({ h, s, l });
+      const tone = new Color({ h, s, l, a });
       tones.push(tone[colorSpace].css());
-      let count = tones.length;
+      const count = tones.length;
       if (limit && count === limit) {
         break;
       }
@@ -295,13 +359,13 @@ export default class Color {
   }
 
   vibrant(step = 1, limit, colorSpace = 'hex') {
-    let { h, s, l } = this.hsl.object();
+    let { h, s, l, a } = this.hsl.object();
     const tones = [];
     while (s <= 100) {
       s = toFloat(s + step);
-      const tone = new Color({ h, s, l });
+      const tone = new Color({ h, s, l, a });
       tones.push(tone[colorSpace].css());
-      let count = tones.length;
+      const count = tones.length;
       if (limit && count === limit) {
         break;
       }
@@ -334,3 +398,17 @@ export default class Color {
     console.log(result);
   }
 }
+
+// console.log(Color.random('hsla'));
+// console.log(Color.random('rgba'));
+// console.log(Color.random('hsl'));
+// console.log(Color.random('rgb'));
+// console.log(Color.random());
+
+// console.log(color.hsl.array());
+
+// console.log(color.rgb.random(true));
+
+// const hsl = color.hsl.css();
+// const blue = color.set.blue(255).set.red(-255);
+// console.log(hsl, color.hsl.css(), blue.hsl.css());

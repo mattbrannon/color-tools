@@ -1,4 +1,4 @@
-import Color from '../main.js';
+import Color from '../src/color.js';
 import { LOW, AVG, HIGH } from '../constants/contrast-ratios.js';
 
 const createColorInstance = (input) => {
@@ -20,7 +20,7 @@ const setOutput = (color, colorSpace = 'hex') => {
   return color[colorSpace].css();
 };
 
-export const getVariants = (color, accent, colorSpace = 'hex') => {
+const getVariants = (color, accent, colorSpace = 'hex') => {
   color = createColorInstance(color);
   accent = createColorInstance(accent);
 
@@ -63,3 +63,9 @@ export const getVariants = (color, accent, colorSpace = 'hex') => {
   }
   return variants;
 };
+
+// export default { getVariants };
+
+const variants = getVariants('deeppink', 'orange');
+
+console.log(variants);
