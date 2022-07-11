@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 
 import { expect } from 'chai';
-import Color from '../lib/color.js';
+import { Color } from '../lib/color.js';
 import { isValidHex } from '../lib/utils.js';
 
 describe('Color class', () => {
