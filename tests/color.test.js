@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
 
 import { expect } from 'chai';
-import Color from '../src/color.js';
-import { isValidHex } from '../utils/index.js';
+import Color from '../lib/color.js';
+import { isValidHex } from '../lib/utils.js';
 
 describe('Color class', () => {
   const red1 = new Color('red');

@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 
 import { expect } from 'chai';
-import convert from '../converter/index.js';
+import { convert } from '../lib/convert.js';
 
 describe('hsv conversion tests', () => {
   describe('hex2hsv', () => {
