@@ -15,7 +15,7 @@
     "comma-dangle": ["error", "only-multiline"],
     "no-unused-expressions": "off",
     "no-sequences": "off",
-    "eqeqeq": "off",
+    "eqeqeq": "error",
     "array-bracket-spacing": [
       "error",
       "always",
@@ -23,6 +23,16 @@
         "arraysInArrays": false,
         "objectsInArrays": false,
         "singleValue": false
+      }
+    ],
+    "no-unneeded-ternary": "error",
+    "indent": [
+      2,
+      2,
+      {
+        "flatTernaryExpressions": true,
+        "ignoredNodes": ["ConditionalExpression"],
+        "SwitchCase": 1
       }
     ]
   }

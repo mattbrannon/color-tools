@@ -21,22 +21,25 @@ class Converter {
     let s;
     let v = max;
 
-    if (max == min) {
+    if (max === min) {
       h = 0;
     }
     else {
       const d = max - min;
-      s = max == 0 ? 0 : d / max;
+      s = max === 0 ? 0 : d / max;
       switch (max) {
-        case R:
+        case R: {
           h = (G - B) / d + (G < B ? 6 : 0);
           break;
-        case G:
+        }
+        case G: {
           h = (B - R) / d + 2;
           break;
-        case B:
+        }
+        case B: {
           h = (R - G) / d + 4;
           break;
+        }
       }
     }
     h /= 6.0;
@@ -65,15 +68,18 @@ class Converter {
       const d = max - min;
       s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
       switch (max) {
-        case R:
+        case R: {
           h = (G - B) / d + (G < B ? 6 : 0);
           break;
-        case G:
+        }
+        case G: {
           h = (B - R) / d + 2;
           break;
-        case B:
+        }
+        case B: {
           h = (R - G) / d + 4;
           break;
+        }
       }
     }
 
@@ -130,24 +136,30 @@ class Converter {
     const t = v * (1 - (1 - f) * s);
 
     switch (i % 6) {
-      case 0:
+      case 0: {
         (r = v), (g = t), (b = p);
         break;
-      case 1:
+      }
+      case 1: {
         (r = q), (g = v), (b = p);
         break;
-      case 2:
+      }
+      case 2: {
         (r = p), (g = v), (b = t);
         break;
-      case 3:
+      }
+      case 3: {
         (r = p), (g = q), (b = v);
         break;
-      case 4:
+      }
+      case 4: {
         (r = t), (g = p), (b = v);
         break;
-      case 5:
+      }
+      case 5: {
         (r = v), (g = p), (b = q);
         break;
+      }
     }
 
     r = Math.max(0, Math.min(Math.round(r * 255), 255));
