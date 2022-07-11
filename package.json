@@ -2,7 +2,7 @@
   "name": "color-tools",
   "version": "1.0.0",
   "description": "a set of utilities for working with color spaces",
-  "main": "src/index.js",
+  "main": "lib/index.js",
   "type": "module",
   "scripts": {
     "test": "mocha ./tests/*",
