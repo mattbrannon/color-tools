@@ -1,30 +1,38 @@
 import { isShortHex, isValidHex, sanitize } from './utils.js';
 
-const addHash = (s) => {
+interface HexObject {
+  h: string,
+  e: string,
+  x: string,
+  a?: string
+}
+
+
+const addHash = (s: string) => {
   return s.charAt(0) === '#' ? s : '#' + s;
 };
 
-export const removeHash = (s) => {
+export const removeHash = (s: string) => {
   return s.charAt(0) === '#' ? s.substring(1) : s;
 };
 
-const makeLongHex = (s) => {
+const makeLongHex = (s: string) => {
   s = sanitize(s);
   if (isShortHex(s)) {
     s = removeHash(s);
     s = s
       .split('')
-      .map((char) => char.repeat(2))
+      .map((char: string) => char.repeat(2))
       .join('');
   }
   return addHash(s);
 };
 
-export const validateHex = (s) => {
+export const validateHex = (s: string) => {
   return isValidHex(s) ? makeLongHex(s) : null;
 };
 
-export const hexToArray = (s) => {
+export const hexToArray = (s: any) => {
   const hex = removeHash(sanitize(s));
   const array = [];
   for (let i = 1; i < hex.length; i += 2) {
@@ -34,7 +42,7 @@ export const hexToArray = (s) => {
   return array;
 };
 
-export const hexToObject = (s) => {
+export const hexToObject = (s: any) => {
   const arr = hexToArray(s);
   return arr.reduce((acc, value, i) => {
     i === 0
@@ -45,7 +53,7 @@ export const hexToObject = (s) => {
       ? (acc.x = value)
       : (acc.a = value);
     return acc;
-  }, {});
+  }, {} as HexObject);
 };
 
 const hex = {

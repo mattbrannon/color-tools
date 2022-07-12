@@ -1,9 +1,17 @@
-import { Color } from './color.js';
+//@ts-ignore
+import { Color } from './color.js'
 import { toFloat } from './utils.js';
 import { keepHueInRange } from './hsl.js';
+import { ThemeObject } from './interfaces.js';
 
 export class Theme extends Color {
-  constructor(initialValue) {
+  theme: ThemeObject
+  initialValue: any
+  private _hsl: any;
+  private _rgb: any;
+  private _hex: any;
+
+  constructor(initialValue:any) {
     super(initialValue);
     this.theme = {};
     this._hsl.get = () => this.get('hsl');
@@ -11,14 +19,15 @@ export class Theme extends Color {
     this._hex.get = () => this.get('hex');
   }
 
-  get(colorSpace) {
-    const {
-      theme: { left, right, middle },
-    } = this;
+  get(colorSpace: string) {
+    const { theme: { left, right, middle } } = this;
+    //@ts-ignore
     const colors = [this[colorSpace].css()];
     const obj = { left, right, middle };
     for (const key in obj) {
+      //@ts-ignore
       if (obj[key]) {
+        //@ts-ignore
         const color = obj[key][colorSpace].css();
         colors.push(color);
       }
@@ -27,13 +36,13 @@ export class Theme extends Color {
     return colors;
   }
 
-  rotate(amount) {
-    const { h } = this.hsl.object();
+  rotate(amount: any) {
+    const { h } = this._hsl.object();
     return toFloat(keepHueInRange(h + amount));
   }
 
-  create(amount) {
-    let { h, s, l, a } = this.hsl.object();
+  create(amount: number) {
+    let { h, s, l, a } = this._hsl.object();
     h = this.rotate(amount);
     return new Color({ h, s, l, a });
   }

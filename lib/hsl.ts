@@ -5,7 +5,9 @@ import {
   stripPercent,
 } from './utils.js';
 
-const keepHueInRange = (hue) => {
+import { HslColor } from './interfaces.js';
+
+const keepHueInRange = (hue:string|number) => {
   hue = Number(hue);
   while (hue > 360 || hue < 0) {
     hue = hue > 360 ? hue - 360 : hue < 0 ? hue + 360 : hue;
@@ -13,19 +15,19 @@ const keepHueInRange = (hue) => {
   return hue;
 };
 
-export const stripDegFromHue = (hue) => {
+export const stripDegFromHue = (hue:any) => {
   if (typeof hue === 'string') {
+    //@ts-ignore
     return hue.match(/-?\d+\.?\d?/g).map(Number)[0];
   }
   return hue;
 };
 
-export const keepPercentInRange = (n) => {
-  n = Number(n);
+export const keepPercentInRange = (n: number) => {
   return (n = n < 0 ? 0 : n > 100 ? 100 : n);
 };
 
-export const getHslValuesFromString = (str) => {
+export const getHslValuesFromString = (str:string) => {
   return str
     .split(/\s+|,|\(|\)/g)
     .filter((val) => /\d+/g.test(val))
@@ -40,48 +42,53 @@ export const getHslValuesFromString = (str) => {
     });
 };
 
-export const verifyFormat = (str, values) => {
+export const verifyFormat = (str:string, values:number[]) => {
   str = sanitize(str);
-  let format = getColorSpace(str);
-  format =
-    format.length === values.length
-      ? format
-      : format.length < values.length
-      ? format + 'a'
-      : format.length > values.length
-      ? format.slice(0, -1)
-      : null;
-
-  return format;
+  try {
+    let format = getColorSpace(str)
+    format =
+      format.length === values.length
+        ? format
+        : format.length < values.length
+        ? format + 'a'
+        : format.length > values.length
+        ? format.slice(0, -1)
+        : ''
+  
+    return format;
+  }
+  catch (error) {
+    throw error
+  }
 };
 
-export const parseString = (str) => {
-  const values = getHslValuesFromString(str);
+export const parseString = (str:string) => {
+  const values: any = getHslValuesFromString(str);
   const format = verifyFormat(str, values);
   return { format, values };
 };
 
-export const toObject = (str) => {
+export const toObject = (str:string) => {
   const { values, format } = parseString(str);
-  return values.reduce((acc, val, i) => {
+  return values.reduce((acc: { [x: string]: any; }, val: any, i: number) => {
     const key = format[i];
     acc[key] = val;
     return acc;
-  }, {});
+  }, {} as HslColor);
 };
 
-export const setDetails = (num, i) => {
+export const setDetails = (num:string, i:number) => {
   return i === 0 ? num + 'deg' : i < 3 ? num + '%' : num;
 };
 
-export const toString = (object) => {
+export const toString = (object:object) => {
   const format = Object.keys(object).join('');
   const values = Object.values(object).map(setDetails);
 
   return `${format}(${values.join(', ')})`;
 };
 
-const parseHSL = (str) => {
+const parseHSL = (str:string) => {
   return {
     css: () => toString(toObject(str)),
     object: () => toObject(str),
