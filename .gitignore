@@ -5,3 +5,4 @@ theme
 .eslintcache
 unused
 hcl.js
+.DS_Store
