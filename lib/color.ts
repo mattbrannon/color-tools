@@ -1,10 +1,10 @@
-//@ts-ignore
+// @ts-ignore
 import convert from './converter';
-//@ts-ignore
+// @ts-ignore
 import { parseRgbString, parseRgbObject } from './rgb.js';
-//@ts-ignore
+// @ts-ignore
 import { parseHslString, parseHslObject } from './hsl.js';
-//@ts-ignore
+// @ts-ignore
 import { parseHexString } from './hex.js';
 import { getColorSpace } from './utils.js';
 
@@ -33,9 +33,9 @@ export class Color {
     this.input = input;
     this.colorSpace = getColorSpace(input);
     this.init();
-    this._hex = ''
-    this._hsl = {}
-    this._rgb = {}
+    this._hex = '#ff88ff';
+    this._hsl = {};
+    this._rgb = {};
   }
 
   get hex() {
