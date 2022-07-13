@@ -20,36 +20,20 @@ export interface HsvColor {
 }
 
 export interface ColorMethods {
-  array: any[];
-  object: RgbColor | HslColor;
-  css: string;
+  array(): any;
+  object(): any;
+  css(): any;
 }
 
-interface RGB {
-  array: any[];
-  object: {};
-  css: string;
+export interface ColorInterface {
+  hex: ColorMethods;
+  rgb: ColorMethods;
+  hsl: ColorMethods;
 }
 
-interface HSL {
-  array: number[];
-  object: {};
-  css: string;
-}
-
-interface HEX {
-  hex: string;
-  alpha: string;
-}
-
-export interface ColorObject {
-  rgb: RGB;
-  hsl: HSL;
-  hex: HEX;
-}
-
-export interface ThemeObject {
-  left?: any;
-  right?: any;
-  middle?: any;
+export interface ThemeInterface extends ColorInterface {
+  analagous(colorSpace: string): {};
+  triadic(colorSpace: string): {};
+  compound(colorSpace: string): {};
+  tetradic(colorSpace: string): {};
 }
