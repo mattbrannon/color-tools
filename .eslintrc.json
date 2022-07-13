@@ -8,6 +8,7 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
+  "parser": "@typescript-eslint/parser",
   "rules": {
     "brace-style": ["error", "stroustrup"],
     "semi": ["error", "always"],

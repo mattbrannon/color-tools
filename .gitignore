@@ -6,3 +6,5 @@ theme
 unused
 hcl.js
 .DS_Store
+dist
+build

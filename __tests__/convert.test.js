@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 
 import { expect } from 'chai';
-import { convert } from '../lib/convert.js';
+import { convert } from '../src/convert.js';
 
 describe('Color conversion tests', () => {
   const hex = '#ff00ff';

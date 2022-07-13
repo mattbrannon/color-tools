@@ -1,8 +1,11 @@
 /* eslint-disable no-undef */
 
 import { expect } from 'chai';
-import { Color } from '../lib/color.js';
-import { isValidHex } from '../lib/utils.js';
+// import { Color } from '../unused/colorssss.js';
+// import { isValidHex } from '../lib/utils.js';
+
+import { Color } from '../dist/lib/color.js';
+import { isHex } from '../dist/lib/hex-new.js';
 
 describe('Color class', () => {
   const red1 = new Color('red');
@@ -30,7 +33,7 @@ describe('Color class', () => {
         expect(typeof Color.random).to.equal('function');
       });
       it('should return a valid hex string', () => {
-        expect(isValidHex(Color.random())).to.be.true;
+        expect(isHex(Color.random())).to.be.true;
       });
       it('should return a random hex string', () => {
         const hex1 = Color.random();

@@ -1,9 +1,9 @@
-import { toFloat } from './utils.js';
-import { removeHash } from './hex.js';
-import { RgbColor, HslColor, HsvColor } from './interfaces.js'
+import { removeHash } from './hex-new.js';
+import { RgbColor, HslColor, HsvColor } from './interfaces.js';
+const toFloat = (n: number) => Math.round(n * 100) / 100;
 
 class Converter {
-  hex2rgb(str:string) {
+  hex2rgb(str: string) {
     str = removeHash(str);
     const r = parseInt(str.substring(0, 2), 16);
     const g = parseInt(str.substring(2, 4), 16);
@@ -43,12 +43,10 @@ class Converter {
         }
       }
     }
-    //@ts-ignore
+
     h /= 6.0;
 
-    //@ts-ignore
     h = Math.round(toFloat(h * 360));
-    //@ts-ignore
     s = Math.round(toFloat(s * 100));
     v = Math.round(toFloat(v * 100));
 
@@ -56,7 +54,9 @@ class Converter {
   }
 
   rgb2hsl(rgb: RgbColor) {
-    const [ r, g, b, a ] = Object.values(rgb).map((n) => (n /= 255));
+    const [ r, g, b, a ] = Object.values(rgb).map((n, i) => {
+      return i < 3 ? n / 255 : n;
+    });
     const max = Math.max(r, g, b);
     const min = Math.min(r, g, b);
 
@@ -87,10 +87,8 @@ class Converter {
       }
     }
 
-    //@ts-ignore
     h /= 6.0;
 
-    //@ts-ignore
     h = Math.round(toFloat(h * 360));
     s = Math.round(toFloat(s * 100));
     l = Math.round(toFloat(l * 100));
@@ -107,10 +105,10 @@ class Converter {
     return p;
   }
 
-  hsl2rgb(hsl:HslColor) {
+  hsl2rgb(hsl: HslColor) {
     let r, g, b;
     const [ h, s, l, a ] = Object.values(hsl).map((n, i) =>
-      i === 0 ? n / 360 : n / 100
+      i === 0 ? n / 360 : i < 3 ? n / 100 : n
     );
 
     if (s === 0) {
@@ -133,12 +131,12 @@ class Converter {
     return a ? { r, g, b, a } : { r, g, b };
   }
 
-  hsv2rgb(hsv:HsvColor) {
+  hsv2rgb(hsv: HsvColor) {
     let r: number;
     let g: number;
     let b: number;
     const [ h, s, v, a ] = Object.values(hsv).map((n, i) =>
-      i === 0 ? n / 360 : n / 100
+      i === 0 ? n / 360 : i < 3 ? n / 100 : n
     );
 
     const i = Math.floor(h * 6);
@@ -174,16 +172,13 @@ class Converter {
       }
     }
 
-    //@ts-ignore
     r = Math.max(0, Math.min(Math.round(r * 255), 255));
-    //@ts-ignore
     g = Math.max(0, Math.min(Math.round(g * 255), 255));
-    //@ts-ignore
     b = Math.max(0, Math.min(Math.round(b * 255), 255));
     return a ? { r, g, b, a } : { r, g, b };
   }
 
-  rgb2hex({ r, g, b, a }:RgbColor) {
+  rgb2hex({ r, g, b, a }: RgbColor) {
     const rgb = [ r, g, b ].map((val) => val.toString(16));
     const [ h, e, x ] = rgb.map(
       (char) => (char = char.length === 1 ? '0' + char : char)
@@ -198,37 +193,37 @@ class Converter {
     return `#${h}${e}${x}`;
   }
 
-  hsl2hex(hsl:HslColor) {
+  hsl2hex(hsl: HslColor) {
     const rgb = this.hsl2rgb(hsl);
     const hex = this.rgb2hex(rgb);
     return hex;
   }
 
-  hex2hsl(str:string) {
+  hex2hsl(str: string) {
     const rgb = this.hex2rgb(str);
     const hsl = this.rgb2hsl(rgb);
     return hsl;
   }
 
-  hex2hsv(str:string) {
+  hex2hsv(str: string) {
     const rgb = this.hex2rgb(str);
     const hsv = this.rgb2hsv(rgb);
     return hsv;
   }
 
-  hsv2hex(hsv:HsvColor) {
+  hsv2hex(hsv: HsvColor) {
     const rgb = this.hsv2rgb(hsv);
     const hex = this.rgb2hex(rgb);
     return hex;
   }
 
-  hsl2hsv(hsl:HslColor) {
+  hsl2hsv(hsl: HslColor) {
     const rgb = this.hsl2rgb(hsl);
     const hsv = this.rgb2hsv(rgb);
     return hsv;
   }
 
-  hsv2hsl(hsv:HsvColor) {
+  hsv2hsl(hsv: HsvColor) {
     const rgb = this.hsv2rgb(hsv);
     const hsl = this.rgb2hsl(rgb);
     return hsl;
