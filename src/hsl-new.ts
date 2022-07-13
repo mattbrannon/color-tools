@@ -1,16 +1,11 @@
-import { HslColor } from './interfaces';
-
-const sanitize = (s: string) => s.replace(/\s/g, '').toLowerCase();
-const makeRangeKeeper = (min: number, max: number) => (n: number) =>
-  Math.max(min, Math.min(n, max));
-const keepInAlphaRange = makeRangeKeeper(0, 1);
-const keepPercentInRange = makeRangeKeeper(0, 100);
-const keepHueInRange = (n: number) => {
-  while (n < 0 || n >= 360) {
-    n = n < 0 ? n + 360 : n >= 360 ? n - 360 : n;
-  }
-  return n;
-};
+import { HslColor } from './interfaces.js';
+import {
+  sanitize,
+  keepInAlphaRange,
+  keepPercentInRange,
+  keepHueInRange,
+  getColorSpace,
+} from './utils.js';
 
 const mapInputValues = (values: any[]) => {
   return values.map((value: string | number, i: number) => {
@@ -36,7 +31,7 @@ const mapInputValues = (values: any[]) => {
 const parseInputString = (input: string) => {
   const s = sanitize(input);
   const arr = s.split(/,|\(|\)/g).filter((v: string | any[]) => v.length);
-  const colorSpace = arr[0];
+  const colorSpace = getColorSpace(input);
   const values = mapInputValues(arr.slice(1));
 
   return { colorSpace, values };
@@ -68,7 +63,9 @@ const toStringFromString = (s: string) => {
 const toArrayFromObject = (
   o: { [s: string]: unknown } | ArrayLike<unknown>
 ) => {
-  return mapInputValues(Object.values(o)).filter((v) => v);
+  return mapInputValues(Object.values(o)).filter((v) => {
+    return typeof v !== 'undefined' && v !== null && !isNaN(v);
+  });
 };
 
 const toObjectFromObject = (o: {}) => {

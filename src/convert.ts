@@ -1,6 +1,5 @@
-import { removeHash } from './hex-new.js';
 import { RgbColor, HslColor, HsvColor } from './interfaces.js';
-const toFloat = (n: number) => Math.round(n * 100) / 100;
+import { toFloat, removeHash } from './utils';
 
 class Converter {
   hex2rgb(str: string) {

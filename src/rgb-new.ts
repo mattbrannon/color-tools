@@ -1,10 +1,10 @@
-import { RgbColor } from './interfaces';
-
-const sanitize = (s: string) => s.replace(/\s/g, '').toLowerCase();
-const makeRangeKeeper = (min: number, max: number) => (n: number) =>
-  Math.max(min, Math.min(n, max));
-const keepInRgbRange = makeRangeKeeper(0, 255);
-const keepInAlphaRange = makeRangeKeeper(0, 1);
+import { RgbColor } from './interfaces.js';
+import {
+  getColorSpace,
+  keepInAlphaRange,
+  keepInRgbRange,
+  sanitize,
+} from './utils.js';
 
 const mapInputValues = (values: any[]) => {
   return values.map((value: string | number, i: number) => {
@@ -26,23 +26,11 @@ const mapInputValues = (values: any[]) => {
   });
 };
 
-export const getColorSpace = (input: any) => {
-  if (typeof input === 'string') {
-    const s = sanitize(input);
-    return s.slice(0, s.indexOf('('));
-  }
-  else if (typeof input === 'object') {
-    return Object.keys(input).join('');
-  }
-  else {
-    throw new Error('Color must be a string or an object');
-  }
-};
-
 export const parseInputString = (input: any) => {
   const s = sanitize(input);
   const arr = s.split(/,|\(|\)/g).filter((v: string | any[]) => v.length);
-  const colorSpace = arr[0];
+
+  const colorSpace = getColorSpace(input);
   const values = mapInputValues(arr.slice(1));
 
   return { colorSpace, values };
@@ -83,18 +71,9 @@ export const toObjectFromObject = (o: {}) => {
 };
 
 export const toStringFromObject = (o: {}) => {
-  // const keys = Object.keys(o);
-  const values = toArrayFromObject(o);
-  return `rgb(${values.join(', ')})`;
-};
-
-export const isRgb = (input: string | {}) => {
-  const colorSpace =
-    typeof input === 'string'
-      ? parseInputString(input).colorSpace
-      : Object.keys(input).join('');
-
-  return colorSpace === 'rgb' || colorSpace === 'rgba';
+  const colorSpace = getColorSpace(o);
+  const values = toArrayFromObject(o).join(', ');
+  return `${colorSpace}(${values})`;
 };
 
 export const parseRgb = (input: string | {}) => {

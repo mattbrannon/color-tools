@@ -1,18 +1,4 @@
-export const removePrefix = (prefix: string) => (s: string) => {
-  return s.charAt(0) === prefix ? s.slice(1) : s;
-};
-
-export const addPrefix = (prefix: string) => (s: string) => {
-  return s.charAt(0) !== prefix ? prefix + s : s;
-};
-
-export const removeHash = removePrefix('#');
-export const addHash = addPrefix('#');
-
-export const isHex = (s: any) => {
-  const re = /^#?([0-9A-F]{3,4}|[0-9A-F]{6}|[0-9A-F]{8})$/gi;
-  return typeof s === 'string' && re.test(s);
-};
+import { isHex, removeHash, addHash } from './utils.js';
 
 export const isShort = (s: string) => {
   return isHex(s) && removeHash(s).length <= 4;
@@ -55,7 +41,24 @@ export const makeLong = (s: string) => {
 };
 
 export const parseHex = (s: string) => {
-  return makeLong(s);
+  const hex = removeHash(makeLong(s));
+
+  const array = Array.from(hex)
+    .map((char, i, coll) => (i % 2 === 0 ? char + coll[i + 1] : null))
+    .filter((v) => v);
+
+  const object = array.reduce((acc, value, i) => {
+    const keys = 'rgb';
+    const key = i === 3 ? 'a' : keys[i];
+    acc[key] = value;
+    return acc;
+  }, {});
+
+  return {
+    array: () => array,
+    object: () => object,
+    css: () => hex,
+  };
 };
 
 // export const parseHex = (s: string) => {
