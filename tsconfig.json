@@ -11,14 +11,13 @@
     // "disableReferencedProjectLoad": true,             /* Reduce the number of projects loaded automatically by TypeScript. */
 
     /* Language and Environment */
-    "target": "es2016",
+    "target": "ES2015",
     "lib": ["ESNext", "DOM"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
 
     /* Modules */
-    "module": "ES6",
-    "rootDir": "./",
+    "module": "ES2015",
     "moduleResolution": "NodeNext",
 
     /* Emit */
@@ -40,5 +39,15 @@
 
     "skipLibCheck": true
   },
-  "exclude": ["node_modules", "unused", "dist", "unused/lib", "types"]
+  "files": [
+    "./src/color-names.ts",
+    "./src/color.ts",
+    "./src/convert.ts",
+    "./src/hex-new.ts",
+    "./src/hsl-new.ts",
+    "./src/index.ts",
+    "./src/interfaces.ts",
+    "./src/rgb-new.ts",
+    "./src/color-parsers.ts"
+  ]
 }
