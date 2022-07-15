@@ -51,53 +51,24 @@ const handleNamedColor = (input: string) => {
 };
 
 const handleError = (input: string | {}) => {
-  try {
-    const colorSpace = getColorSpace(input);
-    return {
-      error: true,
-      message: 'Not recognized',
-      colorSpace,
-      hex: null,
-      rgb: null,
-      hsl: null,
-    };
-  }
-  catch (error: any) {
-    console.error(error.message);
-  }
-  finally {
-    const colorSpace = getColorSpace(input);
-    // eslint-disable-next-line no-unsafe-finally
-    return {
-      error: true,
-      message: 'Not recognized',
-      colorSpace,
-      hex: null,
-      rgb: null,
-      hsl: null,
-    };
-  }
+  const colorSpace = getColorSpace(input);
+  return {
+    error: true,
+    message: `${colorSpace} is not recognized`,
+    hex: null,
+    rgb: null,
+    hsl: null,
+  };
 };
 
 export const parseColor = (input: string | {}) => {
-  try {
-    return isHsl(input)
-      ? handleHsl(input)
-      : isRgb(input)
-      ? handleRgb(input)
-      : isHex(input)
-      ? handleHex(input)
-      : isNamedColor(input as string)
-      ? handleNamedColor(input as string)
-      : handleError(input);
-  }
-  catch (error: any) {
-    console.log(error);
-    return handleError(input);
-  }
-};
-
-export const init = (input: any) => {
-  const { hex, rgb, hsl } = parseColor(input);
-  return { hex, rgb, hsl };
+  return isHsl(input)
+    ? handleHsl(input)
+    : isRgb(input)
+    ? handleRgb(input)
+    : isHex(input)
+    ? handleHex(input)
+    : isNamedColor(input as string)
+    ? handleNamedColor(input as string)
+    : handleError(input);
 };

@@ -1,4 +1,4 @@
-import { COLOR_NAMES } from './color-names';
+import { COLOR_NAMES } from './color-names.js';
 
 export const sanitize = (s: string) => s.replace(/\s/g, '').toLowerCase();
 
@@ -27,8 +27,6 @@ export const isHex = (s: any) => {
 
 export const getColorSpace = (input: any) => {
   if (typeof input === 'string') {
-    console.log('THE COLOR SPACE', input);
-
     return isHex(input) || isNamedColor(input)
       ? 'hex'
       : sanitize(input).slice(0, 3);
@@ -63,3 +61,22 @@ export const addPrefix = (prefix: string) => (s: string) => {
 
 export const removeHash = removePrefix('#');
 export const addHash = addPrefix('#');
+
+export const utils = {
+  sanitize,
+  toFloat,
+  makeRangeKeeper,
+  keepInRgbRange,
+  keepInAlphaRange,
+  keepPercentInRange,
+  keepHueInRange,
+  isHex,
+  getColorSpace,
+  isRgb,
+  isHsl,
+  isNamedColor,
+  removePrefix,
+  addPrefix,
+  removeHash,
+  addHash,
+};

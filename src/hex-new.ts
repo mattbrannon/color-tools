@@ -55,9 +55,21 @@ export const parseHex = (s: string) => {
   }, {});
 
   return {
-    array: () => array,
-    object: () => object,
-    css: () => hex,
+    /**
+     *
+     * @returns an array with the hexadecimal bits of color split into their rgb counterparts
+     */
+    array: (): string[] => array,
+    /**
+     *
+     * @returns an object with the hex string broken up into its rgb counterparts
+     */
+    object: (): {} => object,
+    /**
+     *
+     * @returns a hexadecimal css color
+     */
+    css: (): string => addHash(hex),
   };
 };
 

@@ -1,7 +1,4 @@
-/* eslint-disable no-undef */
-
-import { expect } from 'chai';
-import { convert } from '../lib/convert.js';
+const { convert } = require('../dist/colorTools.cjs');
 
 describe('hsv conversion tests', () => {
   describe('hex2hsv', () => {
@@ -9,7 +6,7 @@ describe('hsv conversion tests', () => {
       const hex = '#ff0000';
       const actual = convert.hex2hsv(hex);
       const expected = { h: 0, s: 100, v: 100 };
-      expect(actual).to.deep.equal(expected);
+      expect(actual).toEqual(expected);
     });
   });
   describe('hsv2hex', () => {
@@ -17,7 +14,7 @@ describe('hsv conversion tests', () => {
       const hsv = { h: 0, s: 100, v: 100 };
       const actual = convert.hsv2hex(hsv);
       const expected = '#ff0000';
-      expect(actual).to.deep.equal(expected);
+      expect(actual).toEqual(expected);
     });
   });
   describe('rgb2hsv', () => {
@@ -25,7 +22,7 @@ describe('hsv conversion tests', () => {
       const rgb = { r: 255, g: 0, b: 0 };
       const expected = { h: 0, s: 100, v: 100 };
       const actual = convert.rgb2hsv(rgb);
-      expect(actual).to.deep.equal(expected);
+      expect(actual).toEqual(expected);
     });
   });
   describe('hsv2rgb', () => {
@@ -33,7 +30,7 @@ describe('hsv conversion tests', () => {
       const hsv = { h: 0, s: 100, v: 100 };
       const actual = convert.hsv2rgb(hsv);
       const expected = { r: 255, g: 0, b: 0 };
-      expect(actual).to.deep.equal(expected);
+      expect(actual).toEqual(expected);
     });
   });
   describe('hsl2hsv', () => {
@@ -41,7 +38,7 @@ describe('hsv conversion tests', () => {
       const hsl = { h: 0, s: 100, l: 50 };
       const actual = convert.hsl2hsv(hsl);
       const expected = { h: 0, s: 100, v: 100 };
-      expect(actual).to.deep.equal(expected);
+      expect(actual).toEqual(expected);
     });
   });
   describe('hsv2hsl', () => {
@@ -49,7 +46,7 @@ describe('hsv conversion tests', () => {
       const hsv = { h: 0, s: 100, v: 100 };
       const actual = convert.hsv2hsl(hsv);
       const expected = { h: 0, s: 100, l: 50 };
-      expect(actual).to.deep.equal(expected);
+      expect(actual).toEqual(expected);
     });
   });
 });

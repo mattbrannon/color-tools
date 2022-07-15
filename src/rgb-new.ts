@@ -10,8 +10,18 @@ const mapInputValues = (values: any[]) => {
   return values.map((value: string | number, i: number) => {
     const isPercent = typeof value === 'string' && value.endsWith('%');
     const isAlpha = i === 3;
+    const isFloat = (value) =>
+      typeof value === 'string' && /^\d*\.\d+$/.test(value);
+    const isProbablyPercentage =
+      isFloat(value) && !isAlpha && parseFloat(value as string) < 1;
+
     if (isPercent && !isAlpha) {
       return keepInRgbRange(Math.round((parseInt(value) * 255) / 100));
+    }
+    else if (isProbablyPercentage) {
+      const percent = parseFloat(value as string) * 100;
+      const hexValue = (percent * 255) / 100;
+      return keepInRgbRange(Math.round(hexValue));
     }
     else if (isPercent && isAlpha) {
       return keepInAlphaRange(parseFloat(value) / 100);
@@ -96,3 +106,46 @@ export const parseRgb = (input: string | {}) => {
     css: () => css,
   };
 };
+
+// const makeColor = (input) => {
+//   const color = parseRgb(input);
+//   return {
+//     set(n: number) {
+//       const { g, b } = color.object();
+//       const r = n;
+//       return makeColor({ r, g, b });
+//     },
+//     adjust(n: number) {
+//       let { r, g, b } = color.object();
+//       r += n;
+//       return makeColor({ r, g, b });
+//     },
+//   };
+// };
+
+export class RGB {
+  private r: number;
+  private g: number;
+  private b: number;
+  constructor(input) {
+    const { r, g, b } = parseRgb(input).object();
+    this.r = r;
+    this.g = g;
+    this.b = b;
+  }
+
+  red(R: number) {
+    const { g, b, r } = this;
+    return new RGB({ r: r + R, g, b });
+  }
+
+  green(G: number) {
+    const { r, g, b } = this;
+    return new RGB({ r, g: g + G, b });
+  }
+
+  blue(B: number) {
+    const { r, g, b } = this;
+    return new RGB({ r, g, b: b + B });
+  }
+}

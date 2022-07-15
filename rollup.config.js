@@ -25,7 +25,7 @@ export default [
   // `file` and `format` for each target)
   {
     input: 'dist/lib/index.js',
-    external: ['ms'],
+    // external: ['ms'],
     output: [
       { file: pkg.main, format: 'cjs' },
       { file: pkg.module, format: 'es' },

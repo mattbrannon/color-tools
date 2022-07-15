@@ -1,9 +1,10 @@
 import { RgbColor, HslColor, HsvColor } from './interfaces.js';
-import { toFloat, removeHash } from './utils';
+import { toFloat, removeHash } from './utils.js';
+import { makeLong } from './hex-new.js';
 
 class Converter {
   hex2rgb(str: string) {
-    str = removeHash(str);
+    str = removeHash(makeLong(str));
     const r = parseInt(str.substring(0, 2), 16);
     const g = parseInt(str.substring(2, 4), 16);
     const b = parseInt(str.substring(4, 6), 16);

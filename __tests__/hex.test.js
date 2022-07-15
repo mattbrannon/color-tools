@@ -1,80 +1,74 @@
-/* eslint-disable no-undef */
+const { utils } = require('../dist/colorTools.cjs');
 
-import { expect } from 'chai';
-import hex from '../lib/hex.js';
-const {
-  addHash,
-  removeHash,
-  makeLongHex,
-  validateHex,
-  hexToArray,
-  hexToObject,
-} = hex;
+const { addHash, removeHash, isHex } = utils;
+const { parseHex } = require('../dist/colorTools.cjs');
+
+// parseHex
 
 describe('hex.js tests', () => {
   describe('addHash tests', () => {
     it('should add a hash', () => {
       const result = addHash('123456');
-      expect(result).to.equal('#123456');
+      expect(result).toEqual('#123456');
     });
     it('should not add a hash if already present', () => {
       const result = addHash('#123456');
-      expect(result).to.equal('#123456');
+      expect(result).toEqual('#123456');
     });
   });
 
   describe('removeHash Test', () => {
     it('should remove a hash', () => {
       const result = removeHash('#123456');
-      expect(result).to.equal('123456');
+      expect(result).toEqual('123456');
     });
     it('should not modify string if hash not present', () => {
       const result = removeHash('123456');
-      expect(result).to.equal('123456');
+      expect(result).toEqual('123456');
     });
   });
   describe('makeLongHex Test', () => {
     it('should convert a short hexcode to long form', () => {
-      const result = makeLongHex('#456');
-      expect(result).to.equal('#445566');
+      const result = parseHex('#456').css();
+      expect(result).toEqual('#445566');
     });
     it('should convert to long form regardless without hash present', () => {
-      const result = makeLongHex('456');
-      expect(result).to.equal('#445566');
+      const result = parseHex('456').css();
+      expect(result).toEqual('#445566');
     });
     it('should not modify if already in long form', () => {
-      const result = makeLongHex('#445566');
-      expect(result).to.equal('#445566');
+      const result = parseHex('#445566').css();
+      expect(result).toEqual('#445566');
     });
   });
   describe('validateHex Test', () => {
     it('should return a valid hexcode', () => {
-      const result = validateHex('123');
-      expect(result).to.equal('#112233');
+      const result = parseHex('123').css();
+      expect(result).toEqual('#112233');
     });
     it('should return a valid hexcode', () => {
-      const result = validateHex('123456');
-      expect(result).to.equal('#123456');
+      const result = parseHex('123456').css();
+      expect(result).toEqual('#123456');
     });
     it('should return a valid hexcode', () => {
-      const result = validateHex('#123456');
-      expect(result).to.equal('#123456');
+      const result = parseHex('#123456').css();
+      expect(result).toEqual('#123456');
     });
     it('should return null for invalid input', () => {
-      const result = validateHex('12345p');
-      expect(result).to.equal(null);
+      const result = isHex('12345p');
+      expect(result).toEqual(false);
     });
   });
   describe('hexToArray Test', () => {
     it('should split hex into [r, g, b]', () => {
-      const result = hexToArray('#a1b2c3');
-      expect(result).to.deep.equal([ 'a1', 'b2', 'c3' ]);
+      const result = parseHex('#a1b2c3').array();
+      expect(result).toEqual([ 'a1', 'b2', 'c3' ]);
     });
   });
   describe('hexToObject Test', () => {
     it('should convert hex to { h, e, x }', () => {
-      const result = hexToObject('#123456');
-      expect(result).to.deep.equal({ h: '12', e: '34', x: '56' });
+      const result = parseHex('#123456').object();
+      expect(result).toEqual({ r: '12', g: '34', b: '56' });
     });
   });
 });

@@ -12,6 +12,11 @@ const mapInputValues = (values: any[]) => {
     const isAlpha = i === 3;
     const isHue = i === 0;
     const isPercent = typeof value === 'string' && value.endsWith('%');
+    const isFloat = (value) =>
+      typeof value === 'string' && /^\d*\.\d+$/.test(value);
+    const isProbablyPercentage =
+      isFloat(value) && parseFloat(value as string) < 1;
+    const willConvertToPercentage = !isAlpha && !isHue && isProbablyPercentage;
 
     if (isHue) {
       return keepHueInRange(parseFloat(value as string));
@@ -22,6 +27,10 @@ const mapInputValues = (values: any[]) => {
     else if (isAlpha && isPercent) {
       return keepInAlphaRange(parseInt(value) / 100);
     }
+    else if (willConvertToPercentage) {
+      const percent = (value as number) * 100;
+      return keepPercentInRange(percent);
+    }
     else {
       return keepPercentInRange(parseFloat(value as string));
     }
@@ -30,10 +39,9 @@ const mapInputValues = (values: any[]) => {
 
 const parseInputString = (input: string) => {
   const s = sanitize(input);
-  const arr = s.split(/,|\(|\)/g).filter((v: string | any[]) => v.length);
+  const arr = s.split(/,|\(|\)|\s/g).filter((v: string | any[]) => v.length);
   const colorSpace = getColorSpace(input);
   const values = mapInputValues(arr.slice(1));
-
   return { colorSpace, values };
 };
 
@@ -94,8 +102,6 @@ export const isHsl = (input: string | {}) => {
       ? parseInputString(input).colorSpace
       : Object.keys(input).join('');
 
-  console.log({ colorSpace });
-
   return colorSpace === 'hsl' || colorSpace === 'hsla';
 };
 
@@ -114,8 +120,20 @@ export const parseHsl = (input: string | {}) => {
       : toStringFromObject(input);
 
   return {
-    array: () => array,
-    object: () => object,
-    css: () => css,
+    /**
+     * @returns an array of 3 or 4 numbers representing a color's hue, saturation, and lightness properites. If 4 numbers are present, the 4th represents the color's alpha transparency value
+     */
+    array: (): number[] => array,
+    /**
+     * @returns -- An object representation of an HSL color.
+     * Example: { h: 240, s: 100, l: 50, a: 0.2 }
+     * Represents a hue of 240deg, with 100% saturation, 50% lightness and 20% opacity
+     */
+    object: (): { [x: string]: any } => object,
+
+    /**
+     * @returns a fully formed hsl css color string
+     */
+    css: (): string => css,
   };
 };
