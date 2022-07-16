@@ -1,7 +1,5 @@
-const {
-  parseRgb,
-  utils: { keepInRgbRange },
-} = require('../dist/colorTools.cjs');
+const { parseRgb } = require('../src/rgb-new');
+const { keepInRgbRange } = require('../src/utils');
 
 describe('rgb.js tests', () => {
   describe('keepInRgbRange', () => {

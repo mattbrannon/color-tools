@@ -1,9 +1,5 @@
-const { utils } = require('../dist/colorTools.cjs');
-
-const { addHash, removeHash, isHex } = utils;
-const { parseHex } = require('../dist/colorTools.cjs');
-
-// parseHex
+const { addHash, isHex, removeHash } = require('../src/utils');
+const { parseHex } = require('../src/hex-new');
 
 describe('hex.js tests', () => {
   describe('addHash tests', () => {

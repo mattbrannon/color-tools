@@ -1,10 +1,19 @@
-const { Color } = require('../dist/colorTools.cjs');
-const {
-  utils: { isHex },
-} = require('../dist/colorTools.cjs');
+const { Color } = require('../src/color');
+const { isHex } = require('../src/utils');
 
 describe('Color class', () => {
-  const red = new Color('red');
+  describe('constructor', () => {
+    it('should accept a css string', () => {
+      expect(() => new Color('red')).not.toThrow();
+      expect(() => new Color('hsl(240deg, 100%, 50%')).not.toThrow();
+      expect(() => new Color('rgb(201, 48, 55, 0.78')).not.toThrow();
+      expect(() => new Color('#00ff00')).not.toThrow();
+    });
+    it('should error when given invalid input', () => {
+      expect(() => new Color('wrong')).toThrow();
+    });
+  });
+
   describe('static methods', () => {
     describe('random', () => {
       it('should have a random method', () => {
@@ -50,7 +59,11 @@ describe('Color class', () => {
     'lightness',
   ];
 
+  const generators = [ 'shades', 'tints', 'faded', 'vibrant' ];
+
   describe('properties', () => {
+    const red = new Color('red');
+
     properties.forEach((property) => {
       describe(property, () => {
         it(`should have a ${property} property`, () => {
@@ -90,6 +103,46 @@ describe('Color class', () => {
           const color2Values = color2.rgb.array();
           expect(color1Values).not.toEqual(color2Values);
         });
+      });
+    });
+  });
+  describe('color generators', () => {
+    generators.forEach((generator) => {
+      describe(generator, () => {
+        it(`should have a ${generator} method`, () => {
+          const color = new Color(Color.random());
+          expect(color[generator]).toBeDefined();
+        });
+        it('should return an array of values', () => {
+          const color = new Color(Color.random());
+          expect(Array.isArray(color[generator]())).toEqual(true);
+        });
+        it('should return no more than the limit', () => {
+          const color = new Color(Color.random());
+          const limit = 10;
+          const array = color[generator](limit);
+          expect(array.length).toBeLessThanOrEqual(limit);
+        });
+      });
+    });
+  });
+  describe('color information methods', () => {
+    describe('contrast', () => {
+      const blue = new Color('blue');
+      const white = new Color('white');
+      const ratio = 8.59;
+
+      it('should return a number', () => {
+        expect(typeof blue.contrast(white)).toEqual('number');
+      });
+      it('should accept a color string as input', () => {
+        expect(() => blue.contrast('white')).not.toThrow();
+      });
+      it('should accept a color object as input', () => {
+        expect(() => blue.contrast({ r: 255, g: 255, b: 255 })).not.toThrow();
+      });
+      it('should return the correct contrast ratio', () => {
+        expect(blue.contrast(white)).toEqual(ratio);
       });
     });
   });

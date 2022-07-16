@@ -1,4 +1,4 @@
-const { convert } = require('../dist/colorTools.cjs');
+const { convert } = require('../src/convert');
 
 describe('Color conversion tests', () => {
   const hex = '#ff00ff';

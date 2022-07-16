@@ -1,9 +1,12 @@
 const {
-  parseHsl,
-  utils: { keepHueInRange, keepPercentInRange, getColorSpace },
-} = require('../dist/colorTools.cjs');
+  keepHueInRange,
+  keepPercentInRange,
+  getColorSpace,
+} = require('../src/utils');
 
-describe('hsl.js tests', () => {
+const { parseHsl } = require('../src/hsl-new');
+
+describe('hsl tests', () => {
   describe('getHslValuesFromString, tests', () => {
     it('should return an array of hsl values', () => {
       const result = parseHsl('hsl(120, 100%, 50%)').array();
