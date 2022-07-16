@@ -1,10 +1,5 @@
 node_modules
-.prettierrc
-scratchpad.js
-theme
 .eslintcache
-unused
-hcl.js
 .DS_Store
 dist
 build

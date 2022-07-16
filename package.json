@@ -9,14 +9,7 @@
     "dist"
   ],
   "scripts": {
-    "test": "jest .",
-    "jest:test": "jest __tests__/*.ts",
-    "test:rgb": "jest ./__tests__/rgb.test.ts",
-    "test:hex": "jest ./__tests__/hex.test.ts",
-    "test:hsl": "jest ./__tests__/hsl.test.ts",
-    "test:hsv": "jest ./__tests__/hsv.test.ts",
-    "test:convert": "jest ./__tests__/convert.test.ts",
-    "test:color": "jest ./__tests__/color.test.ts",
+    "test": "yarn build && jest .",
     "lint": "eslint .",
     "prepare": "husky install",
     "tsc:init": "yarn tsc --init",

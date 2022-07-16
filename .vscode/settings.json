@@ -6,7 +6,5 @@
   "editor.formatOnSaveMode": "file",
   "files.autoSave": "onFocusChange",
   "eslint.run": "onSave",
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "editor.wordWrap": "on",
-  "editor.wordWrapColumn": 120
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
