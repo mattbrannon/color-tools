@@ -2,9 +2,10 @@
   "name": "color-tools",
   "version": "1.0.0",
   "description": "a set of utilities for working with color spaces",
-  "main": "dist/colorTools.cjs.js",
-  "module": "dist/colorTools.esm.js",
-  "browser": "dist/colorTools.umd.js",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "browser": "dist/index.umd.js",
+  "types": "dist/types/index.d.ts",
   "files": [
     "dist"
   ],

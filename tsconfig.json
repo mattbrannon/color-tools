@@ -5,19 +5,22 @@
     /* Language and Environment */
     "target": "ES2015",
     "lib": ["ESNext", "DOM"],
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+    "experimentalDecorators": false,
+    "emitDecoratorMetadata": false,
+    "composite": false,
+    "rootDir": "./src",
 
     /* Modules */
     "module": "ES2015",
     "moduleResolution": "classic",
 
     /* Emit */
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
     "outDir": "./dist/lib",
-    "declarationDir": "./dist/types",
+    // "declarationDir": "./dist/lib",
+    "removeComments": false,
 
     /* Interop Constraints */
     "allowSyntheticDefaultImports": true,
@@ -32,13 +35,15 @@
   },
   "files": [
     "./src/color-names.ts",
+    "./src/color-parsers.ts",
     "./src/color.ts",
     "./src/convert.ts",
     "./src/hex-new.ts",
     "./src/hsl-new.ts",
     "./src/index.ts",
-    "./src/interfaces.ts",
     "./src/rgb-new.ts",
-    "./src/color-parsers.ts"
+    "./src/interfaces.ts",
+    "./src/theme.ts",
+    "./src/utils.ts"
   ]
 }
