@@ -25,18 +25,21 @@ export class Color implements ColorInterface {
    * new Color({ h:220, s:88, l:35, a:0.8 })
    * new Color({ r:110, g:90, b: 200 })
    */
-  constructor(input: string | {}) {
-    const methods = parseColor(input);
+  constructor(color: string | {}) {
+    const methods = parseColor(color);
+    if (!methods) {
+      throw new Error(`Unrecognized color ${JSON.stringify({ color })}`);
+    }
     this.hex = methods.hex;
     this.rgb = methods.rgb;
     this.hsl = methods.hsl;
-    this.colorSpace = getColorSpace(input);
-    this.dataType = input;
+    this.colorSpace = getColorSpace(color);
+    this.dataType = color;
     return this;
   }
 
   /**
-   * @returns A random css hex color string
+   * @returns {string} A random css hex color string
    */
   static random() {
     return `#${Math.random().toString(16).slice(2, 8)}`;
@@ -178,7 +181,6 @@ export class Color implements ColorInterface {
    * @param {boolean} [useAbsolute] - set to true to set an absolute value
    * @returns A new instance of Color
    */
-
   blue(amount: number, useAbsolute: boolean) {
     let { r, g, b, a } = this.rgb.object();
     b = useAbsolute ? amount : b + amount;
@@ -191,14 +193,11 @@ export class Color implements ColorInterface {
   }
 
   /**
-   * Generate an array of darkening colors
-   *
-   * @param step Controls how much lightness is removed at each iteration
-   *
-   * @param {number} limit - Optionally set a hard limit on the number of shades produced.
+   * @param {number} [limit] - set a limit on the number of values produced.
+   * @param {number} [step] - control the rate of change
    * @return an array of colors
    */
-  shades(step: number = 0.5, limit: number): string[] | {}[] {
+  shades(limit?: number, step = 0.5): string[] | {}[] {
     const shades = [];
     let { h, s, l, a } = this.hsl.object();
     while (l > 0) {
@@ -212,7 +211,12 @@ export class Color implements ColorInterface {
     return [...new Set(shades)];
   }
 
-  tints(step = 0.2, limit: number) {
+  /**
+   * @param {number} [limit] - set a limit on the number of values produced.
+   * @param {number} [step] - control the rate of change
+   * @return an array of colors
+   */
+  tints(limit?: number, step = 0.2) {
     const tints = [];
     let { h, s, l, a } = this.hsl.object();
     while (l < 100) {
@@ -226,7 +230,13 @@ export class Color implements ColorInterface {
     return [...new Set(tints)];
   }
 
-  faded(step = 1, limit: number) {
+  /**
+   * @param {number} [limit] - set a limit on the number of values produced.
+   * @param {number} [step] - control the rate of change
+   * @return an array of colors
+   */
+
+  faded(limit?: number, step = 1) {
     let { h, s, l, a } = this.hsl.object();
     const tones = [];
     while (s >= 0) {
@@ -240,7 +250,13 @@ export class Color implements ColorInterface {
     return tones;
   }
 
-  vibrant(step = 1, limit: number) {
+  /**
+   * @param {number} [limit] - set a limit on the number of values produced.
+   * @param {number} [step] - control the rate of change
+   * @return an array of colors
+   */
+
+  vibrant(limit?: number, step = 1) {
     let { h, s, l, a } = this.hsl.object();
     const tones = [];
     while (s <= 100) {

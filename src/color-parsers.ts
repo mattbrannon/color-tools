@@ -4,7 +4,7 @@ import { parseHex } from './hex-new';
 import { convert } from './convert';
 import { HslColor, RgbColor } from './interfaces';
 import { COLOR_NAMES } from './color-names';
-import { isHex, isRgb, isHsl, isNamedColor, getColorSpace } from './utils';
+import { isHex, isRgb, isHsl, isNamedColor } from './utils';
 
 const handleHsl = (input: string | {}) => {
   const hsl = parseHsl(input);
@@ -50,17 +50,6 @@ const handleNamedColor = (input: string) => {
   };
 };
 
-const handleError = (input: string | {}) => {
-  const colorSpace = getColorSpace(input);
-  return {
-    error: true,
-    message: `${colorSpace} is not recognized`,
-    hex: null,
-    rgb: null,
-    hsl: null,
-  };
-};
-
 export const parseColor = (input: string | {}) => {
   return isHsl(input)
     ? handleHsl(input)
@@ -70,5 +59,5 @@ export const parseColor = (input: string | {}) => {
     ? handleHex(input)
     : isNamedColor(input as string)
     ? handleNamedColor(input as string)
-    : handleError(input);
+    : null;
 };

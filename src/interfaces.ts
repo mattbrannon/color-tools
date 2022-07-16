@@ -37,3 +37,11 @@ export interface ThemeInterface extends ColorInterface {
   compound(colorSpace: string): {};
   tetradic(colorSpace: string): {};
 }
+
+export interface ColorGenerator {
+  limit?: number;
+  step?: number;
+}
+
+export type Limit = number;
+export type Step = number;

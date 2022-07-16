@@ -121,18 +121,23 @@ export const parseHsl = (input: string | {}) => {
 
   return {
     /**
-     * @returns an array of 3 or 4 numbers representing a color's hue, saturation, and lightness properites. If 4 numbers are present, the 4th represents the color's alpha transparency value
+     * @returns an array of 3 or 4 numbers representing a color's
+     * hue, saturation, and lightness properites. If 4 numbers are present,
+     * the 4th represents the color's alpha transparency value
+     *
+     * @example [240, 100, 50, 0.2]
      */
     array: (): number[] => array,
     /**
-     * @returns -- An object representation of an HSL color.
-     * Example: { h: 240, s: 100, l: 50, a: 0.2 }
-     * Represents a hue of 240deg, with 100% saturation, 50% lightness and 20% opacity
+     * @returns An object representation of an HSL color.
+     * @example
+     * { h:240, s:100, l:50, a:0.2 }
      */
     object: (): { [x: string]: any } => object,
 
     /**
      * @returns a fully formed hsl css color string
+     * @example 'hsl(240deg, 100%, 50%, 0.2)'
      */
     css: (): string => css,
   };
