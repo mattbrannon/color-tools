@@ -39,35 +39,8 @@ describe('hsl.js tests', () => {
       expect(result).toEqual(50);
     });
   });
-  // describe('stripDegFromHue Test', () => {
-  //   it('should return a number', () => {
-  //     const result = stripDegFromHue('345deg');
-  //     expect(result).to.be.a('number');
-  //   });
-  //   it('should return the the correct value', () => {
-  //     const result = stripDegFromHue('345deg');
-  //     expect(result).toEqual(345);
-  //   });
-  //   it('should work if deg string not present', () => {
-  //     const result = stripDegFromHue('345');
-  //     expect(result).toEqual(345);
-  //   });
-  //   it('should work if already a number', () => {
-  //     const result = stripDegFromHue(345);
-  //     expect(result).toEqual(345);
-  //   });
-  // });
 
   describe('parseString Test', () => {
-    // it('should parse an hsl string correctly', () => {
-    //   const result = parseHsl('hsl(120, 100%, 50%');
-    //   expect(result).toEqual({ format: 'hsl', values: [ 120, 100, 50 ] });
-    // });
-    // it('should return an object with keys `format` and `values`', () => {
-    //   const obj = parseHsl('hsl(220, 100, 40');
-    //   expect(obj).to.haveOwnProperty('format');
-    //   expect(obj).to.haveOwnProperty('values');
-    // });
     it('should be hsl format', () => {
       const colorSpace = getColorSpace('hsl(220, 100, 40');
       expect(colorSpace).toEqual('hsl');
@@ -93,7 +66,6 @@ describe('hsl.js tests', () => {
     const str3 = 'hsl(120, 100%, 50%, 50%)';
     const str4 = 'hsl(120deg, 100%, 50%)';
     const str5 = 'hsl(120, 100, 50, 0.5)';
-    // const str6 = 'hsl(120 100% 50% 50%)';
 
     const output1 = { h: 120, s: 100, l: 50 };
     const output2 = { h: 120, s: 100, l: 50, a: 0.5 };
@@ -118,10 +90,6 @@ describe('hsl.js tests', () => {
       const result = parseHsl(str5).object();
       expect(result).toEqual(output2);
     });
-    // it('should return an hsl object from a string', () => {
-    //   const result = parseHsl(str6).object();
-    //   expect(result).toEqual(output2);
-    // });
   });
 
   describe('toString Test', () => {
@@ -140,36 +108,4 @@ describe('hsl.js tests', () => {
       expect(result).toEqual(output2);
     });
   });
-
-  // describe('parseHSL', () => {
-  //   const input = 'hsl(210, 100, 50)';
-
-  //   it('should be an object', () => {
-  //     expect(typeof parseHSL(input)).toEqual('object');
-  //   });
-  //   it('should have an array method', () => {
-  //     const parsed = parseHSL(input);
-  //     expect(parsed).to.haveOwnProperty('array');
-  //   });
-  //   it('should have an object method', () => {
-  //     const parsed = parseHSL(input);
-  //     expect(parsed).to.haveOwnProperty('object');
-  //   });
-  //   it('should have a css method', () => {
-  //     const parsed = parseHSL(input);
-  //     expect(parsed).to.haveOwnProperty('css');
-  //   });
-  //   it('should return an array of hsl values', () => {
-  //     const parsed = parseHSL(input);
-  //     expect(parsed.array()).toEqual([ 210, 100, 50 ]);
-  //   });
-  //   it('should return an object of hsl values', () => {
-  //     const parsed = parseHSL(input);
-  //     expect(parsed.object()).toEqual({ h: 210, s: 100, l: 50 });
-  //   });
-  //   it('should return a valid hsl css string', () => {
-  //     const parsed = parseHSL(input);
-  //     expect(parsed.css()).toEqual('hsl(210deg, 100%, 50%)');
-  //   });
-  // });
 });

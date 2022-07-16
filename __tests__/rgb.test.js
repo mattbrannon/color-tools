@@ -4,17 +4,6 @@ const {
 } = require('../dist/colorTools.cjs');
 
 describe('rgb.js tests', () => {
-  // describe('convertPercentToRgb', () => {
-  //   it('should convert percentage value to rgb', () => {
-  //     expect(convertPercentToRgb('-30')).toEqual(0);
-  //     expect(convertPercentToRgb('0%')).toEqual(0);
-  //     expect(convertPercentToRgb('50')).toEqual(128);
-  //     expect(convertPercentToRgb('40%')).toEqual(102);
-  //     expect(convertPercentToRgb('10%')).toEqual(26);
-  //     expect(convertPercentToRgb('100')).toEqual(255);
-  //     expect(convertPercentToRgb('140%')).toEqual(255);
-  //   });
-  // });
   describe('keepInRgbRange', () => {
     it('should not exceed 255', () => {
       expect(keepInRgbRange(300)).toEqual(255);
