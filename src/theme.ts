@@ -1,6 +1,6 @@
-import { Color } from './color.js';
-import { ThemeInterface } from './interfaces.js';
-import { parseColor } from './color-parsers.js';
+import { Color } from './color';
+import { ThemeInterface } from './interfaces';
+import { parseColor } from './color-parsers';
 
 export class Theme extends Color implements ThemeInterface {
   // eslint-disable-next-line no-useless-constructor

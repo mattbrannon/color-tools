@@ -1,10 +1,10 @@
-import { parseHsl } from './hsl-new.js';
-import { parseRgb } from './rgb-new.js';
-import { parseHex } from './hex-new.js';
-import { convert } from './convert.js';
-import { HslColor, RgbColor } from './interfaces.js';
-import { COLOR_NAMES } from './color-names.js';
-import { isHex, isRgb, isHsl, isNamedColor, getColorSpace } from './utils.js';
+import { parseHsl } from './hsl-new';
+import { parseRgb } from './rgb-new';
+import { parseHex } from './hex-new';
+import { convert } from './convert';
+import { HslColor, RgbColor } from './interfaces';
+import { COLOR_NAMES } from './color-names';
+import { isHex, isRgb, isHsl, isNamedColor, getColorSpace } from './utils';
 
 const handleHsl = (input: string | {}) => {
   const hsl = parseHsl(input);

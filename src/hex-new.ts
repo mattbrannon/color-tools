@@ -1,4 +1,4 @@
-import { isHex, removeHash, addHash } from './utils.js';
+import { isHex, removeHash, addHash } from './utils';
 
 export const isShort = (s: string) => {
   return isHex(s) && removeHash(s).length <= 4;

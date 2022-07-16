@@ -1,11 +1,11 @@
-import { HslColor } from './interfaces.js';
+import { HslColor } from './interfaces';
 import {
   sanitize,
   keepInAlphaRange,
   keepPercentInRange,
   keepHueInRange,
   getColorSpace,
-} from './utils.js';
+} from './utils';
 
 const mapInputValues = (values: any[]) => {
   return values.map((value: string | number, i: number) => {

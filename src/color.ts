@@ -1,6 +1,6 @@
-import { ColorMethods, ColorInterface } from './interfaces.js';
-import { getColorSpace, toFloat } from './utils.js';
-import { parseColor } from './color-parsers.js';
+import { ColorMethods, ColorInterface } from './interfaces';
+import { getColorSpace, toFloat } from './utils';
+import { parseColor } from './color-parsers';
 
 type PreferedDataType = 'array' | 'object' | 'css' | {} | any[];
 

@@ -1,10 +1,10 @@
-import { RgbColor } from './interfaces.js';
+import { RgbColor } from './interfaces';
 import {
   getColorSpace,
   keepInAlphaRange,
   keepInRgbRange,
   sanitize,
-} from './utils.js';
+} from './utils';
 
 const mapInputValues = (values: any[]) => {
   return values.map((value: string | number, i: number) => {

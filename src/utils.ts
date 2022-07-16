@@ -1,4 +1,4 @@
-import { COLOR_NAMES } from './color-names.js';
+import { COLOR_NAMES } from './color-names';
 
 export const sanitize = (s: string) => s.replace(/\s/g, '').toLowerCase();
 

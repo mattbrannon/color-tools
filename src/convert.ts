@@ -1,6 +1,6 @@
-import { RgbColor, HslColor, HsvColor } from './interfaces.js';
-import { toFloat, removeHash } from './utils.js';
-import { makeLong } from './hex-new.js';
+import { RgbColor, HslColor, HsvColor } from './interfaces';
+import { toFloat, removeHash } from './utils';
+import { makeLong } from './hex-new';
 
 class Converter {
   hex2rgb(str: string) {
