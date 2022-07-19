@@ -1,5 +1,5 @@
 const { Color } = require('../src/color');
-const { isHex } = require('../src/utils');
+const { isHex, getColorSpace } = require('../src/utils');
 
 describe('Color class', () => {
   describe('constructor', () => {
@@ -81,6 +81,21 @@ describe('Color class', () => {
   });
 
   describe('shared methods', () => {
+    const blue = new Color('blue');
+    it('should have a value method', () => {
+      expect(blue.value).toBeDefined();
+      expect(blue.value()).toEqual('#0000FF');
+    });
+    it('should be in the preferred color space', () => {
+      blue.colorSpace = 'rgb';
+      const value = blue.value();
+      expect(getColorSpace(value)).toEqual('rgb');
+    });
+    it('shold be in the preferred data type', () => {
+      blue.dataType = [];
+      expect(Array.isArray(blue.value())).toEqual(true);
+    });
+
     sharedMethods.forEach((method) => {
       describe(`${method} method`, () => {
         it(`should have a ${method} method on the instance`, () => {
