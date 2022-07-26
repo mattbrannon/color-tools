@@ -1,31 +1,38 @@
 import { HslColor } from './interfaces';
 import {
-  sanitize,
-  keepInAlphaRange,
+  keepAlphaInRange,
   keepPercentInRange,
   keepHueInRange,
-  getColorSpace,
+  parseString,
+  isFloat,
 } from './utils';
 
-const mapInputValues = (values: any[]) => {
+import {
+  gradianToDegree,
+  turnToDegree,
+  radianToDegree,
+  identity,
+} from './angles';
+
+const mapInputHslValues = (values: any[]) => {
   return values.map((value: string | number, i: number) => {
     const isAlpha = i === 3;
     const isHue = i === 0;
     const isPercent = typeof value === 'string' && value.endsWith('%');
-    const isFloat = (value) =>
-      typeof value === 'string' && /^\d*\.\d+$/.test(value);
+
     const isProbablyPercentage =
       isFloat(value) && parseFloat(value as string) < 1;
+
     const willConvertToPercentage = !isAlpha && !isHue && isProbablyPercentage;
 
     if (isHue) {
       return keepHueInRange(parseFloat(value as string));
     }
     else if (isAlpha && !isPercent) {
-      return keepInAlphaRange(value as number);
+      return keepAlphaInRange(value as number);
     }
     else if (isAlpha && isPercent) {
-      return keepInAlphaRange(parseInt(value) / 100);
+      return keepAlphaInRange(parseInt(value) / 100);
     }
     else if (willConvertToPercentage) {
       const percent = (value as number) * 100;
@@ -37,30 +44,58 @@ const mapInputValues = (values: any[]) => {
   });
 };
 
-const parseInputString = (input: string) => {
-  const s = sanitize(input);
-  const arr = s.split(/,|\(|\)|\s/g).filter((v: string | any[]) => v.length);
-  const colorSpace = getColorSpace(input);
-  const values = mapInputValues(arr.slice(1));
-  return { colorSpace, values };
+const getAngleType = (hue: string) => hue.match(/[a-z]+/g)?.join('') ?? 'deg';
+
+const normalize = (angleType: string) => {
+  const conversionFn =
+    angleType === 'turn'
+      ? turnToDegree
+      : angleType === 'grad'
+      ? gradianToDegree
+      : angleType === 'rad'
+      ? radianToDegree
+      : identity;
+
+  return conversionFn;
 };
 
-const toObjectFromString = (s: string) => {
-  const { colorSpace, values } = parseInputString(s);
-  return values.reduce<HslColor>((acc, value, i) => {
+const parseInputHslString = (hsl: string) => {
+  const [ colorSpace, ...values ] = parseString(hsl);
+  const callback = normalize(getAngleType(values[0]));
+
+  const colorValues = values.map((s, i) => {
+    const shouldConvert = (i === 3 && parseFloat(s) > 1) || s.endsWith('%');
+
+    return i === 0
+      ? keepHueInRange(callback(parseFloat(s)))
+      : i !== 3
+      ? keepPercentInRange(parseFloat(s))
+      : shouldConvert
+      ? keepAlphaInRange(parseFloat(s) / 100)
+      : keepAlphaInRange(parseFloat(s));
+  });
+  return {
+    colorSpace,
+    colorValues,
+  };
+};
+
+const toObjectFromHslString = (s: string) => {
+  const { colorSpace, colorValues } = parseInputHslString(s);
+  return colorValues.reduce((acc, value, i) => {
     const key = i === 3 ? 'a' : colorSpace[i];
-    acc[key] = value;
+    acc[key as keyof HslColor] = value;
     return acc;
   }, {} as HslColor);
 };
 
-const toArrayFromString = (s: string) => {
-  return parseInputString(s).values;
+const toArrayFromHslString = (s: string) => {
+  return parseInputHslString(s).colorValues;
 };
 
-const toStringFromString = (s: string) => {
-  const { colorSpace, values } = parseInputString(s);
-  const valueString = values
+const toStringFromHslString = (s: string) => {
+  const { colorSpace, colorValues } = parseInputHslString(s);
+  const valueString = colorValues
     .map((value: any, i: number) => {
       return i === 0 ? `${value}deg` : i < 3 ? `${value}%` : value;
     })
@@ -68,17 +103,17 @@ const toStringFromString = (s: string) => {
   return `${colorSpace}(${valueString})`;
 };
 
-const toArrayFromObject = (
+const toArrayFromHslObject = (
   o: { [s: string]: unknown } | ArrayLike<unknown>
 ) => {
-  return mapInputValues(Object.values(o)).filter((v) => {
+  return mapInputHslValues(Object.values(o)).filter((v) => {
     return typeof v !== 'undefined' && v !== null && !isNaN(v);
   });
 };
 
-const toObjectFromObject = (o: {}) => {
+const toObjectFromHslObject = (o: {}) => {
   const keys = Object.keys(o);
-  const arr = toArrayFromObject(o);
+  const arr = toArrayFromHslObject(o);
   return arr.reduce((acc: { [x: string]: any }, value: any, i: number) => {
     const key = i === 3 ? 'a' : keys[i];
     acc[key] = value;
@@ -86,8 +121,8 @@ const toObjectFromObject = (o: {}) => {
   }, {});
 };
 
-const toStringFromObject = (o: {}) => {
-  const values = toArrayFromObject(o)
+const toStringFromHslObject = (o: {}) => {
+  const values = toArrayFromHslObject(o)
     .map((value: any, i: number) => {
       return i === 0 ? `${value}deg` : i < 3 ? `${value}%` : value;
     })
@@ -96,49 +131,23 @@ const toStringFromObject = (o: {}) => {
   return `hsl(${values})`;
 };
 
-export const isHsl = (input: string | {}) => {
-  const colorSpace =
-    typeof input === 'string'
-      ? parseInputString(input).colorSpace
-      : Object.keys(input).join('');
-
-  return colorSpace === 'hsl' || colorSpace === 'hsla';
-};
-
 export const parseHsl = (input: string | {}) => {
   const array =
     typeof input === 'string'
-      ? toArrayFromString(input)
-      : toArrayFromObject(input);
+      ? toArrayFromHslString(input)
+      : toArrayFromHslObject(input);
   const object =
     typeof input === 'string'
-      ? toObjectFromString(input)
-      : toObjectFromObject(input);
+      ? toObjectFromHslString(input)
+      : toObjectFromHslObject(input);
   const css =
     typeof input === 'string'
-      ? toStringFromString(input)
-      : toStringFromObject(input);
+      ? toStringFromHslString(input)
+      : toStringFromHslObject(input);
 
   return {
-    /**
-     * @returns an array of 3 or 4 numbers representing a color's
-     * hue, saturation, and lightness properites. If 4 numbers are present,
-     * the 4th represents the color's alpha transparency value
-     *
-     * @example [240, 100, 50, 0.2]
-     */
     array: (): number[] => array,
-    /**
-     * @returns An object representation of an HSL color.
-     * @example
-     * { h:240, s:100, l:50, a:0.2 }
-     */
     object: (): { [x: string]: any } => object,
-
-    /**
-     * @returns a fully formed hsl css color string
-     * @example 'hsl(240deg, 100%, 50%, 0.2)'
-     */
     css: (): string => css,
   };
 };
