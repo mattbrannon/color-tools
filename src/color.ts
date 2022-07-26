@@ -1,19 +1,22 @@
-import { ColorMethods, ColorInterface } from './interfaces';
+import {
+  ColorMethods,
+  ColorInterface,
+  PreferedColorSpace,
+  PreferedDataType,
+} from './interfaces';
 import { getColorSpace, toFloat } from './utils';
 import { parseColor } from './color-parsers';
-
-type PreferedDataType = 'array' | 'object' | 'css' | {} | any[];
 
 export class Color implements ColorInterface {
   hex: ColorMethods;
   rgb: ColorMethods;
   hsl: ColorMethods;
 
-  #_colorSpace: string;
-  #_dataType: PreferedDataType;
+  #colorSpace: PreferedColorSpace;
+  #dataType: PreferedDataType;
 
   /**
-   * @param {string|{}} input   css color string or color object
+   * @param {string|{}} color   css color string or color object
    *  - Accepts any valid CSS color string.
    *  - Accepts an object representation of an RGB or HSL color.
 
@@ -33,22 +36,24 @@ export class Color implements ColorInterface {
     this.hex = methods.hex;
     this.rgb = methods.rgb;
     this.hsl = methods.hsl;
-    this.colorSpace = getColorSpace(color);
-    this.dataType = color;
+    this.colorSpace = getColorSpace(color) as PreferedColorSpace;
+    this.dataType = color as PreferedDataType;
+    this.#colorSpace = this.colorSpace;
+    this.#dataType = this.dataType;
     return this;
   }
 
   /**
    * @returns {string} A random css hex color string
    */
-  static random() {
+  static random(): string {
     return `#${Math.random().toString(16).slice(2, 8)}`;
   }
 
   /**
    * @returns {number} The contrast ratio between two colors
    */
-  static contrast(color1, color2): number {
+  static contrast(color1: string | Color, color2: string | Color): number {
     color1 = color1 instanceof Color ? color1 : new Color(color1);
     color2 = color2 instanceof Color ? color2 : new Color(color2);
     const lum1 = color1.luminance();
@@ -66,24 +71,33 @@ export class Color implements ColorInterface {
         ? 'object'
         : 'css';
 
-    this.#_dataType = type;
+    this.#dataType = type;
   }
 
   get dataType() {
-    return this.#_dataType;
+    return this.#dataType;
   }
 
-  set colorSpace(value) {
+  set colorSpace(value: PreferedColorSpace) {
     const colorSpace =
       value === 'hsl' || value === 'rgb' || value === 'hex'
         ? value
         : this.colorSpace;
 
-    this.#_colorSpace = colorSpace;
+    this.#colorSpace = colorSpace;
   }
 
   get colorSpace() {
-    return this.#_colorSpace;
+    return this.#colorSpace;
+  }
+
+  #getCurrent() {
+    const colorMethod = this[this.colorSpace][this.dataType];
+    return colorMethod();
+  }
+
+  value() {
+    return this.#getCurrent();
   }
 
   /**
@@ -98,7 +112,7 @@ export class Color implements ColorInterface {
   }
 
   /**
-   * @param {string|{}|Color} color -
+   * @param {string|Color} color -
    * - any valid css color
    * - an object representing an HSL or RGB color
    * - another instance of Color
@@ -116,79 +130,72 @@ export class Color implements ColorInterface {
 
   /**
    * @param {number} amount - set hue relative to the current value
-   * @param {boolean} [useAbsolute] - set to true to set an absolute value
    * @returns A new instance of Color
    */
 
-  hue(amount: number, useAbsolute: boolean): Color {
-    let { h, s, l, a } = this.hsl.object();
-    h = useAbsolute ? amount : h + amount;
-    return new Color({ h, s, l, a });
+  hue(amount: number): Color {
+    const { h, s, l, a } = this.hsl.object();
+
+    return new Color({ h: h + amount, s, l, a });
   }
 
   /**
-   *
    * @param {number} amount - set saturation relative to the current value
-   * @param {boolean} [useAbsolute] - set to true to set an absolute value
    * @returns A new instance of Color
    */
 
-  saturation(amount: number, useAbsolute: boolean): Color {
-    let { h, s, l, a } = this.hsl.object();
-    s = useAbsolute ? amount : s + amount;
-    return new Color({ h, s, l, a });
+  saturation(amount: number): Color {
+    const { h, s, l, a } = this.hsl.object();
+
+    return new Color({ h, s: s + amount, l, a });
   }
 
   /**
-   *
    * @param {number} amount - set lightness relative to the current value
-   * @param {boolean} [useAbsolute] - set to true to set an absolute value
    * @returns A new instance of Color
    */
 
-  lightness(amount: number, useAbsolute: boolean): Color {
-    let { h, s, l, a } = this.hsl.object();
-    l = useAbsolute ? amount : l + amount;
-    return new Color({ h, s, l, a });
+  lightness(amount: number): Color {
+    const { h, s, l, a } = this.hsl.object();
+
+    return new Color({ h, s, l: l + amount, a });
   }
 
   /**
    * @param {number} amount - set red channel relative to the current value
-   * @param {boolean} [useAbsolute] - set to true to set an absolute value
    * @returns A new instance of Color
    */
 
-  red(amount: number, useAbsolute: boolean) {
-    let { r, g, b, a } = this.rgb.object();
-    r = useAbsolute ? amount : r + amount;
-    return new Color({ r, g, b, a });
+  red(amount: number) {
+    const { r, g, b, a } = this.rgb.object();
+
+    return new Color({ r: r + amount, g, b, a });
   }
 
   /**
    * @param {number} amount - set green channel relative to the current value
-   * @param {boolean} [useAbsolute] - set to true to set an absolute value
    * @returns A new instance of Color
    */
 
-  green(amount: number, useAbsolute: boolean) {
-    let { r, g, b, a } = this.rgb.object();
-    g = useAbsolute ? amount : g + amount;
-    return new Color({ r, g, b, a });
+  green(amount: number) {
+    const { r, g, b, a } = this.rgb.object();
+
+    return new Color({ r, g: g + amount, b, a });
   }
 
   /**
    * @param {number} amount - set blue channel relative to the current value
-   * @param {boolean} [useAbsolute] - set to true to set an absolute value
    * @returns A new instance of Color
    */
-  blue(amount: number, useAbsolute: boolean) {
-    let { r, g, b, a } = this.rgb.object();
-    b = useAbsolute ? amount : b + amount;
-    return new Color({ r, g, b, a });
+  blue(amount: number) {
+    const { r, g, b, a } = this.rgb.object();
+
+    return new Color({ r, g, b: b + amount, a });
   }
 
   #getTone(obj: string | {}) {
     const { colorSpace, dataType } = this;
+    // @ts-ignore
     return parseColor(obj)[colorSpace][dataType]();
   }
 
@@ -197,7 +204,7 @@ export class Color implements ColorInterface {
    * @param {number} [step] - control the rate of change
    * @return an array of colors
    */
-  shades(limit?: number, step = 0.5): string[] | {}[] {
+  shades(limit?: number, step: number = 1) {
     const shades = [];
     let { h, s, l, a } = this.hsl.object();
     while (l > 0) {
@@ -216,7 +223,7 @@ export class Color implements ColorInterface {
    * @param {number} [step] - control the rate of change
    * @return an array of colors
    */
-  tints(limit?: number, step = 0.2) {
+  tints(limit?: number, step: number = 1) {
     const tints = [];
     let { h, s, l, a } = this.hsl.object();
     while (l < 100) {
@@ -236,7 +243,7 @@ export class Color implements ColorInterface {
    * @return an array of colors
    */
 
-  faded(limit?: number, step = 1) {
+  faded(limit?: number, step: number = 1) {
     let { h, s, l, a } = this.hsl.object();
     const tones = [];
     while (s >= 0) {
@@ -256,7 +263,7 @@ export class Color implements ColorInterface {
    * @return an array of colors
    */
 
-  vibrant(limit?: number, step = 1) {
+  vibrant(limit?: number, step: number = 1) {
     let { h, s, l, a } = this.hsl.object();
     const tones = [];
     while (s <= 100) {
