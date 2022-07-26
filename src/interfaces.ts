@@ -1,3 +1,6 @@
+export type PreferedColorSpace = 'rgb' | 'hsl' | 'hex';
+export type PreferedDataType = 'array' | 'object' | 'css';
+
 export interface RgbColor {
   r: number;
   g: number;
@@ -17,6 +20,12 @@ export interface HsvColor {
   s: number;
   v: number;
   a?: number;
+}
+
+export interface RgbHex {
+  r: number | string;
+  g: number | string;
+  b: number | string;
 }
 
 export interface ColorMethods {
