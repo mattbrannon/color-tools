@@ -39,7 +39,7 @@ const handleHex = (input: string | {}) => {
   };
 };
 
-const handleNamedColor = (input: string) => {
+const handleNamedColor = (input: keyof typeof COLOR_NAMES) => {
   const hex = parseHex(COLOR_NAMES[input]);
   const convertedRgb = convert.hex2rgb(hex.css());
   const convertedHsl = convert.hex2hsl(hex.css());
@@ -50,7 +50,7 @@ const handleNamedColor = (input: string) => {
   };
 };
 
-export const parseColor = (input: string | {}) => {
+export const parseColor = (input: any | {}) => {
   return isHsl(input)
     ? handleHsl(input)
     : isRgb(input)
@@ -58,6 +58,6 @@ export const parseColor = (input: string | {}) => {
     : isHex(input)
     ? handleHex(input)
     : isNamedColor(input as string)
-    ? handleNamedColor(input as string)
+    ? handleNamedColor(input)
     : null;
 };
