@@ -6,7 +6,14 @@ import { parseRgb } from './rgb-new';
 import { parseHex } from './hex-new';
 
 import { isHex, isRgb, isHsl, isNamedColor } from './utils';
-import { hsl2rgb, hsl2hex, rgb2hsl, rgb2hex, hex2hsl, hex2rgb } from './convert';
+import {
+  hsl2rgb,
+  hsl2hex,
+  rgb2hsl,
+  rgb2hex,
+  hex2hsl,
+  hex2rgb,
+} from './convert';
 
 const handleHsl = (input: string | {}) => {
   const hsl = parseHsl(input);
@@ -61,7 +68,7 @@ export const parseColor = (input: any | {}) => {
     ? handleHex(input)
     : isNamedColor(input as string)
     ? handleNamedColor(input)
-    : () => {};
+    : null;
 
   return callback;
 };
