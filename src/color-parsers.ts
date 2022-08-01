@@ -61,7 +61,7 @@ export const parseColor = (input: any | {}) => {
     ? handleHex(input)
     : isNamedColor(input as string)
     ? handleNamedColor(input)
-    : null;
+    : () => {};
 
   return callback;
 };
