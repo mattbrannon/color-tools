@@ -80,9 +80,7 @@ export class Color implements ColorInterface {
 
   set colorSpace(value: PreferedColorSpace) {
     const colorSpace =
-      value === 'hsl' || value === 'rgb' || value === 'hex'
-        ? value
-        : this.colorSpace;
+      value === 'hsl' || value === 'rgb' || value === 'hex' ? value : this.colorSpace;
 
     this.#colorSpace = colorSpace;
   }

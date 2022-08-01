@@ -44,20 +44,19 @@ describe('Color class', () => {
         const ratio = Color.contrast('blue', 'green');
         expect(ratio).toEqual(1.67);
       });
+      it('should accept an instance of Color', () => {
+        const blue = new Color('blue');
+        const green = new Color('green');
+        const ratio = Color.contrast(blue, green);
+        expect(ratio).toEqual(1.67);
+      });
     });
   });
 
   const methods = [ 'array', 'object', 'css' ];
   const properties = [ 'hex', 'rgb', 'hsl' ];
 
-  const sharedMethods = [
-    'red',
-    'blue',
-    'green',
-    'hue',
-    'saturation',
-    'lightness',
-  ];
+  const sharedMethods = [ 'red', 'blue', 'green', 'hue', 'saturation', 'lightness' ];
 
   const generators = [ 'shades', 'tints', 'faded', 'vibrant' ];
 
@@ -86,12 +85,22 @@ describe('Color class', () => {
       expect(blue.value).toBeDefined();
       expect(blue.value()).toEqual('#0000FF');
     });
-    it('should be in the preferred color space', () => {
-      blue.colorSpace = 'rgb';
-      const value = blue.value();
-      expect(getColorSpace(value)).toEqual('rgb');
+    describe('colorSpace', () => {
+      const colorSpaces = [ 'rgb', 'hsl', 'hex' ];
+      colorSpaces.forEach((colorSpace) => {
+        it('should be in the preferred color space', () => {
+          blue.colorSpace = colorSpace;
+          const value = blue.value();
+          expect(getColorSpace(value)).toEqual(colorSpace);
+        });
+      });
+      it('should set a default based on user input', () => {
+        const color = new Color({ r: 123, g: 43, b: 210 });
+        const value = color.value();
+        expect(getColorSpace(value)).toEqual('rgb');
+      });
     });
-    it('shold be in the preferred data type', () => {
+    it('should be in the preferred data type', () => {
       blue.dataType = [];
       expect(Array.isArray(blue.value())).toEqual(true);
     });
@@ -99,7 +108,7 @@ describe('Color class', () => {
     sharedMethods.forEach((method) => {
       describe(`${method} method`, () => {
         it(`should have a ${method} method on the instance`, () => {
-          const color = new Color(Color.random());
+          const color = new Color({ h: 240, s: 100, l: 50 });
           expect(color[method]).toBeDefined();
         });
         it(`${method} should exist on the prototype`, () => {
@@ -110,13 +119,6 @@ describe('Color class', () => {
           const color2 = color1[method](50);
           expect(color2).toBeInstanceOf(Color);
           expect(color1).not.toEqual(color2);
-        });
-        it('should not modify the original instance', () => {
-          const color1 = new Color(Color.random());
-          const color2 = color1[method](50);
-          const color1Values = color1.rgb.array();
-          const color2Values = color2.rgb.array();
-          expect(color1Values).not.toEqual(color2Values);
         });
       });
     });
