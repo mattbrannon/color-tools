@@ -51,7 +51,8 @@ export const rgb2hsv = ({ r, g, b, a }: RgbColor) => {
 
 export const rgb2hsl = (rgb: RgbColor) => {
   const [ r, g, b, a ] = Object.values(rgb).map((n, i) => {
-    return i < 3 ? n / 255 : n;
+    const value = i < 3 ? n / 255 : n;
+    return value;
   });
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
@@ -99,9 +100,10 @@ export const hue2rgb = (p: number, q: number, t: number) => {
 
 export const hsl2rgb = (hsl: HslColor) => {
   let r, g, b;
-  const [ h, s, l, a ] = Object.values(hsl).map((n, i) =>
-    i === 0 ? n / 360 : i < 3 ? n / 100 : n
-  );
+  const [ h, s, l, a ] = Object.values(hsl).map((n, i) => {
+    const value = i === 0 ? n / 360 : i < 3 ? n / 100 : n;
+    return value;
+  });
 
   if (s === 0) {
     r = g = b = l;
@@ -127,9 +129,10 @@ export const hsv2rgb = (hsv: HsvColor) => {
   let r: number = 0;
   let g: number = 0;
   let b: number = 0;
-  const [ h, s, v, a ] = Object.values(hsv).map((n, i) =>
-    i === 0 ? n / 360 : i < 3 ? n / 100 : n
-  );
+  const [ h, s, v, a ] = Object.values(hsv).map((n, i) => {
+    const value = i === 0 ? n / 360 : i < 3 ? n / 100 : n;
+    return value;
+  });
 
   const i = Math.floor(h * 6);
   const f = h * 6 - i;
@@ -172,9 +175,10 @@ export const hsv2rgb = (hsv: HsvColor) => {
 
 export const rgb2hex = ({ r, g, b, a }: RgbColor) => {
   const rgb = [ r, g, b ].map((val) => val.toString(16));
-  const [ h, e, x ] = rgb.map(
-    (char) => (char = char.length === 1 ? '0' + char : char)
-  );
+  const [ h, e, x ] = rgb.map((char) => {
+    const value = char.length === 1 ? '0' + char : char;
+    return value;
+  });
 
   if (a !== undefined) {
     a = a < 0 ? 0 : a > 1 ? 1 : a;
