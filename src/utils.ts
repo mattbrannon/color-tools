@@ -32,7 +32,7 @@ export const keepHueInRange = (n: number) => {
   return n as HueValues;
 };
 
-const getDirection = (start: number, end: number) => {
+export const getDirection = (start: number, end: number) => {
   const normalWay = Math.max(start, end) - Math.min(start, end);
   const loopAround = 360 - Math.max(start, end) + Math.min(start, end);
   const distance = Math.min(normalWay, loopAround);
