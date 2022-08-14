@@ -1,5 +1,11 @@
 import { COLOR_NAMES } from './color-names';
-import { PreferedColorSpace } from './interfaces';
+import {
+  PreferedColorSpace,
+  HueValues,
+  PercentValues,
+  AlphaValues,
+  RgbValues,
+} from './interfaces';
 
 export const sanitize = (s: string) => s.replace(/\s/g, '').toLowerCase();
 
@@ -10,8 +16,9 @@ export const isFloat = (value: any) => {
 };
 
 export function makeRangeKeeper(min: number, max: number) {
-  return function (n: number) {
-    return Math.max(min, Math.min(n, max));
+  type RangeValues = PercentValues | RgbValues | AlphaValues;
+  return function (n: number): RangeValues {
+    return Math.max(min, Math.min(n, max)) as RangeValues;
   };
 }
 
@@ -22,7 +29,7 @@ export const keepHueInRange = (n: number) => {
   while (n < 0 || n >= 360) {
     n = n < 0 ? n + 360 : n >= 360 ? n - 360 : n;
   }
-  return n;
+  return n as HueValues;
 };
 
 const getDirection = (start: number, end: number) => {
