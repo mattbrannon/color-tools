@@ -1,4 +1,4 @@
-import { HslColor, RgbColor } from './interfaces';
+import { HslObject, RgbColor } from './interfaces';
 import { COLOR_NAMES } from './color-names';
 
 import { parseHsl } from './hsl-new';
@@ -6,19 +6,12 @@ import { parseRgb } from './rgb-new';
 import { parseHex } from './hex-new';
 
 import { isHex, isRgb, isHsl, isNamedColor } from './utils';
-import {
-  hsl2rgb,
-  hsl2hex,
-  rgb2hsl,
-  rgb2hex,
-  hex2hsl,
-  hex2rgb,
-} from './convert';
+import { hsl2rgb, hsl2hex, rgb2hsl, rgb2hex, hex2hsl, hex2rgb } from './convert';
 
-const handleHsl = (input: string | {}) => {
+const handleHsl = (input: string | HslObject) => {
   const hsl = parseHsl(input);
-  const convertedRgb = hsl2rgb(hsl.object() as HslColor);
-  const convertedHex = hsl2hex(hsl.object() as HslColor);
+  const convertedRgb = hsl2rgb(hsl.object() as HslObject);
+  const convertedHex = hsl2hex(hsl.object() as HslObject);
   return {
     hsl,
     rgb: parseRgb(convertedRgb),
