@@ -1,4 +1,4 @@
-import { RgbColor, HslColor, HsvColor } from './interfaces';
+import { RgbColor, HslObject, HsvColor } from './interfaces';
 import { toFloat, removeHash } from './utils';
 import { makeLong } from './hex-new';
 
@@ -49,7 +49,7 @@ export const rgb2hsv = ({ r, g, b, a }: RgbColor) => {
   return a ? { h, s, v, a } : { h, s, v };
 };
 
-export const rgb2hsl = (rgb: RgbColor) => {
+export const rgb2hsl = (rgb: RgbColor): HslObject => {
   const [ r, g, b, a ] = Object.values(rgb).map((n, i) => {
     const value = i < 3 ? n / 255 : n;
     return value;
@@ -57,9 +57,9 @@ export const rgb2hsl = (rgb: RgbColor) => {
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
 
-  let h: number = 0;
-  let s: number = 0;
-  let l: number = (max + min) / 2;
+  let h = 0;
+  let s = 0;
+  let l = (max + min) / 2;
 
   if (max !== min) {
     const d = max - min;
@@ -86,7 +86,7 @@ export const rgb2hsl = (rgb: RgbColor) => {
   s = Math.round(toFloat(s * 100));
   l = Math.round(toFloat(l * 100));
 
-  return a ? { h, s, l, a } : { h, s, l };
+  return a ? ({ h, s, l, a } as HslObject) : ({ h, s, l } as HslObject);
 };
 
 export const hue2rgb = (p: number, q: number, t: number) => {
@@ -98,7 +98,7 @@ export const hue2rgb = (p: number, q: number, t: number) => {
   return p;
 };
 
-export const hsl2rgb = (hsl: HslColor) => {
+export const hsl2rgb = (hsl: HslObject) => {
   let r, g, b;
   const [ h, s, l, a ] = Object.values(hsl).map((n, i) => {
     const value = i === 0 ? n / 360 : i < 3 ? n / 100 : n;
@@ -189,7 +189,7 @@ export const rgb2hex = ({ r, g, b, a }: RgbColor) => {
   return `#${h}${e}${x}`;
 };
 
-export const hsl2hex = (hsl: HslColor) => {
+export const hsl2hex = (hsl: HslObject) => {
   const rgb = hsl2rgb(hsl);
   const hex = rgb2hex(rgb);
   return hex;
@@ -213,7 +213,7 @@ export const hsv2hex = (hsv: HsvColor) => {
   return hex;
 };
 
-export const hsl2hsv = (hsl: HslColor) => {
+export const hsl2hsv = (hsl: HslObject) => {
   const rgb = hsl2rgb(hsl);
   const hsv = rgb2hsv(rgb);
   return hsv;
