@@ -67,6 +67,19 @@ const toArrayFromRgbObject = (
   return mapInputRgbValues(Object.values(o));
 };
 
+export const toObjectFromRgbArray = (arr: any[]) => {
+  return mapInputRgbValues(arr).reduce((acc, value, i) => {
+    const key = i === 0 ? 'r' : i === 1 ? 'g' : i === 2 ? 'b' : 'a';
+    acc[key as keyof RgbColor] = Number(value);
+    return acc;
+  }, {} as RgbColor);
+};
+
+export const toStringFromRgbArray = (arr: any[]) => {
+  const values = mapInputRgbValues(arr);
+  return `rgb(${values.join(', ')})`;
+};
+
 const toObjectFromRgbObject = (o: {}) => {
   const keys = Object.keys(o);
   const arr = toArrayFromRgbObject(o);
@@ -83,19 +96,22 @@ const toStringFromRgbObject = (o: {}) => {
   return `${colorSpace}(${values})`;
 };
 
-export const parseRgb = (input: string | {}) => {
-  const array =
-    typeof input === 'string'
-      ? toArrayFromRgbString(input)
-      : toArrayFromRgbObject(input);
-  const object =
-    typeof input === 'string'
-      ? toObjectFromRgbString(input)
-      : toObjectFromRgbObject(input);
-  const css =
-    typeof input === 'string'
-      ? toStringFromRgbString(input)
-      : toStringFromRgbObject(input);
+export const parseRgb = (input: string | {} | any[]) => {
+  const array = Array.isArray(input)
+    ? mapInputRgbValues(input)
+    : typeof input === 'string'
+    ? toArrayFromRgbString(input)
+    : toArrayFromRgbObject(input);
+  const object = Array.isArray(input)
+    ? toObjectFromRgbArray(input)
+    : typeof input === 'string'
+    ? toObjectFromRgbString(input)
+    : toObjectFromRgbObject(input);
+  const css = Array.isArray(input)
+    ? toStringFromRgbArray(input)
+    : typeof input === 'string'
+    ? toStringFromRgbString(input)
+    : toStringFromRgbObject(input);
 
   return {
     array: () => array,
