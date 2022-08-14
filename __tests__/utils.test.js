@@ -11,6 +11,7 @@ const {
   keepInRgbRange,
   keepPercentInRange,
   toFloat,
+  getDirection,
 } = require('../src/utils');
 
 describe('utils', () => {
@@ -49,5 +50,11 @@ describe('utils', () => {
   });
   test('toFloat', () => {
     expect(toFloat(1.4859393)).toEqual(1.49);
+  });
+  test('getDirection', () => {
+    const res = getDirection(240, 360);
+    expect(res.direction).toEqual(1);
+    expect(res.distance).toEqual(120);
+    expect(res.longest).toEqual(240);
   });
 });

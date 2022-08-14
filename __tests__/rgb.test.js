@@ -1,4 +1,8 @@
-const { parseRgb } = require('../src/rgb-new');
+const {
+  parseRgb,
+  toObjectFromRgbArray,
+  toStringFromRgbArray,
+} = require('../src/rgb-new');
 const { keepInRgbRange } = require('../src/utils');
 
 describe('rgb.js tests', () => {
@@ -16,6 +20,7 @@ describe('rgb.js tests', () => {
   describe('parseRgb', () => {
     const input = 'rgb(210, 45, 90)';
     const input2 = 'rgb(50%, 90%, 25%, 0.25)';
+    const input3 = 'rgb(190, 24, 200, 12)';
 
     it('should be an object', () => {
       expect(typeof parseRgb(input)).toEqual('object');
@@ -50,6 +55,31 @@ describe('rgb.js tests', () => {
       expect(parsed.array()).toEqual([ 128, 230, 64, 0.25 ]);
       expect(parsed.object()).toEqual({ r: 128, g: 230, b: 64, a: 0.25 });
       expect(parsed.css()).toEqual('rgb(128, 230, 64, 0.25)');
+    });
+    it('should convert alpha greater than 1 to float', () => {
+      const parsed = parseRgb(input3);
+      expect(parsed.array()).toEqual([ 190, 24, 200, 0.12 ]);
+    });
+  });
+  describe('input arrays', () => {
+    it('should handle an array as input', () => {
+      expect(toObjectFromRgbArray([ 190, 24, 200, 0.12 ])).toEqual({
+        r: 190,
+        g: 24,
+        b: 200,
+        a: 0.12,
+      });
+      expect(toStringFromRgbArray([ 190, 24, 200, 0.12 ])).toEqual(
+        'rgb(190, 24, 200, 0.12)'
+      );
+
+      expect(parseRgb([ 100, 100, 100 ]).array()).toEqual([ 100, 100, 100 ]);
+      expect(parseRgb([ 100, 100, 100 ]).object()).toEqual({
+        r: 100,
+        g: 100,
+        b: 100,
+      });
+      expect(parseRgb([ 100, 100, 100 ]).css()).toEqual('rgb(100, 100, 100)');
     });
   });
 });

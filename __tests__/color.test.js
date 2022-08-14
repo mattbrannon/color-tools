@@ -50,13 +50,25 @@ describe('Color class', () => {
         const ratio = Color.contrast(blue, green);
         expect(ratio).toEqual(1.67);
       });
+      it('should return an error message when given invalid input', () => {
+        const error = Color.contrast('no-color');
+        expect(error).toMatch('Unrecognized color');
+        // expect(() => Color.contrast('no-color')).toThrow();
+      });
     });
   });
 
   const methods = [ 'array', 'object', 'css' ];
   const properties = [ 'hex', 'rgb', 'hsl' ];
 
-  const sharedMethods = [ 'red', 'blue', 'green', 'hue', 'saturation', 'lightness' ];
+  const sharedMethods = [
+    'red',
+    'blue',
+    'green',
+    'hue',
+    'saturation',
+    'lightness',
+  ];
 
   const generators = [ 'shades', 'tints', 'faded', 'vibrant' ];
 
@@ -160,6 +172,21 @@ describe('Color class', () => {
       });
       it('should return the correct contrast ratio', () => {
         expect(blue.contrast(white)).toEqual(ratio);
+      });
+    });
+  });
+  describe('user preferences', () => {
+    describe('color space', () => {
+      it('should set a users preferred color space', () => {
+        const color = new Color('red');
+        color.colorSpace = 'hsl';
+        expect(color.value()).toEqual('hsl(0deg, 100%, 50%)');
+        color.colorSpace = 'rgb';
+        expect(color.value()).toEqual('rgb(255, 0, 0)');
+        color.colorSpace = 'hex';
+        expect(color.value()).toEqual('#FF0000');
+        const red = new Color('red');
+        expect(red.colorSpace).toEqual('hex');
       });
     });
   });

@@ -4,9 +4,44 @@ const {
   getColorSpace,
 } = require('../src/utils');
 
-const { parseHsl } = require('../src/hsl-new');
+const { parseHsl, parseInputHslString } = require('../src/hsl-new');
 
 describe('hsl tests', () => {
+  const input1 = 'hsl(120deg, 100%, 50%, 0.5)';
+  const input2 = 'hsl(120, 100%, 50%, 50%)';
+  const input3 = { h: 120, s: 100, l: 50, a: '50%' };
+  const input4 = [ 120, 100, 50, '50%' ];
+
+  describe('parseHsl', () => {
+    expect(parseHsl(input1).array()).toEqual([ 120, 100, 50, 0.5 ]);
+    expect(parseHsl(input2).array()).toEqual([ 120, 100, 50, 0.5 ]);
+    expect(parseHsl(input3).array()).toEqual([ 120, 100, 50, 0.5 ]);
+    expect(parseHsl(input4).array()).toEqual([ 120, 100, 50, 0.5 ]);
+  });
+
+  describe('multiple angle types', () => {
+    const values = {
+      degree: 270,
+      radian: 4.7124,
+      gradian: 300,
+      turn: 0.75,
+    };
+    expect(
+      parseInputHslString(`hsl(${values.degree}deg, 100%, 50%)`).colorValues
+    ).toEqual([ 270, 100, 50 ]);
+    expect(
+      parseInputHslString(`hsl(${values.radian}rad, 100%, 50%)`).colorValues
+    ).toEqual([ 270, 100, 50 ]);
+    expect(
+      parseInputHslString(`hsl(${values.gradian}grad, 100%, 50%)`).colorValues
+    ).toEqual([ 270, 100, 50 ]);
+    expect(
+      parseInputHslString(`hsl(${values.turn}turn, 100%, 50%)`).colorValues
+    ).toEqual([ 270, 100, 50 ]);
+
+    // expect
+  });
+
   describe('getHslValuesFromString, tests', () => {
     it('should return an array of hsl values', () => {
       const result = parseHsl('hsl(120, 100%, 50%)').array();
@@ -110,5 +145,12 @@ describe('hsl tests', () => {
       const result = parseHsl(input2).css();
       expect(result).toEqual(output2);
     });
+  });
+
+  describe('Invalid input test', () => {
+    const input1 = [ 120, 100 ];
+    const input2 = [ 120, 100, 50, 1, 100 ];
+    expect(() => parseHsl(input1)).toThrow();
+    expect(() => parseHsl(input2)).toThrow();
   });
 });
