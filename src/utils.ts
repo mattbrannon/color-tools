@@ -58,8 +58,13 @@ export const makeRangeOfSteps = (steps: number) => {
 };
 
 export const isHex = (s: any) => {
-  const re = /^#?([0-9A-F]{3,4}|[0-9A-F]{6}|[0-9A-F]{8})$/gi;
-  return typeof s === 'string' && re.test(s);
+  try {
+    const re = /^#?([0-9A-F]{3,4}|[0-9A-F]{6}|[0-9A-F]{8})$/gi;
+    return typeof s === 'string' && re.test(s);
+  }
+  catch {
+    return false;
+  }
 };
 
 export const parseString = (s: string) => {
