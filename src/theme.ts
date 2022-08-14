@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Color } from './color';
 import { ThemeInterface } from './interfaces';
 import { makeRangeOfSteps } from './utils';
@@ -49,7 +50,9 @@ const createShadowValues = (
   const shadow = colors.map((value, i) => {
     const blur = i * 0.0125;
     const x = i * 0.011 * -1;
-    const textShadow = `${x / 1.1}em ${x / 1.1}em ${blur * 0.1}em ${value}`;
+    const textShadow = `${x / 1.1}em ${x / 1.1}em ${
+      blur * 0.1
+    }em ${value}`;
     const boxShadow = `${x / 1.1}em ${x / 1.1}em ${x}em ${
       blur * 0.1
     }em ${value}`;
@@ -62,6 +65,28 @@ const createShadowValues = (
     text: textShadow,
     box: boxShadow,
   };
+};
+
+// @ts-ignore
+const createFullStopGradient = (values: any[]) => {
+  return values
+    .map((color, i) => {
+      const start = (i / values.length) * 100;
+      const stop = ((i + 1) / values.length) * 100;
+      return `${color} ${start}%, ${color} ${stop}%`;
+    })
+    .join(', ');
+};
+
+// @ts-ignore
+const buildGradientString = (values: any[], offset = 0) => {
+  const stepBy = 100 / (values.length - 1);
+  return values
+    .map((color, i) => {
+      const n = i * stepBy + offset;
+      return `${color} ${n}%`;
+    })
+    .join(', ');
 };
 
 const createGradientValues = (
@@ -84,7 +109,9 @@ const createGradientValues = (
       return `${type}(${colors.join(', ')})`;
     },
     conic(isRepeating: boolean | undefined) {
-      const type = isRepeating ? 'repeating-conic-gradient' : 'conic-gradient';
+      const type = isRepeating
+        ? 'repeating-conic-gradient'
+        : 'conic-gradient';
       return `${type}(${colors.join(', ')})`;
     },
     values() {
@@ -96,10 +123,31 @@ const createGradientValues = (
 export class Theme extends Color implements ThemeInterface {
   gradients: {};
   shadows: {};
+  theme: {};
+  #complement: any[];
   constructor(args: string | {}) {
     super(args);
     this.gradients = {};
     this.shadows = {};
+    this.#complement = [];
+    this.theme = {
+      complementary: this.complementary(),
+      splitComplementary: this.splitComplementary(),
+      analagous: this.analagous(),
+      triadic: this.triadic(),
+      tetradic: this.tetradic(),
+      compound: this.compound(),
+      rectangle: this.rectangle(),
+      square: this.square(),
+    };
+  }
+
+  set complement(value) {
+    this.#complement = value;
+  }
+
+  get complement() {
+    return this.#complement;
   }
 
   #rotate(amount: number) {
@@ -108,7 +156,10 @@ export class Theme extends Color implements ThemeInterface {
   }
 
   #create(amount: number) {
-    let { h, s, l, a } = this.hsl.object();
+    // let { h, s, l, a } = this.hsl.object();
+    let { h } = this.hsl.object();
+    const random = new Color(Color.random()).hsl.array();
+    const [ s, l, a ] = random.slice(1);
     h = this.#rotate(amount);
     return new Color({ h, s, l, a });
   }
@@ -121,44 +172,79 @@ export class Theme extends Color implements ThemeInterface {
     return this[this.colorSpace][this.dataType]();
   }
 
-  gradient(stop: ColorInput, steps = 10) {
+  gradient(stop: ColorInput, steps = 5) {
     const start = this.#getCurrent();
     const gradients = createGradientValues(start, stop, steps);
     return gradients;
   }
 
-  shadow(stop: ColorInput, steps = 10) {
+  shadow(stop: ColorInput, steps = 5) {
     const start = this.#getCurrent();
     const shadows = createShadowValues(start, stop, steps);
     return shadows;
   }
 
-  analagous(): [Color, Color, Color] {
-    const left = this.#createColor(-30);
-    const right = this.#createColor(30);
-    const middle = this.#getCurrent();
-    return [ left, middle, right ];
+  complementary() {
+    return [ this.#getCurrent(), this.#createColor(180) ];
+  }
+
+  splitComplementary() {
+    return [
+      this.#createColor(-150),
+      this.#getCurrent(),
+      this.#createColor(150),
+    ];
+  }
+
+  analagous() {
+    return [
+      this.#createColor(-30),
+      this.#getCurrent(),
+      this.#createColor(30),
+    ];
   }
 
   triadic() {
-    const left = this.#createColor(-120);
-    const right = this.#createColor(120);
-    const middle = this.#getCurrent();
-    return [ left, middle, right ];
+    return [
+      this.#createColor(-120),
+      this.#getCurrent(),
+      this.#createColor(120),
+    ];
   }
 
+  // apparently same as split complementary
   compound() {
-    const left = this.#createColor(150);
-    const right = this.#createColor(210);
-    const middle = this.#getCurrent();
-    return [ left, middle, right ];
+    return [
+      this.#createColor(150),
+      this.#getCurrent(),
+      this.#createColor(210),
+    ];
   }
 
   tetradic() {
-    const left = this.#createColor(300);
-    const right = this.#createColor(120);
-    const middle = this.#createColor(180);
-    const current = this.#getCurrent();
-    return [ left, middle, current, right ];
+    return [
+      this.#getCurrent(),
+      this.#createColor(120),
+      this.#createColor(180),
+      this.#createColor(300),
+    ];
+  }
+
+  rectangle() {
+    return [
+      this.#getCurrent(),
+      this.#createColor(30),
+      this.#createColor(180),
+      this.#createColor(210),
+    ];
+  }
+
+  square() {
+    return [
+      this.#getCurrent(),
+      this.#createColor(90),
+      this.#createColor(180),
+      this.#createColor(270),
+    ];
   }
 }
