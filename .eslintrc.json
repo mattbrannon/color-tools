@@ -18,7 +18,11 @@
     "no-unused-expressions": "off",
     "no-sequences": "off",
     "eqeqeq": "error",
-
+    "array-element-newline": [
+      "error",
+      { "ArrayExpression": "consistent", "ArrayPattern": "never" }
+    ],
+    "array-bracket-newline": ["error", { "multiline": true }],
     "array-bracket-spacing": [
       "error",
       "always",
