@@ -94,15 +94,30 @@ export const getColorSpace = (input: any) => {
 };
 
 export const isRgb = (input: string | {}) => {
-  return getColorSpace(input) === 'rgb';
+  try {
+    return getColorSpace(input) === 'rgb';
+  }
+  catch {
+    return false;
+  }
 };
 
 export const isHsl = (input: string | {}) => {
-  return getColorSpace(input) === 'hsl';
+  try {
+    return getColorSpace(input) === 'hsl';
+  }
+  catch {
+    return false;
+  }
 };
 
 export const isNamedColor = (s: string) => {
-  return s in COLOR_NAMES;
+  try {
+    return s in COLOR_NAMES;
+  }
+  catch {
+    return false;
+  }
 };
 
 export const removePrefix = (prefix: string) => (s: string) => {
