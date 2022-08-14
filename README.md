@@ -1,12 +1,113 @@
 # color-tools
 
-### A set of utility functions for manipulating and converting colors from one color space to another
+A lightweight library for color manipulation, conversion, them and palette generation
 
-The idea here is to simplify working with different color spaces.
+## Installation
 
-### Examples
+Color Tools is available on Npm. You can install using the package manager of your choice.
 
-The `Color` class utility is versatile. It is able to convert between hexadecimal, rgb, and hsl color spaces. Alpha channels are supported as well. It also accepts any of the 140 color names recognized by modern browsers.
+```bash
+yarn install color-tools
+```
+
+## Usage
+
+This package uses **named exports** and supports both commonjs and esmodules. The following exports are currently available:
+
+- `Color`
+- `Theme`
+- `convert`
+
+### ES Modules
+
+```js
+import { Color, convert } from "color-tools";
+```
+
+### Common JS
+
+```js
+const { Color, convert } = require("color-tools");
+```
+
+With ES Modules you can use `import as` to avoid any naming conflicts.
+
+```js
+import { Color as Colour } from "color-tools";
+```
+
+The `Color` utility accepts `strings` and `objects` as input. Objects are expected to be shaped in the following ways.
+
+- For `rgb` colors, the keys `r`, `g`, `b` must be present.
+- For `hsl` colors, the keys `h`, `s`, `l` must be present.
+
+In both cases an optional `a` key can be used for alpha transparency.
+
+Strings can be any valid (and sometimes even invalid) hex, rgb, or hsl css colors. In most cases operators like `deg` and `%` are not necessary. For `hsl` colors, `deg` and `%` will be assumed unless another operator is supplied.
+
+All of the following examples are acceptable and can be parsed without issue.
+
+- `f0f`, `#f0f`, `#f0f8`, `#ff00ff`, `#ff00ff88`
+- `rgb(128, 0, 255)`, `rgb(128, 0, 255, 0.5)`, `rgb(50%, 0, 100%)`, `rgb(50%, 0, 100%, 50%)`
+- `hsl(300deg, 100%, 25%)`
+
+The `Color` class accepts several different types of input. You can use any valid css color as a string. It also accepts strings that the browser won't parse. Some examples of both
+
+- `#ff00ff` or `#f0f` or `f0f`
+- `rgb(128, 210, 30)` or `rgb(50%, 25%, 87%, 0.5)`
+- `hsl(300, 35%, 65%)` or `hsl(300deg, 100%, 50%)`
+
+It also accepts an objects in the shape of
+
+- `{ h, s, l }` or `{ h, s, l, a }`
+- `{ r, g, b }` or `{ r, g, b, a }`
+
+## API
+
+The api is pretty straightforward. Let's pick a color and see what we can do with it. I like deepskyblue so that's what I'm going with.
+
+```javascript
+const color = new Color("deepskyblue");
+```
+
+I like the color but I can never remember it's hex, rgb, or hsl values. Which means if I want to use anything other than the named color in my code, I typically have to google it. But now I can just do this.
+
+```javascript
+new Color("deepskyblue").value(); // #00BFFF
+```
+
+If you just want the hexadecimal version of the color, you can always use the `value` method to obtain it. We can also just as quickly get the `rgb` or `hsl` values.
+
+Each instance of `Color` has the properties `rgb`, `hsl` and `hex`. We'll refer to these as **color spaces**. Each color space has the methods `array`, `object` and `css`. So if we want the `rgb` version of `deepskyblue` in `array` format, we'd simply do
+
+```javascript
+new Color("deepskyblue").rgb.array();
+```
+
+If we change our mind and want the object format, we just change method to match our desired output
+
+<!--
+```javascript
+const rgbArray = new Color('deepskyblue').rgb.array();
+//  output: [ 0, 191, 255 ]
+
+const hslObject = new Color('deepskyblue').hsl.object();
+//  output: { h: 195, s: 100, l: 50 }
+``` -->
+
+```javascript
+// strings
+new Color("blue");
+new Color("rgb(0, 0, 255)");
+new Color("rgb(0, 0, 100%)");
+new Color("hsl(240, 100%, 50%)");
+
+// objects
+new Color({ h: 240, s: 100, l: 50 });
+new Color({ h: 240, s: 100, l: 50, a: 0.8 });
+new Color({ r: 0, g: 0, b: 255 });
+new Color({ r: 0, g: 0, b: 255, a: 0.8 });
+```
 
 ```javascript
 const purple = new Color("purple");
@@ -19,7 +120,7 @@ const yellow = new Color("rgb(255, 255, 0)");
 ```
 
 You can then target one of the underlying color spaces.
-Each color space (hsl, rgb, hex) is a property on the `color` object.
+Each color space (hsl, rgb, hex) is a property on the `Color` instance.
 
 ```javascript
 const purple = new Color("purple");
@@ -37,36 +138,22 @@ console.log(hex);
 //  output: #800080
 ```
 
-Each color space has several methods.
-In the examples above we're using the `.css()` function.
-We can also get access to the raw values by using the `.object()` or `.array()` methods.
-
-The currently available methods for each color space are as follows:
-
-- `css()`
-- `array()`
-- `object()`
-- `tints()`
-- `shades()`
-- `faded()`
-- `vibrant()`
+Every color space has three utility methods for shaping the color data to your preference
 
 ```javascript
-// short and long hex codes are supported.
-// The leading # is optional as well
-const color = new Color("#0f0");
+const color = new Color("blue");
 
-const object = color.rgb.object();
-console.log(object);
-//  output: { r: 0, g: 255, b: 0 }
+const rgbArray = color.rgb.array(); // [0, 0, 255]
+const rgbObject = color.rgb.object(); // { r:0, g:0, b:255 }
+const rgbCss = color.rgb.css(); // 'rgb(0, 0, 255)'
 
-const array = color.hsl.array();
-console.log(array);
-//  output: [ 120, 100, 50 ]
+const hslArray = color.hsl.array(); // [240, 100, 50]
+const hslObject = color.hsl.object(); // { h:240, s:100, l:50 }
+const hslCss = color.hsl.css(); // 'hsl(240deg, 100%, 50%)'
 
-const string = color.hex;
-console.log(string);
-//  output: '#00ff00'
+const hexArray = color.hex.array(); // ['00', '00', 'ff'];
+const hexObject = color.hex.object(); // { r:'00', g:'00', b:'ff'}
+const hexCss = color.hex.css(); // '#0000ff'
 ```
 
 Using object and array destructuring, we can easily access individual values.
@@ -86,7 +173,7 @@ We can also use some of the built in `Color` methods to make it a little cleaner
 
 ```javascript
 const lime = new Color("lime");
-const forestGreen = lime.adjust.saturation(-39).lightness(-16);
+const forestGreen = lime.saturation(-39).lightness(-16);
 
 console.log(forestGreen.hsl.css());
 //  output: hsl(120deg, 61%, 34%)
@@ -97,17 +184,11 @@ Or if you prefer working with rgb colors
 ```javascript
 const lime = new Color("lime");
 
-const forestGreen = lime.adjust.red(34).green(-116).blue(34);
+const forestGreen = lime.red(34).green(-116).blue(34);
 
 console.log(forestGreen.rgb.css());
 //  output: rgb(34, 139, 34)
 ```
-
-The `adjust` property signals that we want to create new instance of the `Color` class.
-In the code above we are first creating a new color and assigning it the label `forestGreen`.
-We then make our modifications on this new instance while leaving the `lime` instance unchanged.
-
-We can also modify values directly on the instance by removing the `adjust` property.
 
 ```javascript
 const red = new Color("red");
@@ -213,6 +294,50 @@ console.log(colorful);
 */
 ```
 
+## Reference
+
+- ### **`Color`**
+- methods
+  - `value`
+  - `contrast`
+  - `luminance`
+  - `red`
+  - `green`
+  - `blue`
+  - `hue`
+  - `saturation`
+  - `lightness`
+- static methods
+  - `random`
+  - `contrast`
+- properties with methods
+  - `hex`
+  - `rgb`
+  - `hsl`
+    - `array`
+    - `object`
+    - `css`
+- config properties
+
+  - `colorSpace`
+  - `dataType`
+
+- ### **`Theme`**
+- methods
+  - `analagous`
+  - `tetradic`
+  - `triadic`
+  - `compound`
+  - `gradient`
+    - `linear`
+    - `radial`
+    - `conic`
+  - `shades`
+  - `fades`
+  - `tints`
+  - `vibes`
+
+<!--
 ## Methods available on the `Color` utility
 
 #### Color modifications
@@ -232,4 +357,4 @@ console.log(colorful);
 #### Static methods
 
 - `Color.contrast(color1, color2)`
-- `Color.random()`
+- `Color.random()` -->
