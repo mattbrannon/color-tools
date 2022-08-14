@@ -31,7 +31,7 @@ export class Color implements ColorInterface {
   constructor(color: string | {}) {
     const methods = parseColor(color);
     if (!methods) {
-      throw new Error(`Unrecognized color ${JSON.stringify({ color })}`);
+      throw new Error(`Unrecognized color ${JSON.stringify(color)}`);
     }
     this.hex = methods.hex;
     this.rgb = methods.rgb;
@@ -54,13 +54,18 @@ export class Color implements ColorInterface {
    * @returns {number} The contrast ratio between two colors
    */
   static contrast(color1: string | Color, color2: string | Color): number {
-    color1 = color1 instanceof Color ? color1 : new Color(color1);
-    color2 = color2 instanceof Color ? color2 : new Color(color2);
-    const lum1 = color1.luminance();
-    const lum2 = color2.luminance();
-    const brightest = Math.max(lum1, lum2);
-    const darkest = Math.min(lum1, lum2);
-    return toFloat((brightest + 0.05) / (darkest + 0.05));
+    try {
+      color1 = color1 instanceof Color ? color1 : new Color(color1);
+      color2 = color2 instanceof Color ? color2 : new Color(color2);
+      const lum1 = color1.luminance();
+      const lum2 = color2.luminance();
+      const brightest = Math.max(lum1, lum2);
+      const darkest = Math.min(lum1, lum2);
+      return toFloat((brightest + 0.05) / (darkest + 0.05));
+    }
+    catch (error: any) {
+      return error.message;
+    }
   }
 
   set dataType(value: PreferedDataType) {
@@ -80,7 +85,9 @@ export class Color implements ColorInterface {
 
   set colorSpace(value: PreferedColorSpace) {
     const colorSpace =
-      value === 'hsl' || value === 'rgb' || value === 'hex' ? value : this.colorSpace;
+      value === 'hsl' || value === 'rgb' || value === 'hex'
+        ? value
+        : this.colorSpace;
 
     this.#colorSpace = colorSpace;
   }
