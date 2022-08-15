@@ -1,50 +1,50 @@
 const { convert } = require('../src/convert');
 
 describe('hsv conversion tests', () => {
-  describe('hex2hsv', () => {
+  describe('hexToHsv', () => {
     it('should convert hex to hsv', () => {
       const hex = '#ff0000';
-      const actual = convert.hex2hsv(hex);
+      const actual = convert.hexToHsv(hex);
       const expected = { h: 0, s: 100, v: 100 };
       expect(actual).toEqual(expected);
     });
   });
-  describe('hsv2hex', () => {
+  describe('hsvToHex', () => {
     it('should convert hsv to hex', () => {
       const hsv = { h: 0, s: 100, v: 100 };
-      const actual = convert.hsv2hex(hsv);
+      const actual = convert.hsvToHex(hsv);
       const expected = '#ff0000';
       expect(actual).toEqual(expected);
     });
   });
-  describe('rgb2hsv', () => {
+  describe('rgbToHsv', () => {
     it('should convert rgb to hsv', () => {
       const rgb = { r: 255, g: 0, b: 0 };
       const expected = { h: 0, s: 100, v: 100 };
-      const actual = convert.rgb2hsv(rgb);
+      const actual = convert.rgbToHsv(rgb);
       expect(actual).toEqual(expected);
     });
   });
-  describe('hsv2rgb', () => {
+  describe('hsvToRgb', () => {
     it('should convert hsv to rgb', () => {
       const hsv = { h: 0, s: 100, v: 100 };
-      const actual = convert.hsv2rgb(hsv);
+      const actual = convert.hsvToRgb(hsv);
       const expected = { r: 255, g: 0, b: 0 };
       expect(actual).toEqual(expected);
     });
   });
-  describe('hsl2hsv', () => {
+  describe('hslToHsv', () => {
     it('should convert hsl to hsv', () => {
       const hsl = { h: 0, s: 100, l: 50 };
-      const actual = convert.hsl2hsv(hsl);
+      const actual = convert.hslToHsv(hsl);
       const expected = { h: 0, s: 100, v: 100 };
       expect(actual).toEqual(expected);
     });
   });
-  describe('hsv2hsl', () => {
+  describe('hsvToHsl', () => {
     it('should convert hsv to hsl', () => {
       const hsv = { h: 0, s: 100, v: 100 };
-      const actual = convert.hsv2hsl(hsv);
+      const actual = convert.hsvToHsl(hsv);
       const expected = { h: 0, s: 100, l: 50 };
       expect(actual).toEqual(expected);
     });

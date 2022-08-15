@@ -2,7 +2,7 @@ import { RgbColor, HslObject, HsvColor } from './interfaces';
 import { toFloat, removeHash } from './utils';
 import { makeLong } from './hex-new';
 
-export const hex2rgb = (str: string) => {
+export const hexToRgb = (str: string) => {
   str = removeHash(makeLong(str));
   const r = parseInt(str.substring(0, 2), 16);
   const g = parseInt(str.substring(2, 4), 16);
@@ -12,7 +12,7 @@ export const hex2rgb = (str: string) => {
   return isNaN(a) ? { r, g, b } : { r, g, b, a };
 };
 
-export const rgb2hsv = ({ r, g, b, a }: RgbColor) => {
+export const rgbToHsv = ({ r, g, b, a }: RgbColor) => {
   const [ R, G, B ] = [ r, g, b ].map((n) => (n /= 255));
   const max = Math.max(R, G, B);
   const min = Math.min(R, G, B);
@@ -49,7 +49,7 @@ export const rgb2hsv = ({ r, g, b, a }: RgbColor) => {
   return a ? { h, s, v, a } : { h, s, v };
 };
 
-export const rgb2hsl = (rgb: RgbColor): HslObject => {
+export const rgbToHsl = (rgb: RgbColor): HslObject => {
   const [ r, g, b, a ] = Object.values(rgb).map((n, i) => {
     const value = i < 3 ? n / 255 : n;
     return value;
@@ -86,7 +86,9 @@ export const rgb2hsl = (rgb: RgbColor): HslObject => {
   s = Math.round(toFloat(s * 100));
   l = Math.round(toFloat(l * 100));
 
-  return a ? ({ h, s, l, a } as HslObject) : ({ h, s, l } as HslObject);
+  return a
+    ? ({ h, s, l, a } as HslObject)
+    : ({ h, s, l } as HslObject);
 };
 
 export const hue2rgb = (p: number, q: number, t: number) => {
@@ -98,7 +100,7 @@ export const hue2rgb = (p: number, q: number, t: number) => {
   return p;
 };
 
-export const hsl2rgb = (hsl: HslObject) => {
+export const hslToRgb = (hsl: HslObject) => {
   let r, g, b;
   const [ h, s, l, a ] = Object.values(hsl).map((n, i) => {
     const value = i === 0 ? n / 360 : i < 3 ? n / 100 : n;
@@ -125,7 +127,7 @@ export const hsl2rgb = (hsl: HslObject) => {
   return a ? { r, g, b, a } : { r, g, b };
 };
 
-export const hsv2rgb = (hsv: HsvColor) => {
+export const hsvToRgb = (hsv: HsvColor) => {
   let r: number = 0;
   let g: number = 0;
   let b: number = 0;
@@ -173,7 +175,7 @@ export const hsv2rgb = (hsv: HsvColor) => {
   return a ? { r, g, b, a } : { r, g, b };
 };
 
-export const rgb2hex = ({ r, g, b, a }: RgbColor) => {
+export const rgbToHex = ({ r, g, b, a }: RgbColor) => {
   const rgb = [ r, g, b ].map((val) => val.toString(16));
   const [ h, e, x ] = rgb.map((char) => {
     const value = char.length === 1 ? '0' + char : char;
@@ -189,53 +191,53 @@ export const rgb2hex = ({ r, g, b, a }: RgbColor) => {
   return `#${h}${e}${x}`;
 };
 
-export const hsl2hex = (hsl: HslObject) => {
-  const rgb = hsl2rgb(hsl);
-  const hex = rgb2hex(rgb);
+export const hslToHex = (hsl: HslObject) => {
+  const rgb = hslToRgb(hsl);
+  const hex = rgbToHex(rgb);
   return hex;
 };
 
-export const hex2hsl = (str: string) => {
-  const rgb = hex2rgb(str);
-  const hsl = rgb2hsl(rgb);
+export const hexToHsl = (str: string) => {
+  const rgb = hexToRgb(str);
+  const hsl = rgbToHsl(rgb);
   return hsl;
 };
 
-export const hex2hsv = (str: string) => {
-  const rgb = hex2rgb(str);
-  const hsv = rgb2hsv(rgb);
+export const hexToHsv = (str: string) => {
+  const rgb = hexToRgb(str);
+  const hsv = rgbToHsv(rgb);
   return hsv;
 };
 
-export const hsv2hex = (hsv: HsvColor) => {
-  const rgb = hsv2rgb(hsv);
-  const hex = rgb2hex(rgb);
+export const hsvToHex = (hsv: HsvColor) => {
+  const rgb = hsvToRgb(hsv);
+  const hex = rgbToHex(rgb);
   return hex;
 };
 
-export const hsl2hsv = (hsl: HslObject) => {
-  const rgb = hsl2rgb(hsl);
-  const hsv = rgb2hsv(rgb);
+export const hslToHsv = (hsl: HslObject) => {
+  const rgb = hslToRgb(hsl);
+  const hsv = rgbToHsv(rgb);
   return hsv;
 };
 
-export const hsv2hsl = (hsv: HsvColor) => {
-  const rgb = hsv2rgb(hsv);
-  const hsl = rgb2hsl(rgb);
+export const hsvToHsl = (hsv: HsvColor) => {
+  const rgb = hsvToRgb(hsv);
+  const hsl = rgbToHsl(rgb);
   return hsl;
 };
 
 export const convert = {
-  hex2hsl,
-  hex2hsv,
-  hex2rgb,
-  rgb2hex,
-  rgb2hsl,
-  rgb2hsv,
-  hsl2hex,
-  hsl2rgb,
-  hsl2hsv,
-  hsv2hex,
-  hsv2hsl,
-  hsv2rgb,
+  hexToHsl,
+  hexToHsv,
+  hexToRgb,
+  rgbToHex,
+  rgbToHsl,
+  rgbToHsv,
+  hslToHex,
+  hslToRgb,
+  hslToHsv,
+  hsvToHex,
+  hsvToHsl,
+  hsvToRgb,
 };

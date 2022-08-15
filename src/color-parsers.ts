@@ -6,12 +6,19 @@ import { parseRgb } from './rgb-new';
 import { parseHex } from './hex-new';
 
 import { isHex, isRgb, isHsl, isNamedColor } from './utils';
-import { hsl2rgb, hsl2hex, rgb2hsl, rgb2hex, hex2hsl, hex2rgb } from './convert';
+import {
+  hslToRgb,
+  hslToHex,
+  rgbToHsl,
+  rgbToHex,
+  hexToHsl,
+  hexToRgb,
+} from './convert';
 
 const handleHsl = (input: string | HslObject) => {
   const hsl = parseHsl(input);
-  const convertedRgb = hsl2rgb(hsl.object() as HslObject);
-  const convertedHex = hsl2hex(hsl.object() as HslObject);
+  const convertedRgb = hslToRgb(hsl.object() as HslObject);
+  const convertedHex = hslToHex(hsl.object() as HslObject);
   return {
     hsl,
     rgb: parseRgb(convertedRgb),
@@ -21,8 +28,8 @@ const handleHsl = (input: string | HslObject) => {
 
 const handleRgb = (input: string | {}) => {
   const rgb = parseRgb(input);
-  const convertedHsl = rgb2hsl(rgb.object() as RgbColor);
-  const convertedHex = rgb2hex(rgb.object() as RgbColor);
+  const convertedHsl = rgbToHsl(rgb.object() as RgbColor);
+  const convertedHex = rgbToHex(rgb.object() as RgbColor);
   return {
     rgb,
     hsl: parseHsl(convertedHsl),
@@ -32,8 +39,8 @@ const handleRgb = (input: string | {}) => {
 
 const handleHex = (input: string | {}) => {
   const hex = parseHex(input as string);
-  const convertedHsl = hex2hsl(hex.css());
-  const convertedRgb = hex2rgb(hex.css());
+  const convertedHsl = hexToHsl(hex.css());
+  const convertedRgb = hexToRgb(hex.css());
   return {
     hex,
     rgb: parseRgb(convertedRgb),
@@ -43,8 +50,8 @@ const handleHex = (input: string | {}) => {
 
 const handleNamedColor = (input: keyof typeof COLOR_NAMES) => {
   const hex = parseHex(COLOR_NAMES[input]);
-  const convertedRgb = hex2rgb(hex.css());
-  const convertedHsl = hex2hsl(hex.css());
+  const convertedRgb = hexToRgb(hex.css());
+  const convertedHsl = hexToHsl(hex.css());
   return {
     hex,
     rgb: parseRgb(convertedRgb),

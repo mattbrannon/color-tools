@@ -6,69 +6,69 @@ describe('Color conversion tests', () => {
   const hsl = { h: 300, s: 100, l: 50 };
   const hsv = { h: 300, s: 100, v: 100 };
 
-  describe('hex2rgb', () => {
+  describe('hexToRgb', () => {
     it('should convert hex to rgb', () => {
-      expect(convert.hex2rgb(hex)).toEqual(rgb);
+      expect(convert.hexToRgb(hex)).toEqual(rgb);
     });
   });
-  describe('hex2hsl', () => {
+  describe('hexToHsl', () => {
     it('should convert hex to hsl', () => {
-      expect(convert.hex2hsl(hex)).toEqual(hsl);
+      expect(convert.hexToHsl(hex)).toEqual(hsl);
     });
   });
-  describe('hex2hsv', () => {
+  describe('hexToHsv', () => {
     it('should convert hex to hsv', () => {
-      expect(convert.hex2hsv(hex)).toEqual(hsv);
+      expect(convert.hexToHsv(hex)).toEqual(hsv);
     });
   });
 
-  describe('rgb2hex', () => {
+  describe('rgbToHex', () => {
     it('should convert rgb to hex', () => {
-      expect(convert.rgb2hex(rgb)).toEqual(hex);
+      expect(convert.rgbToHex(rgb)).toEqual(hex);
     });
   });
-  describe('rgb2hsl', () => {
+  describe('rgbToHsl', () => {
     it('should convert rgb to hsl', () => {
-      expect(convert.rgb2hsl(rgb)).toEqual(hsl);
+      expect(convert.rgbToHsl(rgb)).toEqual(hsl);
     });
   });
-  describe('rgb2hsv', () => {
+  describe('rgbToHsv', () => {
     it('should convert rgb to hsv', () => {
-      expect(convert.rgb2hsv(rgb)).toEqual(hsv);
+      expect(convert.rgbToHsv(rgb)).toEqual(hsv);
     });
   });
 
-  describe('hsl2rgb', () => {
+  describe('hslToRgb', () => {
     it('should convert hsl to rgb', () => {
-      expect(convert.hsl2rgb(hsl)).toEqual(rgb);
+      expect(convert.hslToRgb(hsl)).toEqual(rgb);
     });
   });
 
-  describe('hsl2hex', () => {
+  describe('hslToHex', () => {
     it('should convert hsl to hex', () => {
-      expect(convert.hsl2hex(hsl)).toEqual(hex);
+      expect(convert.hslToHex(hsl)).toEqual(hex);
     });
   });
 
-  describe('hsl2hsv', () => {
+  describe('hslToHsv', () => {
     it('should convert hsl to hsv', () => {
-      expect(convert.hsl2hsv(hsl)).toEqual(hsv);
+      expect(convert.hslToHsv(hsl)).toEqual(hsv);
     });
   });
 
-  describe('hsv2hex', () => {
+  describe('hsvToHex', () => {
     it('should convert hsv to hex', () => {
-      expect(convert.hsv2hex(hsv)).toEqual(hex);
+      expect(convert.hsvToHex(hsv)).toEqual(hex);
     });
   });
-  describe('hsv2rgb', () => {
+  describe('hsvToRgb', () => {
     it('should convert hsv to rgb', () => {
-      expect(convert.hsv2rgb(hsv)).toEqual(rgb);
+      expect(convert.hsvToRgb(hsv)).toEqual(rgb);
     });
   });
-  describe('hsv2hsl', () => {
+  describe('hsvToHsl', () => {
     it('should convert hsv to hsl', () => {
-      expect(convert.hsv2hsl(hsv)).toEqual(hsl);
+      expect(convert.hsvToHsl(hsv)).toEqual(hsl);
     });
   });
 });
