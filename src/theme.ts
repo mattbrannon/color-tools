@@ -175,7 +175,10 @@ export class Theme extends Color implements ThemeInterface {
   }
 
   complementary() {
-    return [ this.#getCurrent(), this.#createColor(180) ];
+    return [
+      this.#getCurrent(),
+      this.#createColor(180),
+    ];
   }
 
   splitComplementary() {
