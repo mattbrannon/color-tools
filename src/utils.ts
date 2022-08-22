@@ -88,6 +88,10 @@ export const getColorSpace = (input: any) => {
   else if (typeof input === 'object') {
     return Object.keys(input).join('').slice(0, 3);
   }
+  else if (typeof input === 'number') {
+    /// handle hex numbers like 0x09f
+    throw new Error('not implemented yet');
+  }
   else {
     throw new Error('Color must be a string or an object');
   }
