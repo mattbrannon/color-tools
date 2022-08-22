@@ -59,7 +59,11 @@ const handleNamedColor = (input: keyof typeof COLOR_NAMES) => {
   };
 };
 
+// TODO handle hex values like 0x0f9
 export const parseColor = (input: any | {}) => {
+  if (typeof input === 'number') {
+    input = input.toString();
+  }
   const callback = isHsl(input)
     ? handleHsl(input)
     : isRgb(input)
