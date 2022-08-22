@@ -28,7 +28,9 @@ export class Color implements ColorInterface {
    * new Color({ h:220, s:88, l:35, a:0.8 })
    * new Color({ r:110, g:90, b: 200 })
    */
-  constructor(color: string | {}) {
+
+  // TODO: handle hex input like 0x09f;
+  constructor(color: string | {} | number) {
     const methods = parseColor(color);
     if (!methods) {
       throw new Error(`Unrecognized color ${JSON.stringify(color)}`);
@@ -138,7 +140,7 @@ export class Color implements ColorInterface {
    * @returns A new instance of Color
    */
 
-  hue(amount: number): Color {
+  hue(amount = 0): Color {
     const { h, s, l, a } = this.hsl.object();
 
     return new Color({ h: h + amount, s, l, a });
@@ -149,7 +151,7 @@ export class Color implements ColorInterface {
    * @returns A new instance of Color
    */
 
-  saturation(amount: number): Color {
+  saturation(amount = 0): Color {
     const { h, s, l, a } = this.hsl.object();
 
     return new Color({ h, s: s + amount, l, a });
@@ -160,7 +162,7 @@ export class Color implements ColorInterface {
    * @returns A new instance of Color
    */
 
-  lightness(amount: number): Color {
+  lightness(amount = 0): Color {
     const { h, s, l, a } = this.hsl.object();
 
     return new Color({ h, s, l: l + amount, a });
@@ -171,7 +173,7 @@ export class Color implements ColorInterface {
    * @returns A new instance of Color
    */
 
-  red(amount: number) {
+  red(amount = 0) {
     const { r, g, b, a } = this.rgb.object();
 
     return new Color({ r: r + amount, g, b, a });
@@ -182,7 +184,7 @@ export class Color implements ColorInterface {
    * @returns A new instance of Color
    */
 
-  green(amount: number) {
+  green(amount = 0) {
     const { r, g, b, a } = this.rgb.object();
 
     return new Color({ r, g: g + amount, b, a });
@@ -192,7 +194,7 @@ export class Color implements ColorInterface {
    * @param {number} amount - set blue channel relative to the current value
    * @returns A new instance of Color
    */
-  blue(amount: number) {
+  blue(amount = 0) {
     const { r, g, b, a } = this.rgb.object();
 
     return new Color({ r, g, b: b + amount, a });
