@@ -86,9 +86,7 @@ export const rgbToHsl = (rgb: RgbColor): HslObject => {
   s = Math.round(toFloat(s * 100));
   l = Math.round(toFloat(l * 100));
 
-  return a
-    ? ({ h, s, l, a } as HslObject)
-    : ({ h, s, l } as HslObject);
+  return a ? ({ h, s, l, a } as HslObject) : ({ h, s, l } as HslObject);
 };
 
 export const hue2rgb = (p: number, q: number, t: number) => {
@@ -175,20 +173,37 @@ export const hsvToRgb = (hsv: HsvColor) => {
   return a ? { r, g, b, a } : { r, g, b };
 };
 
-export const rgbToHex = ({ r, g, b, a }: RgbColor) => {
-  const rgb = [ r, g, b ].map((val) => val.toString(16));
-  const [ h, e, x ] = rgb.map((char) => {
-    const value = char.length === 1 ? '0' + char : char;
-    return value;
-  });
+export const rgbToHex = (rgb: RgbColor) => {
+  const [ r, g, b ] = Object.values(rgb)
+    .map((val) => val.toString(16))
+    .map((s) => s.padStart(2, '0'));
 
-  if (a !== undefined) {
-    a = a < 0 ? 0 : a > 1 ? 1 : a;
-    let alpha: any = Math.round(a * 255).toString(16);
-    alpha = alpha.length === 1 ? '0' + alpha : alpha;
-    return `#${h}${e}${x}${alpha}`;
+  const alpha =
+    Object.values(rgb).length === 4
+      ? Number(Object.values(rgb).slice(-1).join(''))
+      : null;
+  if (alpha) {
+    const a = Math.round(Math.min(Math.max(0, alpha), 1) * 255).toString(16);
+    return `#${r}${g}${b}${a}`;
   }
-  return `#${h}${e}${x}`;
+  return `#${r}${g}${b}`;
+
+  // const [ h, e, x ] = rgb.map((char) => {
+  //   const value = char.length === 1 ? '0' + char : char;
+  //   return value;
+  // });
+
+  // if (a !== undefined) {
+  //   // a = a < 0 ? 0 : a > 1 ? 1 : a;
+  //   // const alpha = Math.min(Math.max(0, n), 100);
+  //   const alpha = Math.round(Math.min(Math.max(0, a), 1) * 255)
+  //     .toString(16)
+  //     .padStart(2, '0');
+  //   // let alpha: any = Math.round(Math.min(Math.max(0, a), 1) * 255).toString(16);
+  //   // alpha = alpha.length === 1 ? '0' + alpha : alpha;
+  //   return `#${r}${g}${b}${alpha}`;
+  // }
+  // return `#${r}${g}${b}`;
 };
 
 export const hslToHex = (hsl: HslObject) => {
