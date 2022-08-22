@@ -1,6 +1,8 @@
 const { Color } = require('../src/color');
 const { isHex, getColorSpace } = require('../src/utils');
 
+// TODO: write tests for handling hex values like 0x0f9
+
 describe('Color class', () => {
   describe('constructor', () => {
     it('should accept a css string', () => {
