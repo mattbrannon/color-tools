@@ -124,12 +124,10 @@ export class Theme extends Color implements ThemeInterface {
   gradients: {};
   shadows: {};
   theme: {};
-  #complement: any[];
   constructor(args: string | {}) {
     super(args);
     this.gradients = {};
     this.shadows = {};
-    this.#complement = [];
     this.theme = {
       complementary: this.complementary(),
       splitComplementary: this.splitComplementary(),
@@ -140,14 +138,6 @@ export class Theme extends Color implements ThemeInterface {
       rectangle: this.rectangle(),
       square: this.square(),
     };
-  }
-
-  set complement(value) {
-    this.#complement = value;
-  }
-
-  get complement() {
-    return this.#complement;
   }
 
   #rotate(amount: number) {
