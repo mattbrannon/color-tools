@@ -1,18 +1,16 @@
 /* eslint-disable no-unused-vars */
 import { Color } from './color';
-import { ThemeInterface } from './interfaces';
+import { ThemeInterface, ColorInput } from './interfaces';
 import { makeRangeOfSteps } from './utils';
 
-type ColorInput = string | Color;
-
-const getOrCreateInstance = (color: ColorInput) => {
+const getOrCreateInstance = (color: ColorInput | Color) => {
   color = color instanceof Color ? color : new Color(color);
   return color;
 };
 
 const createRangeOfColors = (
-  color1: ColorInput,
-  color2: ColorInput,
+  color1: ColorInput | Color,
+  color2: ColorInput | Color,
   steps = 10
 ) => {
   color1 = getOrCreateInstance(color1);
@@ -50,9 +48,7 @@ const createShadowValues = (
   const shadow = colors.map((value, i) => {
     const blur = i * 0.0125;
     const x = i * 0.011 * -1;
-    const textShadow = `${x / 1.1}em ${x / 1.1}em ${
-      blur * 0.1
-    }em ${value}`;
+    const textShadow = `${x / 1.1}em ${x / 1.1}em ${blur * 0.1}em ${value}`;
     const boxShadow = `${x / 1.1}em ${x / 1.1}em ${x}em ${
       blur * 0.1
     }em ${value}`;
@@ -109,9 +105,7 @@ const createGradientValues = (
       return `${type}(${colors.join(', ')})`;
     },
     conic(isRepeating: boolean | undefined) {
-      const type = isRepeating
-        ? 'repeating-conic-gradient'
-        : 'conic-gradient';
+      const type = isRepeating ? 'repeating-conic-gradient' : 'conic-gradient';
       return `${type}(${colors.join(', ')})`;
     },
     values() {
@@ -124,7 +118,7 @@ export class Theme extends Color implements ThemeInterface {
   gradients: {};
   shadows: {};
   theme: {};
-  constructor(args: string | {}) {
+  constructor(args: ColorInput) {
     super(args);
     this.gradients = {};
     this.shadows = {};
@@ -175,10 +169,7 @@ export class Theme extends Color implements ThemeInterface {
   }
 
   complementary() {
-    return [
-      this.#getCurrent(),
-      this.#createColor(180),
-    ];
+    return [ this.#getCurrent(), this.#createColor(180) ];
   }
 
   splitComplementary() {
@@ -190,11 +181,7 @@ export class Theme extends Color implements ThemeInterface {
   }
 
   analagous() {
-    return [
-      this.#createColor(-30),
-      this.#getCurrent(),
-      this.#createColor(30),
-    ];
+    return [ this.#createColor(-30), this.#getCurrent(), this.#createColor(30) ];
   }
 
   triadic() {
@@ -207,11 +194,7 @@ export class Theme extends Color implements ThemeInterface {
 
   // apparently same as split complementary
   compound() {
-    return [
-      this.#createColor(150),
-      this.#getCurrent(),
-      this.#createColor(210),
-    ];
+    return [ this.#createColor(150), this.#getCurrent(), this.#createColor(210) ];
   }
 
   tetradic() {

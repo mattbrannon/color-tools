@@ -1,4 +1,4 @@
-import { RgbColor, HslObject, HsvColor } from './interfaces';
+import { RgbObject, HslObject, HsvColor } from './interfaces';
 import { toFloat, removeHash } from './utils';
 import { makeLong } from './hex-new';
 
@@ -12,7 +12,7 @@ export const hexToRgb = (str: string) => {
   return isNaN(a) ? { r, g, b } : { r, g, b, a };
 };
 
-export const rgbToHsv = ({ r, g, b, a }: RgbColor) => {
+export const rgbToHsv = ({ r, g, b, a }: RgbObject) => {
   const [ R, G, B ] = [ r, g, b ].map((n) => (n /= 255));
   const max = Math.max(R, G, B);
   const min = Math.min(R, G, B);
@@ -49,7 +49,7 @@ export const rgbToHsv = ({ r, g, b, a }: RgbColor) => {
   return a ? { h, s, v, a } : { h, s, v };
 };
 
-export const rgbToHsl = (rgb: RgbColor): HslObject => {
+export const rgbToHsl = (rgb: RgbObject): HslObject => {
   const [ r, g, b, a ] = Object.values(rgb).map((n, i) => {
     const value = i < 3 ? n / 255 : n;
     return value;
@@ -173,7 +173,7 @@ export const hsvToRgb = (hsv: HsvColor) => {
   return a ? { r, g, b, a } : { r, g, b };
 };
 
-export const rgbToHex = (rgb: RgbColor) => {
+export const rgbToHex = (rgb: RgbObject) => {
   const [ r, g, b ] = Object.values(rgb)
     .map((val) => val.toString(16))
     .map((s) => s.padStart(2, '0'));
@@ -208,37 +208,37 @@ export const rgbToHex = (rgb: RgbColor) => {
 
 export const hslToHex = (hsl: HslObject) => {
   const rgb = hslToRgb(hsl);
-  const hex = rgbToHex(rgb);
+  const hex = rgbToHex(rgb as RgbObject);
   return hex;
 };
 
 export const hexToHsl = (str: string) => {
   const rgb = hexToRgb(str);
-  const hsl = rgbToHsl(rgb);
+  const hsl = rgbToHsl(rgb as RgbObject);
   return hsl;
 };
 
 export const hexToHsv = (str: string) => {
   const rgb = hexToRgb(str);
-  const hsv = rgbToHsv(rgb);
+  const hsv = rgbToHsv(rgb as RgbObject);
   return hsv;
 };
 
 export const hsvToHex = (hsv: HsvColor) => {
   const rgb = hsvToRgb(hsv);
-  const hex = rgbToHex(rgb);
+  const hex = rgbToHex(rgb as RgbObject);
   return hex;
 };
 
 export const hslToHsv = (hsl: HslObject) => {
   const rgb = hslToRgb(hsl);
-  const hsv = rgbToHsv(rgb);
+  const hsv = rgbToHsv(rgb as RgbObject);
   return hsv;
 };
 
 export const hsvToHsl = (hsv: HsvColor) => {
   const rgb = hsvToRgb(hsv);
-  const hsl = rgbToHsl(rgb);
+  const hsl = rgbToHsl(rgb as RgbObject);
   return hsl;
 };
 
