@@ -4,6 +4,7 @@ import {
   PreferedColorSpace,
   PreferedDataType,
   Config,
+  ColorInput,
 } from './interfaces';
 import { getColorSpace, toFloat } from './utils';
 import { parseColor } from './color-parsers';
@@ -33,8 +34,8 @@ export class Color implements ColorInterface {
    */
 
   // TODO: handle hex input like 0x09f;
-  constructor(color: string | {} | number, config?: Config) {
-    const methods = parseColor(color);
+  constructor(color: ColorInput, config?: Config) {
+    const methods = parseColor(color, config);
     if (!methods) {
       throw new Error(`Unrecognized color ${JSON.stringify(color)}`);
     }
