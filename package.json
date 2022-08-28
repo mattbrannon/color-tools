@@ -14,8 +14,8 @@
     "test": "jest",
     "lint": "eslint .",
     "prepare": "husky install",
-    "tsc:init": "pnpm tsc --init",
-    "build": "rimraf ./dist && pnpm tsc -p tsconfig.json && rollup -c"
+    "tsc:init": "yarn tsc --init",
+    "build": "rimraf ./dist && yarn tsc -p tsconfig.json && rollup -c"
   },
   "repository": {
     "type": "git",
