@@ -3,9 +3,12 @@ import {
   ColorInterface,
   PreferedColorSpace,
   PreferedDataType,
+  Config,
 } from './interfaces';
 import { getColorSpace, toFloat } from './utils';
 import { parseColor } from './color-parsers';
+
+// const acceptedColorSpaces = [ 'hex', 'rgb', 'hsl' ];
 
 export class Color implements ColorInterface {
   hex: ColorMethods;
@@ -30,7 +33,7 @@ export class Color implements ColorInterface {
    */
 
   // TODO: handle hex input like 0x09f;
-  constructor(color: string | {} | number) {
+  constructor(color: string | {} | number, config?: Config) {
     const methods = parseColor(color);
     if (!methods) {
       throw new Error(`Unrecognized color ${JSON.stringify(color)}`);
@@ -38,8 +41,17 @@ export class Color implements ColorInterface {
     this.hex = methods.hex;
     this.rgb = methods.rgb;
     this.hsl = methods.hsl;
-    this.colorSpace = getColorSpace(color) as PreferedColorSpace;
-    this.dataType = color as PreferedDataType;
+
+    if (config) {
+      this.colorSpace =
+        config.colorSpace || (getColorSpace(color) as PreferedColorSpace);
+      this.dataType = config.dataType || (color as PreferedDataType);
+    }
+    else {
+      this.colorSpace = getColorSpace(color) as PreferedColorSpace;
+      this.dataType = color as PreferedDataType;
+    }
+
     this.#colorSpace = this.colorSpace;
     this.#dataType = this.dataType;
     return this;
