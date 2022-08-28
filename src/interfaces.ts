@@ -1,3 +1,20 @@
+type Enumerate<
+  N extends number,
+  Acc extends number[] = []
+> = Acc['length'] extends N
+  ? Acc[number]
+  : Enumerate<N, [...Acc, Acc['length']]>;
+
+type Range<F extends number, T extends number> = Exclude<
+  Enumerate<T>,
+  Enumerate<F>
+>;
+
+export type RgbValues = Range<0, 256>;
+export type HueValues = Range<0, 361>;
+export type PercentValues = Range<0, 101>;
+export type AlphaValues = Range<0, 2>;
+
 export type PreferedColorSpace = 'rgb' | 'hsl' | 'hex';
 export type PreferedDataType = 'array' | 'object' | 'css';
 
@@ -6,12 +23,25 @@ export interface Config {
   colorSpace: any;
 }
 
-export interface RgbColor {
-  r: number;
-  g: number;
-  b: number;
-  a?: number;
+export type RgbArray = [RgbValues, RgbValues, RgbValues, AlphaValues?];
+export type HslArray = [HueValues, PercentValues, PercentValues, AlphaValues?];
+
+export interface RgbObject {
+  r: RgbValues;
+  g: RgbValues;
+  b: RgbValues;
+  a?: AlphaValues;
 }
+
+export type HslObject = {
+  h: HueValues;
+  s: PercentValues;
+  l: PercentValues;
+  a?: AlphaValues;
+};
+
+export type HslInput = HslObject | HslArray | string;
+export type RgbInput = RgbObject | RgbArray | string;
 
 export interface HsvColor {
   h: number;
@@ -56,32 +86,9 @@ export type Step = number;
 export type InputArray = [any, any, any, any?];
 export type ColorArray = [number, number, number, number?];
 
-type Enumerate<
-  N extends number,
-  Acc extends number[] = []
-> = Acc['length'] extends N
-  ? Acc[number]
-  : Enumerate<N, [...Acc, Acc['length']]>;
+// export type RgbArray = [RgbValues, RgbValues, RgbValues, AlphaValues?];
 
-type Range<F extends number, T extends number> = Exclude<
-  Enumerate<T>,
-  Enumerate<F>
->;
-
-export type RgbValues = Range<0, 256>;
-export type HueValues = Range<0, 361>;
-export type PercentValues = Range<0, 101>;
-export type AlphaValues = Range<0, 2>;
-
-export type RgbArrayValues = [RgbValues, RgbValues, RgbValues, AlphaValues?];
-export type HslArray = [HueValues, PercentValues, PercentValues, AlphaValues?];
-
-export type HslObject = {
-  h: HueValues;
-  s: PercentValues;
-  l: PercentValues;
-  a?: AlphaValues;
-};
+export type ColorInput = RgbArray | HslArray | RgbObject | HslObject | string;
 
 // export enum HslValues {
 //   hue = 0 | 360,
@@ -89,7 +96,7 @@ export type HslObject = {
 //   lightness = 0 || 100,
 // }
 
-// type RGBColor = number & { _type_: 'RGBColor' };
+// type RgbObject = number & { _type_: 'RgbObject' };
 // type Hue = number & { _type_: 'Hue' };
 
 // export const validateHue = (value: number): HueValues => {
