@@ -8,7 +8,7 @@ import {
 import { getColorSpace, toFloat } from './utils';
 import { parseColor } from './color-parsers';
 
-// const acceptedColorSpaces = [ 'hex', 'rgb', 'hsl' ];
+const acceptedColorSpaces = [ 'hex', 'rgb', 'hsl' ];
 
 export class Color implements ColorInterface {
   hex: ColorMethods;
@@ -43,8 +43,17 @@ export class Color implements ColorInterface {
     this.hsl = methods.hsl;
 
     if (config) {
-      this.colorSpace =
-        config.colorSpace || (getColorSpace(color) as PreferedColorSpace);
+      if (acceptedColorSpaces.includes(config.colorSpace)) {
+        this.colorSpace = config.colorSpace;
+      }
+      else {
+        const colorSpace = getColorSpace(color) as PreferedColorSpace;
+        this.colorSpace = colorSpace;
+
+        console.warn(
+          `${config.colorSpace} is not a recognized color space. Using calculated value ${colorSpace} instead`
+        );
+      }
       this.dataType = config.dataType || (color as PreferedDataType);
     }
     else {
