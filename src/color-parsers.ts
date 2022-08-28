@@ -1,4 +1,11 @@
-import { HslObject, RgbColor } from './interfaces';
+import {
+  HslObject,
+  RgbObject,
+  Config,
+  ColorInput,
+  HslInput,
+  RgbInput,
+} from './interfaces';
 import { COLOR_NAMES } from './color-names';
 
 import { parseHsl } from './hsl-new';
@@ -15,7 +22,7 @@ import {
   hexToRgb,
 } from './convert';
 
-const handleHsl = (input: string | HslObject) => {
+const handleHsl = (input: HslInput) => {
   const hsl = parseHsl(input);
   const convertedRgb = hslToRgb(hsl.object() as HslObject);
   const convertedHex = hslToHex(hsl.object() as HslObject);
@@ -28,8 +35,8 @@ const handleHsl = (input: string | HslObject) => {
 
 const handleRgb = (input: string | {}) => {
   const rgb = parseRgb(input);
-  const convertedHsl = rgbToHsl(rgb.object() as RgbColor);
-  const convertedHex = rgbToHex(rgb.object() as RgbColor);
+  const convertedHsl = rgbToHsl(rgb.object() as RgbObject);
+  const convertedHex = rgbToHex(rgb.object() as RgbObject);
   return {
     rgb,
     hsl: parseHsl(convertedHsl),
@@ -60,18 +67,38 @@ const handleNamedColor = (input: keyof typeof COLOR_NAMES) => {
 };
 
 // TODO handle hex values like 0x0f9
-export const parseColor = (input: any | {}) => {
-  if (typeof input === 'number') {
-    input = input.toString();
+export const parseColor = (input: ColorInput, config?: Config) => {
+  const acceptedColorSpaces = [ 'rgb', 'hsl', 'hex' ];
+
+  if (config) {
+    if (Array.isArray(input)) {
+      if (!config.colorSpace) {
+        throw new Error(
+          'Unable to determine color space from array. Please supply a configuration object with a valid color space'
+        );
+      }
+      else if (acceptedColorSpaces.includes(config.colorSpace)) {
+        if (config.colorSpace === 'hsl') {
+          return handleHsl(input as HslInput);
+        }
+        else if (config.colorSpace === 'rgb') {
+          return handleRgb(input as RgbInput);
+        }
+        else if (config.colorSpace === 'hex') {
+          return handleHex(input);
+        }
+      }
+    }
   }
+
   const callback = isHsl(input)
-    ? handleHsl(input)
+    ? handleHsl(input as HslInput)
     : isRgb(input)
     ? handleRgb(input)
     : isHex(input)
     ? handleHex(input)
     : isNamedColor(input as string)
-    ? handleNamedColor(input)
+    ? handleNamedColor(input as keyof typeof COLOR_NAMES)
     : null;
 
   return callback;
