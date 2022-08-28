@@ -1,6 +1,11 @@
 export type PreferedColorSpace = 'rgb' | 'hsl' | 'hex';
 export type PreferedDataType = 'array' | 'object' | 'css';
 
+export interface Config {
+  dataType: any;
+  colorSpace: any;
+}
+
 export interface RgbColor {
   r: number;
   g: number;
@@ -51,11 +56,17 @@ export type Step = number;
 export type InputArray = [any, any, any, any?];
 export type ColorArray = [number, number, number, number?];
 
-type Enumerate<N extends number, Acc extends number[] = []> = Acc['length'] extends N
+type Enumerate<
+  N extends number,
+  Acc extends number[] = []
+> = Acc['length'] extends N
   ? Acc[number]
   : Enumerate<N, [...Acc, Acc['length']]>;
 
-type Range<F extends number, T extends number> = Exclude<Enumerate<T>, Enumerate<F>>;
+type Range<F extends number, T extends number> = Exclude<
+  Enumerate<T>,
+  Enumerate<F>
+>;
 
 export type RgbValues = Range<0, 256>;
 export type HueValues = Range<0, 361>;

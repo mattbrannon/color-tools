@@ -22,7 +22,7 @@ export function makeRangeKeeper(min: number, max: number) {
   };
 }
 
-export const keepInRgbRange = makeRangeKeeper(0, 255);
+export const keepRgbInRange = makeRangeKeeper(0, 255);
 export const keepAlphaInRange = makeRangeKeeper(0, 1);
 export const keepPercentInRange = makeRangeKeeper(0, 100);
 export const keepHueInRange = (n: number) => {

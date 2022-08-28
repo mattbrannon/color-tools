@@ -8,7 +8,7 @@ const {
   removeHash,
   keepHueInRange,
   keepAlphaInRange,
-  keepInRgbRange,
+  keepRgbInRange,
   keepPercentInRange,
   toFloat,
   getDirection,
@@ -42,8 +42,8 @@ describe('utils', () => {
   test('keepAlphaInRange', () => {
     expect(keepAlphaInRange(1.97)).toBe(1);
   });
-  test('keepInRgbRange', () => {
-    expect(keepInRgbRange(256)).toBe(255);
+  test('keepRgbInRange', () => {
+    expect(keepRgbInRange(256)).toBe(255);
   });
   test('keepPercentInRange', () => {
     expect(keepPercentInRange(101)).toBe(100);

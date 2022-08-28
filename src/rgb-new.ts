@@ -2,12 +2,12 @@ import { RgbColor } from './interfaces';
 import {
   getColorSpace,
   keepAlphaInRange,
-  keepInRgbRange,
+  keepRgbInRange,
   parseString,
 } from './utils';
 
 const convertPercentToRgbValue = (n: string) => {
-  return keepInRgbRange(Math.round((parseInt(n) * 255) / 100));
+  return keepRgbInRange(Math.round((parseInt(n) * 255) / 100));
 };
 
 const mapInputRgbValues = (values: any[]) => {
@@ -21,7 +21,7 @@ const mapInputRgbValues = (values: any[]) => {
         return convertPercentToRgbValue(value as string);
       }
       else {
-        return keepInRgbRange(Math.round(value as number));
+        return keepRgbInRange(Math.round(value as number));
       }
     }
     else {

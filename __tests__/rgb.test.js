@@ -3,18 +3,18 @@ const {
   toObjectFromRgbArray,
   toStringFromRgbArray,
 } = require('../src/rgb-new');
-const { keepInRgbRange } = require('../src/utils');
+const { keepRgbInRange } = require('../src/utils');
 
 describe('rgb.js tests', () => {
-  describe('keepInRgbRange', () => {
+  describe('keepRgbInRange', () => {
     it('should not exceed 255', () => {
-      expect(keepInRgbRange(300)).toEqual(255);
+      expect(keepRgbInRange(300)).toEqual(255);
     });
     it('should not be lower than 0', () => {
-      expect(keepInRgbRange(-1)).toEqual(0);
+      expect(keepRgbInRange(-1)).toEqual(0);
     });
     it('should return the value unmodified', () => {
-      expect(keepInRgbRange(45)).toEqual(45);
+      expect(keepRgbInRange(45)).toEqual(45);
     });
   });
   describe('parseRgb', () => {
