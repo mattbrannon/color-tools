@@ -1,4 +1,4 @@
-import { RgbColor } from './interfaces';
+import { RgbObject } from './interfaces';
 import {
   getColorSpace,
   keepAlphaInRange,
@@ -43,13 +43,14 @@ const parseInputRgbString = (input: any) => {
   return { colorSpace, values };
 };
 
-const toObjectFromRgbString = (s: any) => {
+const toObjectFromRgbString = (s: string) => {
   const { colorSpace, values } = parseInputRgbString(s);
   return values.reduce((acc, value, i) => {
     const key = i === 3 ? 'a' : colorSpace[i];
-    acc[key as keyof RgbColor] = Number(value);
+    // @ts-ignore
+    acc[key] = Number(value);
     return acc;
-  }, {} as RgbColor);
+  }, {} as RgbObject);
 };
 
 const toArrayFromRgbString = (s: any) => {
@@ -70,9 +71,10 @@ const toArrayFromRgbObject = (
 export const toObjectFromRgbArray = (arr: any[]) => {
   return mapInputRgbValues(arr).reduce((acc, value, i) => {
     const key = i === 0 ? 'r' : i === 1 ? 'g' : i === 2 ? 'b' : 'a';
-    acc[key as keyof RgbColor] = Number(value);
+    // @ts-ignore
+    acc[key] = value;
     return acc;
-  }, {} as RgbColor);
+  }, {} as RgbObject);
 };
 
 export const toStringFromRgbArray = (arr: any[]) => {
