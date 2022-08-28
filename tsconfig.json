@@ -1,0 +1,64 @@
+{
+  "compilerOptions": {
+    /* Visit https://aka.ms/tsconfig to read more about this file */
+
+    /* Language and Environment */
+    "target": "ES2015",
+    "lib": ["ESNext", "DOM"],
+    "experimentalDecorators": false,
+    "emitDecoratorMetadata": false,
+    "composite": false,
+    "rootDir": "./src",
+
+    /* Modules */
+    "module": "ES2015",
+    "moduleResolution": "node",
+
+    /* Emit */
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "inlineSourceMap": false,
+    "inlineSources": false,
+    "outDir": "./dist/lib",
+    "declarationDir": "./dist/types",
+    "removeComments": false,
+    "isolatedModules": true,
+
+    /* Interop Constraints */
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* Type Checking */
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "skipLibCheck": false,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  },
+  "files": [
+    "./src/color-names.ts",
+    "./src/color-parsers.ts",
+    "./src/color.ts",
+    "./src/convert.ts",
+    "./src/hex-new.ts",
+    "./src/hsl-new.ts",
+    "./src/index.ts",
+    "./src/rgb-new.ts",
+    "./src/interfaces.ts",
+    "./src/theme.ts",
+    "./src/utils.ts",
+    "./src/angles.ts",
+    "./src/contrast-helper.ts"
+  ]
+}

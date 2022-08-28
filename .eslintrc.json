@@ -1,48 +1,47 @@
 {
   "env": {
-    "browser": true,
     "es2021": true,
-    "node": true
+    "node": true,
+    "jest": true
   },
+  "extends": ["standard"],
   "parserOptions": {
-    "ecmaVersion": 2021,
+    "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "settings": {
-    "prettierx": {
-      "usePrettierrc": true,
-      "editorconfig": false,
-      "ignorePath": ".prettierignore",
-      "pluginSearchDirs": [],
-      "plugins": [],
-      "withNodeModules": false,
-      "useCache": true
-    }
-  },
-  "extends": ["eslint:recommended", "plugin:prettierx/default"],
-  "plugins": ["prettierx"],
+  "parser": "@typescript-eslint/parser",
   "rules": {
-    "no-var": "error",
-    "no-console": "warn",
-    "no-unused-vars": "warn",
-    "no-multiple-empty-lines": [
-      "off",
+    "brace-style": ["error", "stroustrup"],
+    "semi": ["error", "always"],
+    "space-before-function-paren": "off",
+    "comma-dangle": ["error", "only-multiline"],
+    "no-unused-expressions": "off",
+    "no-sequences": "off",
+    "eqeqeq": "error",
+    "array-element-newline": [
+      "error",
+      { "ArrayExpression": "consistent", "ArrayPattern": "never" }
+    ],
+    "array-bracket-newline": ["error", { "multiline": true }],
+    "array-bracket-spacing": [
+      "error",
+      "always",
       {
-        "max": 8,
-        "maxEOF": 2
+        "arraysInArrays": false,
+        "objectsInArrays": false,
+        "singleValue": false
       }
     ],
-    "prettierx/options": [
-      "warn",
+    "no-unneeded-ternary": "error",
+    "indent": [
+      2,
+      2,
       {
-        "arrayBracketSpacing": true,
-        "breakBeforeElse": true,
-        "semi": true,
-        "printWidth": 80,
-        "offsetTernaryExpressions": false,
-        "singleQuote": true,
-        "breakLongMethodChains": true
+        "flatTernaryExpressions": true,
+        "ignoredNodes": ["ConditionalExpression > *"],
+        "SwitchCase": 1
       }
-    ]
+    ],
+    "newline-per-chained-call": ["error", { "ignoreChainWithDepth": 3 }]
   }
 }
