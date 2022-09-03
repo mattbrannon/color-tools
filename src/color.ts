@@ -162,10 +162,15 @@ export class Color implements ColorInterface {
    * @returns A new instance of Color
    */
 
-  hue(amount = 0): Color {
+  hue(amount: number = 0): Color {
     const { h, s, l, a } = this.hsl.object();
+    const H = h + amount;
+    const hsl = a ? { h: H, s, l, a } : { h: H, s, l };
 
-    return new Color({ h: h + amount, s, l, a });
+    return new Color(hsl, {
+      dataType: this.#dataType,
+      colorSpace: this.#colorSpace,
+    });
   }
 
   /**
@@ -173,10 +178,15 @@ export class Color implements ColorInterface {
    * @returns A new instance of Color
    */
 
-  saturation(amount = 0): Color {
+  saturation(amount: number = 0): Color {
     const { h, s, l, a } = this.hsl.object();
+    const S = s + amount;
+    const hsl = a ? { h, s: S, l, a } : { h, s: S, l };
 
-    return new Color({ h, s: s + amount, l, a });
+    return new Color(hsl, {
+      dataType: this.#dataType,
+      colorSpace: this.#colorSpace,
+    });
   }
 
   /**
@@ -184,10 +194,14 @@ export class Color implements ColorInterface {
    * @returns A new instance of Color
    */
 
-  lightness(amount = 0): Color {
+  lightness(amount: number = 0): Color {
     const { h, s, l, a } = this.hsl.object();
-
-    return new Color({ h, s, l: l + amount, a });
+    const L = l + amount;
+    const hsl = a ? { h, s, l: L, a } : { h, s, l: L };
+    return new Color(hsl, {
+      dataType: this.#dataType,
+      colorSpace: this.#colorSpace,
+    });
   }
 
   /**
@@ -195,10 +209,15 @@ export class Color implements ColorInterface {
    * @returns A new instance of Color
    */
 
-  red(amount = 0) {
+  red(amount: number = 0) {
     const { r, g, b, a } = this.rgb.object();
+    const R = r + amount;
+    const rgb = a ? { r: R, g, b, a } : { r: R, g, b };
 
-    return new Color({ r: r + amount, g, b, a });
+    return new Color(rgb, {
+      dataType: this.#dataType,
+      colorSpace: this.#colorSpace,
+    });
   }
 
   /**
@@ -206,20 +225,30 @@ export class Color implements ColorInterface {
    * @returns A new instance of Color
    */
 
-  green(amount = 0) {
+  green(amount: number = 0) {
     const { r, g, b, a } = this.rgb.object();
+    const G = g + amount;
+    const rgb = a ? { r, g: G, b, a } : { r, g: G, b };
 
-    return new Color({ r, g: g + amount, b, a });
+    return new Color(rgb, {
+      dataType: this.#dataType,
+      colorSpace: this.#colorSpace,
+    });
   }
 
   /**
    * @param {number} amount - set blue channel relative to the current value
    * @returns A new instance of Color
    */
-  blue(amount = 0) {
+  blue(amount: number = 0) {
     const { r, g, b, a } = this.rgb.object();
+    const B = b + amount;
+    const rgb = a ? { r, g, b: B, a } : { r, g, b: B };
 
-    return new Color({ r, g, b: b + amount, a });
+    return new Color(rgb, {
+      dataType: this.#dataType,
+      colorSpace: this.#colorSpace,
+    });
   }
 
   #getTone(obj: string | {}) {
