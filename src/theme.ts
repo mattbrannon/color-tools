@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { Color } from './color';
-import { ThemeInterface, ColorInput } from './interfaces';
+import { ThemeInterface, ColorInput, Config } from './interfaces';
 import { makeRangeOfSteps } from './utils';
 
 const getOrCreateInstance = (color: ColorInput | Color) => {
@@ -118,8 +118,8 @@ export class Theme extends Color implements ThemeInterface {
   gradients: {};
   shadows: {};
   theme: {};
-  constructor(args: ColorInput) {
-    super(args);
+  constructor(args: ColorInput, config: Config) {
+    super(args, config);
     this.gradients = {};
     this.shadows = {};
     this.theme = {
