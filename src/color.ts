@@ -51,9 +51,12 @@ export class Color implements ColorInterface {
         const colorSpace = getColorSpace(color) as PreferedColorSpace;
         this.colorSpace = colorSpace;
 
-        console.warn(
-          `${config.colorSpace} is not a recognized color space. Using calculated value ${colorSpace} instead`
-        );
+        const warning = [
+          `${config.colorSpace} is not a recognized color space`,
+          `Using calculated value ${colorSpace} instead`,
+        ].join('\n');
+
+        console.warn(warning);
       }
       this.dataType = config.dataType || (color as PreferedDataType);
     }
