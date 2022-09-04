@@ -157,7 +157,7 @@ The methods listed below are globally available per instance of `Color`. There's
 
 Let's look at some examples of the methods available and what you can do with them.
 
-### Color prototype value
+<h3 id="color-prototype-value">Color.prototype.value</h3>
 
 The simplest way to obtain the color output is with the `value` method. The output of this method will vary depending on the input and configuration provided.
 
@@ -175,8 +175,7 @@ const green = new Color({ h: 120, s: 100, l: 25 });
 green.value(); // {h:120, s:100, l:25}
 ```
 
-### Color prototype contrast
-
+<h3 id="color-prototype-contrast">Color.prototype.contrast</h3>
 Get the contrast ratio between the current color and another. Accepts the same input formats as `Color`
 
 ```js
@@ -184,7 +183,8 @@ const orange = new Color("orange");
 const contrastRatio = orange.contrast("red"); // 2.02
 ```
 
-### Color prototype luminance
+<h3 id="color-prototype-luminance">Color.prototype.luminance</h3>
+<!-- ### Color prototype luminance -->
 
 Get the relative luminance value of the current color Returns a value between 0 - 1 with 0 being total darkness and 1 being all white
 
