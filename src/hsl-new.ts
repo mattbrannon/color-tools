@@ -4,38 +4,10 @@ import {
   keepPercentInRange,
   keepHueInRange,
   parseString,
+  toFloat,
 } from './utils';
 
 import { gradian, radian, degree, turn } from './angles';
-
-const mapInputHslValues = (values: InputArray) => {
-  if (values.length < 3 || values.length > 4) {
-    throw Error(`Must contain 3 or 4 values. Received ${values.length}`);
-  }
-  return values.map((value: any, i): number => {
-    const isAlpha = i === 3;
-    const isHue = i === 0;
-    const isPercent = typeof value === 'string' && value.endsWith('%');
-
-    if (isHue) {
-      const n = parseFloat(value as string);
-      const hue = keepHueInRange(n);
-      return hue;
-    }
-    else if (isAlpha && !isPercent) {
-      const alpha = keepAlphaInRange(value as number);
-      return alpha;
-    }
-    else if (isAlpha && isPercent) {
-      const n = parseInt(value) / 100;
-      const alpha = keepAlphaInRange(n);
-      return alpha;
-    }
-    else {
-      return keepPercentInRange(parseFloat(value as string));
-    }
-  });
-};
 
 const getAngleType = (hue: string) => hue.match(/[a-z]+/g)?.join('') ?? 'deg';
 
@@ -50,6 +22,38 @@ export const normalize = (angleType: string) => {
       : degree.toDegree;
 
   return conversionFn;
+};
+
+const mapInputHslValues = (values: InputArray) => {
+  if (values.length < 3 || values.length > 4) {
+    throw Error(`Must contain 3 or 4 values. Received ${values.length}`);
+  }
+  return values.map((value: any, i): number => {
+    const isAlpha = i === 3;
+    const isHue = i === 0;
+    const isPercent = typeof value === 'string' && value.endsWith('%');
+
+    if (isHue) {
+      const angleType = getAngleType(value);
+      const convertAngle = normalize(angleType);
+      const n = parseFloat(value as string);
+      const h = convertAngle(n);
+      const hue = keepHueInRange(h);
+      return toFloat(hue);
+    }
+    else if (isAlpha && !isPercent) {
+      const alpha = keepAlphaInRange(value as number);
+      return alpha;
+    }
+    else if (isAlpha && isPercent) {
+      const n = parseInt(value) / 100;
+      const alpha = keepAlphaInRange(n);
+      return alpha;
+    }
+    else {
+      return keepPercentInRange(parseFloat(value as string));
+    }
+  });
 };
 
 export const parseInputHslString = (hsl: string) => {
