@@ -177,8 +177,8 @@ describe('Color class', () => {
       });
     });
   });
-  describe('user preferences', () => {
-    describe('color space', () => {
+  describe('config object', () => {
+    describe('colorSpace', () => {
       it('should set a users preferred color space', () => {
         const color = new Color('red');
         color.colorSpace = 'hsl';
@@ -190,6 +190,60 @@ describe('Color class', () => {
         const red = new Color('red');
         expect(red.colorSpace).toEqual('hex');
       });
+    });
+    describe('dataType', () => {
+      it('should set a users preferred data type', () => {
+        const red = new Color('red');
+        const green = new Color({ h: 120, s: 100, l: 25 });
+        const blue = new Color('rgb(0, 0 255)');
+        red.dataType = {};
+        green.dataType = 'string';
+        blue.dataType = [];
+        expect(red.value()).toEqual({ r: 'FF', g: '00', b: '00' });
+        expect(green.value()).toEqual('hsl(120deg, 100%, 25%)');
+        expect(blue.value()).toEqual([ 0, 0, 255 ]);
+      });
+    });
+    describe('no config found', () => {
+      it('should error when given an array as input', () => {
+        // const color = new Color([ 1, 2, 3 ]);
+        expect(() => new Color([ 1, 2, 3 ])).toThrow();
+      });
+    });
+    describe('config without color space', () => {
+      it('should error when given an array as input', () => {
+        expect(() => new Color([ 1, 2, 3 ], { dataType: {} })).toThrow();
+      });
+    });
+    describe('invalid config data', () => {
+      it('should determine the color space and data type from user input', () => {
+        const color = new Color('rgb(212, 211, 55)', { colorSpace: 'wrong' });
+        expect(color.colorSpace).toEqual('rgb');
+        expect(color.dataType).toEqual('css');
+        color.colorSpace = 'hex';
+        expect(color.colorSpace).toEqual('hex');
+        color.colorSpace = 'rgb';
+        expect(color.colorSpace).toEqual('rgb');
+        color.colorSpace = 'hsl';
+        expect(color.colorSpace).toEqual('hsl');
+      });
+    });
+  });
+  describe('hue method', () => {
+    it('should set the hue value', () => {
+      const color = new Color('red');
+      const blue = color.hue(240);
+      expect(blue.value()).toEqual('#0000ff');
+    });
+    it('should set the saturation value', () => {
+      const color = new Color('red');
+      const faded = color.saturation(-50);
+      expect(faded.hsl.object()).toEqual({ h: 0, s: 50, l: 50 });
+    });
+    it('should set the lightness value', () => {
+      const color = new Color('red');
+      const lighter = color.lightness(25);
+      expect(lighter.hsl.object()).toEqual({ h: 0, s: 100, l: 75 });
     });
   });
 });
