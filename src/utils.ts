@@ -1,10 +1,10 @@
 import { COLOR_NAMES } from './color-names';
 import {
   PreferedColorSpace,
-  HueValues,
-  PercentValues,
-  AlphaValues,
-  RgbValues,
+  // HueValues,
+  // PercentValues,
+  // AlphaValues,
+  // RgbValues,
 } from './interfaces';
 
 export const sanitize = (s: string) => s.replace(/\s/g, '').toLowerCase();
@@ -16,9 +16,9 @@ export const isFloat = (value: any) => {
 };
 
 export function makeRangeKeeper(min: number, max: number) {
-  type RangeValues = PercentValues | RgbValues | AlphaValues;
-  return function (n: number): RangeValues {
-    return Math.max(min, Math.min(n, max)) as RangeValues;
+  // type RangeValues = PercentValues | RgbValues | AlphaValues;
+  return function (n: number): number {
+    return Math.max(min, Math.min(n, max));
   };
 }
 
@@ -29,7 +29,7 @@ export const keepHueInRange = (n: number) => {
   while (n < 0 || n >= 360) {
     n = n < 0 ? n + 360 : n >= 360 ? n - 360 : n;
   }
-  return n as HueValues;
+  return n;
 };
 
 export const getDirection = (start: number, end: number) => {
@@ -97,7 +97,22 @@ export const getColorSpace = (input: any) => {
   }
 };
 
-export const isRgb = (input: string | {}) => {
+// interface RgbObject {
+//   [r: string]: string | number;
+//   [g: string]: string | number;
+//   [b: string]: string | number;
+//   [a: string]?: string | number;
+// }
+
+interface RgbObject {
+  [key: string]: string | number;
+}
+
+type RgbArray = (string | number)[];
+
+type RgbInput = string | RgbObject | RgbArray;
+
+export const isRgb = (input: RgbInput) => {
   try {
     return getColorSpace(input) === 'rgb';
   }
@@ -106,7 +121,7 @@ export const isRgb = (input: string | {}) => {
   }
 };
 
-export const isHsl = (input: string | {}) => {
+export const isHsl = (input: string | object) => {
   try {
     return getColorSpace(input) === 'hsl';
   }
