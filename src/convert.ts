@@ -226,11 +226,21 @@ export const hsvToHsl = (hsv: number[]) => {
   return hsl;
 };
 
+// const rgbToHwb = (rgb: number[]) => {
+//   const hsl = rgbToHsl(rgb);
+//   const white = Math.min(...rgb);
+//   const black = 1 - Math.max(...rgb);
+//   return [ hsl[0], white * 100, black * 100 ];
+// };
+
 const rgbToHwb = (rgb: number[]) => {
-  const hsl = rgbToHsl(rgb);
-  const white = Math.min(...rgb);
-  const black = 1 - Math.max(...rgb);
-  return [ hsl[0], white * 100, black * 100 ];
+  const [ red, green, blue ] = rgb;
+  const [hue] = convert.rgbToHsl(rgb);
+  const white = toFloat((1 / 255) * Math.min(red, Math.min(green, blue)) * 100);
+  const black = toFloat(
+    1 - (1 / 255) * Math.max(red, Math.max(green, blue)) * 100
+  );
+  return [ hue, white, black ];
 };
 
 function hwbToRgb(hwb: number[]) {
