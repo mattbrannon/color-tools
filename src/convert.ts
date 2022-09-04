@@ -226,6 +226,28 @@ export const hsvToHsl = (hsv: number[]) => {
   return hsl;
 };
 
+const rgbToHwb = (rgb: number[]) => {
+  const hsl = rgbToHsl(rgb);
+  const white = Math.min(...rgb);
+  const black = 1 - Math.max(...rgb);
+  return [ hsl[0], white * 100, black * 100 ];
+};
+
+function hwbToRgb(hwb: number[]) {
+  const white = hwb[1] / 100;
+  const black = hwb[2] / 100;
+  if (white + black >= 1) {
+    const gray = white / (white + black);
+    return [ gray, gray, gray ];
+  }
+  const rgb = hslToRgb([ hwb[0], 100, 50 ]);
+  for (let i = 0; i < 3; i++) {
+    rgb[i] *= 1 - white - black;
+    rgb[i] += white;
+  }
+  return rgb;
+}
+
 export const convert = {
   hexToHsl,
   hexToHsv,
@@ -239,4 +261,6 @@ export const convert = {
   hsvToHex,
   hsvToHsl,
   hsvToRgb,
+  rgbToHwb,
+  hwbToRgb,
 };
