@@ -2,9 +2,9 @@ const { convert } = require('../src/convert');
 
 describe('Color conversion tests', () => {
   const hex = '#ff00ff';
-  const rgb = { r: 255, g: 0, b: 255 };
-  const hsl = { h: 300, s: 100, l: 50 };
-  const hsv = { h: 300, s: 100, v: 100 };
+  const rgb = [ 255, 0, 255 ];
+  const hsl = [ 300, 100, 50 ];
+  const hsv = [ 300, 100, 100 ];
 
   describe('hexToRgb', () => {
     it('should convert hex to rgb', () => {

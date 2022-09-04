@@ -9,7 +9,15 @@ import {
 
 import { gradian, radian, degree, turn } from './angles';
 
-const getAngleType = (hue: string) => hue.match(/[a-z]+/g)?.join('') ?? 'deg';
+const getAngleType = (hue: any) => {
+  try {
+    const angle = hue.match(/[a-z]+/g)?.join('') ?? 'deg';
+    return angle;
+  }
+  catch {
+    return 'deg';
+  }
+};
 
 export const normalize = (angleType: string) => {
   const conversionFn =
@@ -24,7 +32,7 @@ export const normalize = (angleType: string) => {
   return conversionFn;
 };
 
-const mapInputHslValues = (values: InputArray) => {
+const mapInputHslValues = (values: number[] | string[]) => {
   if (values.length < 3 || values.length > 4) {
     throw Error(`Must contain 3 or 4 values. Received ${values.length}`);
   }
@@ -131,7 +139,7 @@ const toStringFromHslObject = (o: HslObject) => {
   return `hsl(${values})`;
 };
 
-const toObjectFromHslArray = (arr: InputArray) => {
+const toObjectFromHslArray = (arr: number[] | string[]) => {
   return mapInputHslValues(arr).reduce((acc, value, i) => {
     const key: keyof HslObject =
       i === 0 ? 'h' : i === 1 ? 's' : i === 2 ? 'l' : 'a';
@@ -141,12 +149,16 @@ const toObjectFromHslArray = (arr: InputArray) => {
   }, {} as HslObject);
 };
 
-const toStringFromHslArray = (arr: InputArray) => {
-  const values = mapInputHslValues(arr);
+const toStringFromHslArray = (arr: number[] | string[]) => {
+  const values = mapInputHslValues(arr).map((value, i) => {
+    return i === 0 ? `${value}deg` : i < 3 ? `${value}%` : value;
+  });
+  console.log(values);
+
   return `hsl(${values.join(', ')})`;
 };
 
-export const parseHsl = (input: string | HslObject | InputArray) => {
+export const parseHsl = (input: any) => {
   const array = Array.isArray(input)
     ? mapInputHslValues(input as InputArray)
     : typeof input === 'string'

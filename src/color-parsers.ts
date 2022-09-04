@@ -1,9 +1,9 @@
 import {
-  HslObject,
-  RgbObject,
+  // HslObject,
+  // RgbObject,
   Config,
   ColorInput,
-  HslInput,
+  // HslInput,
   RgbInput,
 } from './interfaces';
 import { COLOR_NAMES } from './color-names';
@@ -22,10 +22,10 @@ import {
   hexToRgb,
 } from './convert';
 
-const handleHsl = (input: HslInput) => {
+const handleHsl = (input: any) => {
   const hsl = parseHsl(input);
-  const convertedRgb = hslToRgb(hsl.object() as HslObject);
-  const convertedHex = hslToHex(hsl.object() as HslObject);
+  const convertedRgb = hslToRgb(hsl.array() as number[]);
+  const convertedHex = hslToHex(hsl.array() as number[]);
   return {
     hsl,
     rgb: parseRgb(convertedRgb),
@@ -35,8 +35,8 @@ const handleHsl = (input: HslInput) => {
 
 const handleRgb = (input: string | {}) => {
   const rgb = parseRgb(input);
-  const convertedHsl = rgbToHsl(rgb.object() as RgbObject);
-  const convertedHex = rgbToHex(rgb.object() as RgbObject);
+  const convertedHsl = rgbToHsl(rgb.array() as number[]);
+  const convertedHex = rgbToHex(rgb.array() as number[]);
   return {
     rgb,
     hsl: parseHsl(convertedHsl),
@@ -79,7 +79,7 @@ export const parseColor = (input: ColorInput, config?: Config) => {
       }
       else if (acceptedColorSpaces.includes(config.colorSpace)) {
         if (config.colorSpace === 'hsl') {
-          return handleHsl(input as HslInput);
+          return handleHsl(input);
         }
         else if (config.colorSpace === 'rgb') {
           return handleRgb(input as RgbInput);
@@ -92,7 +92,7 @@ export const parseColor = (input: ColorInput, config?: Config) => {
   }
 
   const callback = isHsl(input)
-    ? handleHsl(input as HslInput)
+    ? handleHsl(input)
     : isRgb(input)
     ? handleRgb(input)
     : isHex(input)
