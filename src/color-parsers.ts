@@ -1,9 +1,9 @@
 import { Config, ColorInput } from './interfaces';
 import { COLOR_NAMES } from './color-names';
 
-import { parseHsl } from './hsl-new';
-import { parseRgb } from './rgb-new';
-import { parseHex } from './hex-new';
+import { parseHsl } from './hsl';
+import { parseRgb } from './rgb';
+import { parseHex } from './hex';
 
 import { isHex, isRgb, isHsl, isNamedColor } from './utils';
 import {

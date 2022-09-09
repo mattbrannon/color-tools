@@ -2,7 +2,7 @@ const {
   parseRgb,
   toObjectFromRgbArray,
   toStringFromRgbArray,
-} = require('../src/rgb-new');
+} = require('../src/rgb');
 const { keepRgbInRange } = require('../src/utils');
 
 describe('rgb.js tests', () => {

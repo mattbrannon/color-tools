@@ -1,5 +1,5 @@
 import { toFloat, removeHash } from './utils';
-import { makeLong } from './hex-new';
+import { makeLong } from './hex';
 
 export const hexToRgb = (str: string) => {
   str = removeHash(makeLong(str));
