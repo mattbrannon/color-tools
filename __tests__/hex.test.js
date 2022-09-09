@@ -1,5 +1,5 @@
 const { addHash, isHex, removeHash } = require('../src/utils');
-const { parseHex } = require('../src/hex-new');
+const { parseHex } = require('../src/hex');
 
 describe('hex.js tests', () => {
   describe('addHash tests', () => {

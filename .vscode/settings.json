@@ -6,5 +6,9 @@
   "editor.formatOnSaveMode": "file",
   "files.autoSave": "onFocusChange",
   "eslint.run": "onSave",
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "[markdown]": {
+    "editor.wordWrap": "bounded",
+    "editor.wordWrapColumn": 80
+  }
 }

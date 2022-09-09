@@ -4,7 +4,7 @@ const {
   getColorSpace,
 } = require('../src/utils');
 
-const { parseHsl, parseInputHslString } = require('../src/hsl-new');
+const { parseHsl, parseInputHslString } = require('../src/hsl');
 
 describe('hsl tests', () => {
   const input1 = 'hsl(120deg, 100%, 50%, 0.5)';

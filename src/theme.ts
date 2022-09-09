@@ -122,13 +122,12 @@ export class Theme extends Color implements ThemeInterface {
     super(args);
     this.gradients = {};
     this.shadows = {};
+    this.dataType = 'css';
     this.theme = {
       complementary: this.complementary(),
-      splitComplementary: this.splitComplementary(),
+      compound: this.compound(),
       analagous: this.analagous(),
       triadic: this.triadic(),
-      tetradic: this.tetradic(),
-      compound: this.compound(),
       rectangle: this.rectangle(),
       square: this.square(),
     };
@@ -140,10 +139,10 @@ export class Theme extends Color implements ThemeInterface {
   }
 
   #create(amount: number) {
-    // let { h, s, l, a } = this.hsl.object();
-    let { h } = this.hsl.object();
-    const random = new Color(Color.random()).hsl.array();
-    const [ s, l, a ] = random.slice(1);
+    let { h, s, l, a } = this.hsl.object();
+    // let { h } = this.hsl.object();
+    // const random = new Color(Color.random()).hsl.array();
+    // const [ s, l, a ] = random.slice(1);
     h = this.#rotate(amount);
     return new Color({ h, s, l, a });
   }
@@ -172,7 +171,7 @@ export class Theme extends Color implements ThemeInterface {
     return [ this.#getCurrent(), this.#createColor(180) ];
   }
 
-  splitComplementary() {
+  compound() {
     return [
       this.#createColor(-150),
       this.#getCurrent(),
@@ -192,26 +191,12 @@ export class Theme extends Color implements ThemeInterface {
     ];
   }
 
-  // apparently same as split complementary
-  compound() {
-    return [ this.#createColor(150), this.#getCurrent(), this.#createColor(210) ];
-  }
-
-  tetradic() {
+  rectangle() {
     return [
       this.#getCurrent(),
       this.#createColor(120),
       this.#createColor(180),
       this.#createColor(300),
-    ];
-  }
-
-  rectangle() {
-    return [
-      this.#getCurrent(),
-      this.#createColor(30),
-      this.#createColor(180),
-      this.#createColor(210),
     ];
   }
 

@@ -1,6 +1,5 @@
-import { RgbObject, HslObject, HsvColor } from './interfaces';
 import { toFloat, removeHash } from './utils';
-import { makeLong } from './hex-new';
+import { makeLong } from './hex';
 
 export const hexToRgb = (str: string) => {
   str = removeHash(makeLong(str));
@@ -9,13 +8,15 @@ export const hexToRgb = (str: string) => {
   const b = parseInt(str.substring(4, 6), 16);
   const a = toFloat(parseInt(str.substring(6, 8), 16) / 255);
 
-  return isNaN(a) ? { r, g, b } : { r, g, b, a };
+  return isNaN(a) ? [ r, g, b ] : [ r, g, b, a ];
 };
 
-export const rgbToHsv = ({ r, g, b, a }: RgbObject) => {
-  const [ R, G, B ] = [ r, g, b ].map((n) => (n /= 255));
-  const max = Math.max(R, G, B);
-  const min = Math.min(R, G, B);
+export const rgbToHsv = (rgb: number[]) => {
+  // const [ R, G, B ] = [ r, g, b ].map((n) => (n /= 255));
+  const [ r, g, b ] = rgb.map((n) => (n /= 255));
+  const a = rgb[3];
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
 
   let h: number = 0;
   let s: number = 0;
@@ -25,16 +26,16 @@ export const rgbToHsv = ({ r, g, b, a }: RgbObject) => {
     const d = max - min;
     s = max === 0 ? 0 : d / max;
     switch (max) {
-      case R: {
-        h = (G - B) / d + (G < B ? 6 : 0);
+      case r: {
+        h = (g - b) / d + (g < b ? 6 : 0);
         break;
       }
-      case G: {
-        h = (B - R) / d + 2;
+      case g: {
+        h = (b - r) / d + 2;
         break;
       }
-      case B: {
-        h = (R - G) / d + 4;
+      case b: {
+        h = (r - g) / d + 4;
         break;
       }
     }
@@ -46,11 +47,11 @@ export const rgbToHsv = ({ r, g, b, a }: RgbObject) => {
   s = Math.round(toFloat(s * 100));
   v = Math.round(toFloat(v * 100));
 
-  return a ? { h, s, v, a } : { h, s, v };
+  return a ? [ h, s, v, a ] : [ h, s, v ];
 };
 
-export const rgbToHsl = (rgb: RgbObject): HslObject => {
-  const [ r, g, b, a ] = Object.values(rgb).map((n, i) => {
+export const rgbToHsl = (rgb: number[]): number[] => {
+  const [ r, g, b, a ] = rgb.map((n, i) => {
     const value = i < 3 ? n / 255 : n;
     return value;
   });
@@ -86,7 +87,7 @@ export const rgbToHsl = (rgb: RgbObject): HslObject => {
   s = Math.round(toFloat(s * 100));
   l = Math.round(toFloat(l * 100));
 
-  return a ? ({ h, s, l, a } as HslObject) : ({ h, s, l } as HslObject);
+  return a ? [ h, s, l, a ] : [ h, s, l ];
 };
 
 export const hue2rgb = (p: number, q: number, t: number) => {
@@ -98,9 +99,12 @@ export const hue2rgb = (p: number, q: number, t: number) => {
   return p;
 };
 
-export const hslToRgb = (hsl: HslObject) => {
-  let r, g, b;
-  const [ h, s, l, a ] = Object.values(hsl).map((n, i) => {
+export const hslToRgb = (hsl: number[]) => {
+  let r: number;
+  let g: number;
+  let b: number;
+
+  const [ h, s, l, a ] = hsl.map((n, i) => {
     const value = i === 0 ? n / 360 : i < 3 ? n / 100 : n;
     return value;
   });
@@ -122,14 +126,14 @@ export const hslToRgb = (hsl: HslObject) => {
   g = Math.max(0, Math.min(Math.round(g * 255), 255));
   b = Math.max(0, Math.min(Math.round(b * 255), 255));
 
-  return a ? { r, g, b, a } : { r, g, b };
+  return a ? [ r, g, b, a ] : [ r, g, b ];
 };
 
-export const hsvToRgb = (hsv: HsvColor) => {
+export const hsvToRgb = (hsv: number[]) => {
   let r: number = 0;
   let g: number = 0;
   let b: number = 0;
-  const [ h, s, v, a ] = Object.values(hsv).map((n, i) => {
+  const [ h, s, v, a ] = hsv.map((n, i) => {
     const value = i === 0 ? n / 360 : i < 3 ? n / 100 : n;
     return value;
   });
@@ -170,77 +174,82 @@ export const hsvToRgb = (hsv: HsvColor) => {
   r = Math.max(0, Math.min(Math.round(r * 255), 255));
   g = Math.max(0, Math.min(Math.round(g * 255), 255));
   b = Math.max(0, Math.min(Math.round(b * 255), 255));
-  return a ? { r, g, b, a } : { r, g, b };
+  return a ? [ r, g, b, a ] : [ r, g, b ];
 };
 
-export const rgbToHex = (rgb: RgbObject) => {
-  const [ r, g, b ] = Object.values(rgb)
+export const rgbToHex = (rgb: number[]) => {
+  const [ r, g, b ] = rgb
     .map((val) => val.toString(16))
     .map((s) => s.padStart(2, '0'));
+  const alpha = rgb[3];
 
-  const alpha =
-    Object.values(rgb).length === 4
-      ? Number(Object.values(rgb).slice(-1).join(''))
-      : null;
   if (alpha) {
     const a = Math.round(Math.min(Math.max(0, alpha), 1) * 255).toString(16);
     return `#${r}${g}${b}${a}`;
   }
   return `#${r}${g}${b}`;
-
-  // const [ h, e, x ] = rgb.map((char) => {
-  //   const value = char.length === 1 ? '0' + char : char;
-  //   return value;
-  // });
-
-  // if (a !== undefined) {
-  //   // a = a < 0 ? 0 : a > 1 ? 1 : a;
-  //   // const alpha = Math.min(Math.max(0, n), 100);
-  //   const alpha = Math.round(Math.min(Math.max(0, a), 1) * 255)
-  //     .toString(16)
-  //     .padStart(2, '0');
-  //   // let alpha: any = Math.round(Math.min(Math.max(0, a), 1) * 255).toString(16);
-  //   // alpha = alpha.length === 1 ? '0' + alpha : alpha;
-  //   return `#${r}${g}${b}${alpha}`;
-  // }
-  // return `#${r}${g}${b}`;
 };
 
-export const hslToHex = (hsl: HslObject) => {
+export const hslToHex = (hsl: number[]) => {
   const rgb = hslToRgb(hsl);
-  const hex = rgbToHex(rgb as RgbObject);
+  const hex = rgbToHex(rgb);
   return hex;
 };
 
 export const hexToHsl = (str: string) => {
   const rgb = hexToRgb(str);
-  const hsl = rgbToHsl(rgb as RgbObject);
+  const hsl = rgbToHsl(rgb);
   return hsl;
 };
 
 export const hexToHsv = (str: string) => {
   const rgb = hexToRgb(str);
-  const hsv = rgbToHsv(rgb as RgbObject);
+  const hsv = rgbToHsv(rgb);
   return hsv;
 };
 
-export const hsvToHex = (hsv: HsvColor) => {
+export const hsvToHex = (hsv: number[]) => {
   const rgb = hsvToRgb(hsv);
-  const hex = rgbToHex(rgb as RgbObject);
+  const hex = rgbToHex(rgb);
   return hex;
 };
 
-export const hslToHsv = (hsl: HslObject) => {
+export const hslToHsv = (hsl: number[]) => {
   const rgb = hslToRgb(hsl);
-  const hsv = rgbToHsv(rgb as RgbObject);
+  const hsv = rgbToHsv(rgb);
   return hsv;
 };
 
-export const hsvToHsl = (hsv: HsvColor) => {
+export const hsvToHsl = (hsv: number[]) => {
   const rgb = hsvToRgb(hsv);
-  const hsl = rgbToHsl(rgb as RgbObject);
+  const hsl = rgbToHsl(rgb);
   return hsl;
 };
+
+const rgbToHwb = (rgb: number[]) => {
+  const [ red, green, blue ] = rgb;
+  const [hue] = convert.rgbToHsl(rgb);
+  const white = toFloat((1 / 255) * Math.min(red, Math.min(green, blue)) * 100);
+  const black = toFloat(
+    1 - (1 / 255) * Math.max(red, Math.max(green, blue)) * 100
+  );
+  return [ hue, white, black ];
+};
+
+function hwbToRgb(hwb: number[]) {
+  const white = hwb[1] / 100;
+  const black = hwb[2] / 100;
+  if (white + black >= 1) {
+    const gray = white / (white + black);
+    return [ gray, gray, gray ];
+  }
+  const rgb = hslToRgb([ hwb[0], 100, 50 ]);
+  for (let i = 0; i < 3; i++) {
+    rgb[i] *= 1 - white - black;
+    rgb[i] += white;
+  }
+  return rgb;
+}
 
 export const convert = {
   hexToHsl,
@@ -255,4 +264,6 @@ export const convert = {
   hsvToHex,
   hsvToHsl,
   hsvToRgb,
+  rgbToHwb,
+  hwbToRgb,
 };

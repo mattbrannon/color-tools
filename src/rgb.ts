@@ -1,4 +1,4 @@
-import { RgbObject } from './interfaces';
+import { ColorInput, ColorArray, ColorObject } from './interfaces';
 import {
   getColorSpace,
   keepAlphaInRange,
@@ -10,11 +10,11 @@ const convertPercentToRgbValue = (n: string) => {
   return keepRgbInRange(Math.round((parseInt(n) * 255) / 100));
 };
 
-const mapInputRgbValues = (values: any[]) => {
+const mapInputRgbValues = (values: ColorArray) => {
   return values.map((value, i) => {
     const isAlpha = i === 3;
     const isPercent = typeof value === 'string' && value.endsWith('%');
-    const isGreaterThanOne = parseFloat(value) > 1;
+    const isGreaterThanOne = parseFloat(value as string) > 1;
 
     if (!isAlpha) {
       if (isPercent) {
@@ -26,7 +26,7 @@ const mapInputRgbValues = (values: any[]) => {
     }
     else {
       if (isPercent || isGreaterThanOne) {
-        return keepAlphaInRange(parseFloat(value) / 100);
+        return keepAlphaInRange(parseFloat(value as string) / 100);
       }
       else {
         return keepAlphaInRange(parseFloat(value as string));
@@ -35,7 +35,7 @@ const mapInputRgbValues = (values: any[]) => {
   });
 };
 
-const parseInputRgbString = (input: any) => {
+const parseInputRgbString = (input: string) => {
   const arr = parseString(input);
   const colorSpace = getColorSpace(input);
   const values = mapInputRgbValues(arr.slice(1));
@@ -44,61 +44,57 @@ const parseInputRgbString = (input: any) => {
 };
 
 const toObjectFromRgbString = (s: string) => {
-  const { colorSpace, values } = parseInputRgbString(s);
-  return values.reduce((acc, value, i) => {
-    const key = i === 3 ? 'a' : colorSpace[i];
-    // @ts-ignore
-    acc[key] = Number(value);
-    return acc;
-  }, {} as RgbObject);
-};
-
-const toArrayFromRgbString = (s: any) => {
-  return parseInputRgbString(s).values;
-};
-
-const toStringFromRgbString = (s: any) => {
-  const { colorSpace, values } = parseInputRgbString(s);
-  return `${colorSpace}(${values.join(', ')})`;
-};
-
-const toArrayFromRgbObject = (
-  o: { [s: string]: unknown } | ArrayLike<unknown>
-) => {
-  return mapInputRgbValues(Object.values(o));
-};
-
-export const toObjectFromRgbArray = (arr: any[]) => {
-  return mapInputRgbValues(arr).reduce((acc, value, i) => {
-    const key = i === 0 ? 'r' : i === 1 ? 'g' : i === 2 ? 'b' : 'a';
-    // @ts-ignore
-    acc[key] = value;
-    return acc;
-  }, {} as RgbObject);
-};
-
-export const toStringFromRgbArray = (arr: any[]) => {
-  const values = mapInputRgbValues(arr);
-  return `rgb(${values.join(', ')})`;
-};
-
-const toObjectFromRgbObject = (o: {}) => {
-  const keys = Object.keys(o);
-  const arr = toArrayFromRgbObject(o);
-  return arr.reduce((acc: { [x: string]: any }, value: any, i: number) => {
-    const key = i === 3 ? 'a' : keys[i];
-    acc[key] = value;
+  const keys = [ 'r', 'g', 'b', 'a' ];
+  const { values } = parseInputRgbString(s);
+  return values.reduce((acc: ColorObject, value, i) => {
+    // const key = i === 3 ? 'a' : colorSpace[i];
+    acc[keys[i]] = Number(value);
     return acc;
   }, {});
 };
 
-const toStringFromRgbObject = (o: {}) => {
+const toArrayFromRgbString = (s: string) => {
+  return parseInputRgbString(s).values;
+};
+
+const toStringFromRgbString = (s: string) => {
+  const { colorSpace, values } = parseInputRgbString(s);
+  return `${colorSpace}(${values.join(', ')})`;
+};
+
+const toArrayFromRgbObject = (o: ColorInput) => {
+  return mapInputRgbValues(Object.values(o));
+};
+
+export const toObjectFromRgbArray = (arr: ColorArray) => {
+  const keys = [ 'r', 'g', 'b', 'a' ];
+  return mapInputRgbValues(arr).reduce((acc: ColorObject, value, i) => {
+    acc[keys[i]] = value;
+    return acc;
+  }, {});
+};
+
+export const toStringFromRgbArray = (arr: ColorArray) => {
+  const values = mapInputRgbValues(arr);
+  return `rgb(${values.join(', ')})`;
+};
+
+const toObjectFromRgbObject = (o: ColorInput) => {
+  const keys = [ ...Object.keys(o), 'a' ];
+  const arr = toArrayFromRgbObject(o);
+  return arr.reduce((acc: ColorObject, value, i: number) => {
+    acc[keys[i]] = value;
+    return acc;
+  }, {});
+};
+
+const toStringFromRgbObject = (o: ColorInput) => {
   const colorSpace = getColorSpace(o);
   const values = toArrayFromRgbObject(o).join(', ');
   return `${colorSpace}(${values})`;
 };
 
-export const parseRgb = (input: string | {} | any[]) => {
+export const parseRgb = (input: ColorInput) => {
   const array = Array.isArray(input)
     ? mapInputRgbValues(input)
     : typeof input === 'string'

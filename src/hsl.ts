@@ -1,26 +1,53 @@
-import { InputArray, HslArray, HslObject } from './interfaces';
+import { ColorObject, ColorArray, ColorInput } from './interfaces';
 import {
   keepAlphaInRange,
   keepPercentInRange,
   keepHueInRange,
   parseString,
+  toFloat,
 } from './utils';
 
 import { gradian, radian, degree, turn } from './angles';
 
-const mapInputHslValues = (values: InputArray) => {
+const getAngleType = (hue: any) => {
+  try {
+    const angle = hue.match(/[a-z]+/g)?.join('') ?? 'deg';
+    return angle;
+  }
+  catch {
+    return 'deg';
+  }
+};
+
+export const normalize = (angleType: string) => {
+  const conversionFn =
+    angleType === 'turn'
+      ? turn.toDegree
+      : angleType === 'grad'
+      ? gradian.toDegree
+      : angleType === 'rad'
+      ? radian.toDegree
+      : degree.toDegree;
+
+  return conversionFn;
+};
+
+const mapInputHslValues = (values: ColorArray) => {
   if (values.length < 3 || values.length > 4) {
     throw Error(`Must contain 3 or 4 values. Received ${values.length}`);
   }
-  return values.map((value: any, i): number => {
+  return values.map((value: string | number, i): number => {
     const isAlpha = i === 3;
     const isHue = i === 0;
     const isPercent = typeof value === 'string' && value.endsWith('%');
 
     if (isHue) {
+      const angleType = getAngleType(value);
+      const convertAngle = normalize(angleType);
       const n = parseFloat(value as string);
-      const hue = keepHueInRange(n);
-      return hue;
+      const h = convertAngle(n);
+      const hue = keepHueInRange(h);
+      return toFloat(hue);
     }
     else if (isAlpha && !isPercent) {
       const alpha = keepAlphaInRange(value as number);
@@ -35,21 +62,6 @@ const mapInputHslValues = (values: InputArray) => {
       return keepPercentInRange(parseFloat(value as string));
     }
   });
-};
-
-const getAngleType = (hue: string) => hue.match(/[a-z]+/g)?.join('') ?? 'deg';
-
-export const normalize = (angleType: string) => {
-  const conversionFn =
-    angleType === 'turn'
-      ? turn.toDegree
-      : angleType === 'grad'
-      ? gradian.toDegree
-      : angleType === 'rad'
-      ? radian.toDegree
-      : degree.toDegree;
-
-  return conversionFn;
 };
 
 export const parseInputHslString = (hsl: string) => {
@@ -73,16 +85,13 @@ export const parseInputHslString = (hsl: string) => {
   };
 };
 
-const toObjectFromHslString = (s: string): HslObject => {
+const toObjectFromHslString = (s: string) => {
   const { colorSpace, colorValues } = parseInputHslString(s);
-  return colorValues.reduce((acc, value, i) => {
-    type HslKey = keyof HslObject;
-
+  return colorValues.reduce((acc: ColorObject, value, i) => {
     const key = i === 3 ? 'a' : colorSpace[i];
-    // @ts-ignore
-    acc[key as HslKey] = value;
+    acc[key] = value;
     return acc;
-  }, {} as HslObject);
+  }, {});
 };
 
 const toArrayFromHslString = (s: string) => {
@@ -99,15 +108,15 @@ const toStringFromHslString = (s: string) => {
   return `${colorSpace}(${valueString})`;
 };
 
-const toArrayFromHslObject = (o: HslObject) => {
+const toArrayFromHslObject = (o: ColorInput) => {
   const values = Object.values(o);
-  const array = mapInputHslValues(values as InputArray).filter((v) => {
+  const array = mapInputHslValues(values as ColorArray).filter((v) => {
     return typeof v !== 'undefined' && v !== null && !isNaN(v);
   });
   return array;
 };
 
-const toObjectFromHslObject = (o: HslObject) => {
+const toObjectFromHslObject = (o: ColorInput) => {
   const keys = Object.keys(o);
   const arr = toArrayFromHslObject(o);
   return arr.reduce((acc: { [x: string]: any }, value: any, i: number) => {
@@ -117,7 +126,7 @@ const toObjectFromHslObject = (o: HslObject) => {
   }, {});
 };
 
-const toStringFromHslObject = (o: HslObject) => {
+const toStringFromHslObject = (o: ColorInput) => {
   const values = toArrayFromHslObject(o)
     .map((value: any, i: number) => {
       return i === 0 ? `${value}deg` : i < 3 ? `${value}%` : value;
@@ -127,24 +136,25 @@ const toStringFromHslObject = (o: HslObject) => {
   return `hsl(${values})`;
 };
 
-const toObjectFromHslArray = (arr: InputArray) => {
-  return mapInputHslValues(arr).reduce((acc, value, i) => {
-    const key: keyof HslObject =
-      i === 0 ? 'h' : i === 1 ? 's' : i === 2 ? 'l' : 'a';
-    // @ts-ignore
-    acc[key] = value;
+const toObjectFromHslArray = (arr: ColorArray) => {
+  const keys = [ 'h', 's', 'l', 'a' ];
+  return mapInputHslValues(arr).reduce((acc: ColorObject, value, i) => {
+    acc[keys[i]] = value;
     return acc;
-  }, {} as HslObject);
+  }, {});
 };
 
-const toStringFromHslArray = (arr: InputArray) => {
-  const values = mapInputHslValues(arr);
+const toStringFromHslArray = (arr: ColorArray) => {
+  const values = mapInputHslValues(arr).map((value, i) => {
+    return i === 0 ? `${value}deg` : i < 3 ? `${value}%` : value;
+  });
+
   return `hsl(${values.join(', ')})`;
 };
 
-export const parseHsl = (input: string | HslObject | InputArray) => {
+export const parseHsl = (input: ColorInput) => {
   const array = Array.isArray(input)
-    ? mapInputHslValues(input as InputArray)
+    ? mapInputHslValues(input)
     : typeof input === 'string'
     ? toArrayFromHslString(input)
     : toArrayFromHslObject(input);
@@ -160,8 +170,8 @@ export const parseHsl = (input: string | HslObject | InputArray) => {
     : toStringFromHslObject(input);
 
   return {
-    array: (): HslArray => array as HslArray,
-    object: (): HslObject => object as HslObject,
+    array: (): ColorArray => array as ColorArray,
+    object: (): ColorObject => object as ColorObject,
     css: (): string => css,
   };
 };

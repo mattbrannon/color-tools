@@ -50,7 +50,7 @@ export const gradianToTurn = (grad: number) => {
   return radianToTurn(rad);
 };
 
-export const identity = (n: any) => n;
+export const identity = (n: any) => Number(n);
 
 export const gradian = {
   toDegree: (n: number) => gradianToDegree(n),

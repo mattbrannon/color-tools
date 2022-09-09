@@ -1,16 +1,9 @@
-import {
-  HslObject,
-  RgbObject,
-  Config,
-  ColorInput,
-  HslInput,
-  RgbInput,
-} from './interfaces';
+import { Config, ColorInput } from './interfaces';
 import { COLOR_NAMES } from './color-names';
 
-import { parseHsl } from './hsl-new';
-import { parseRgb } from './rgb-new';
-import { parseHex } from './hex-new';
+import { parseHsl } from './hsl';
+import { parseRgb } from './rgb';
+import { parseHex } from './hex';
 
 import { isHex, isRgb, isHsl, isNamedColor } from './utils';
 import {
@@ -22,10 +15,10 @@ import {
   hexToRgb,
 } from './convert';
 
-const handleHsl = (input: HslInput) => {
+const handleHsl = (input: ColorInput) => {
   const hsl = parseHsl(input);
-  const convertedRgb = hslToRgb(hsl.object() as HslObject);
-  const convertedHex = hslToHex(hsl.object() as HslObject);
+  const convertedRgb = hslToRgb(hsl.array() as number[]);
+  const convertedHex = hslToHex(hsl.array() as number[]);
   return {
     hsl,
     rgb: parseRgb(convertedRgb),
@@ -33,10 +26,10 @@ const handleHsl = (input: HslInput) => {
   };
 };
 
-const handleRgb = (input: string | {}) => {
+const handleRgb = (input: ColorInput) => {
   const rgb = parseRgb(input);
-  const convertedHsl = rgbToHsl(rgb.object() as RgbObject);
-  const convertedHex = rgbToHex(rgb.object() as RgbObject);
+  const convertedHsl = rgbToHsl(rgb.array());
+  const convertedHex = rgbToHex(rgb.array());
   return {
     rgb,
     hsl: parseHsl(convertedHsl),
@@ -68,38 +61,23 @@ const handleNamedColor = (input: keyof typeof COLOR_NAMES) => {
 
 // TODO handle hex values like 0x0f9
 export const parseColor = (input: ColorInput, config?: Config) => {
-  const acceptedColorSpaces = [ 'rgb', 'hsl', 'hex' ];
-
-  if (config) {
-    if (Array.isArray(input)) {
-      if (!config.colorSpace) {
-        throw new Error(
-          'Unable to determine color space from array. Please supply a configuration object with a valid color space'
-        );
-      }
-      else if (acceptedColorSpaces.includes(config.colorSpace)) {
-        if (config.colorSpace === 'hsl') {
-          return handleHsl(input as HslInput);
-        }
-        else if (config.colorSpace === 'rgb') {
-          return handleRgb(input as RgbInput);
-        }
-        else if (config.colorSpace === 'hex') {
-          return handleHex(input);
-        }
-      }
-    }
+  if (Array.isArray(input) && (!config || !config.colorSpace)) {
+    throw new Error(
+      `Unable to determine color space from array. 
+        Please supply a configuration object with a valid color space`
+    );
   }
 
-  const callback = isHsl(input)
-    ? handleHsl(input as HslInput)
-    : isRgb(input)
-    ? handleRgb(input)
-    : isHex(input)
-    ? handleHex(input)
-    : isNamedColor(input as string)
-    ? handleNamedColor(input as keyof typeof COLOR_NAMES)
-    : null;
+  const callback =
+    isHsl(input) || config?.colorSpace === 'hsl'
+      ? handleHsl(input)
+      : isRgb(input) || config?.colorSpace === 'rgb'
+      ? handleRgb(input)
+      : isHex(input) || config?.colorSpace === 'hex'
+      ? handleHex(input)
+      : isNamedColor(input as string)
+      ? handleNamedColor(input as keyof typeof COLOR_NAMES)
+      : null;
 
   return callback;
 };
