@@ -6,7 +6,7 @@ import pkg from './package.json';
 export default [
   {
     plugins: [ commonjs(), resolve() ],
-    input: 'dist/lib/index.js',
+    input: 'lib/index.js',
     output: [
       {
         name: 'colorTools',
