@@ -4,6 +4,7 @@ export type PreferedDataType = 'array' | 'object' | 'css';
 export interface Config {
   dataType: PreferedDataType;
   colorSpace: PreferedColorSpace;
+  consistentTheme?: boolean;
 }
 
 export type ColorObject = { [key: string]: string | number };
@@ -27,5 +28,6 @@ export interface ThemeInterface extends ColorInterface {
   analagous(colorSpace: string): {};
   triadic(colorSpace: string): {};
   compound(colorSpace: string): {};
-  tetradic(colorSpace: string): {};
+  rectangle(colorSpace: string): {};
+  complementary(colorSpace: string): {};
 }

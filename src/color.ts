@@ -18,6 +18,7 @@ export class Color implements ColorInterface {
 
   #colorSpace: PreferedColorSpace;
   #dataType: PreferedDataType;
+  consistentTheme;
 
   /**
    * @param {string|{}} color   css color string or color object
@@ -44,6 +45,7 @@ export class Color implements ColorInterface {
     this.hsl = methods.hsl;
 
     if (config) {
+      this.consistentTheme = config.consistentTheme;
       if (acceptedColorSpaces.includes(config.colorSpace)) {
         this.colorSpace = config.colorSpace;
       }
