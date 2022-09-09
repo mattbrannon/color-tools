@@ -1,11 +1,5 @@
 import { COLOR_NAMES } from './color-names';
-import {
-  PreferedColorSpace,
-  // HueValues,
-  // PercentValues,
-  // AlphaValues,
-  // RgbValues,
-} from './interfaces';
+import { PreferedColorSpace } from './interfaces';
 
 export const sanitize = (s: string) => s.replace(/\s/g, '').toLowerCase();
 
@@ -16,7 +10,6 @@ export const isFloat = (value: any) => {
 };
 
 export function makeRangeKeeper(min: number, max: number) {
-  // type RangeValues = PercentValues | RgbValues | AlphaValues;
   return function (n: number): number {
     return Math.max(min, Math.min(n, max));
   };
@@ -96,13 +89,6 @@ export const getColorSpace = (input: any) => {
     throw new Error('Color must be a string or an object');
   }
 };
-
-// interface RgbObject {
-//   [r: string]: string | number;
-//   [g: string]: string | number;
-//   [b: string]: string | number;
-//   [a: string]?: string | number;
-// }
 
 interface RgbObject {
   [key: string]: string | number;

@@ -226,13 +226,6 @@ export const hsvToHsl = (hsv: number[]) => {
   return hsl;
 };
 
-// const rgbToHwb = (rgb: number[]) => {
-//   const hsl = rgbToHsl(rgb);
-//   const white = Math.min(...rgb);
-//   const black = 1 - Math.max(...rgb);
-//   return [ hsl[0], white * 100, black * 100 ];
-// };
-
 const rgbToHwb = (rgb: number[]) => {
   const [ red, green, blue ] = rgb;
   const [hue] = convert.rgbToHsl(rgb);
