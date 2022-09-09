@@ -8,13 +8,13 @@ Color Tools is available on Npm. You can install it using the package manager of
 
 ```bash
 # NPM
-npm install color-tools
+npm install @mattbrannon/color-tools
 
 # Yarn
-yarn add color-tools
+yarn add @mattbrannon/color-tools
 
 # Pnpm
-pnpm add color-tools
+pnpm add @mattbrannon/color-tools
 ```
 
 ## Usage
