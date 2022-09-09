@@ -20,7 +20,7 @@
     "sourceMap": true,
     "inlineSourceMap": false,
     "inlineSources": false,
-    "outDir": "./dist/lib",
+    "outDir": "./lib",
     "declarationDir": "./dist/types",
     "removeComments": false,
     "isolatedModules": true,
