@@ -254,9 +254,10 @@ function hwbToRgb(hwb: number[]) {
 function rgbToCmyk(rgb: number[]) {
   const [ r, g, b ] = rgb.map((n) => n / 255);
   const k = 1 - Math.max(r, g, b);
-  const [ c, m, y ] = [ r, g, b ].map((n) =>
-    Math.round(((1 - n - k) / (1 - k)) * 100)
-  );
+  const [ c, m, y ] = [ r, g, b ].map((n) => {
+    const value = Math.round(((1 - n - k) / (1 - k)) * 100);
+    return isNaN(value) ? 0 : value;
+  });
   return [ c, m, y, Math.round(k * 100) ];
 }
 
@@ -282,7 +283,10 @@ function cmykToRgb(cmyk: number[]) {
   const k = Number(cmyk.slice(-1));
   return cmyk
     .map((n) => {
-      return Math.round(255 * (1 - ((n / 100) * (1 - k / 100) + k / 100)));
+      const value = Math.round(
+        255 * (1 - ((n / 100) * (1 - k / 100) + k / 100))
+      );
+      return isNaN(value) ? 0 : value;
     })
     .slice(0, 3);
 }
