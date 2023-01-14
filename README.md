@@ -24,13 +24,13 @@ This package uses **named exports** and supports both CommonJS and ESModules.
 ### ES Modules
 
 ```javascript
-import { Color, Theme, convert } from "color-tools";
+import { Color, Theme, convert } from "@mattbrannon/color-tools";
 ```
 
 ### Common JS
 
 ```javascript
-const { Color, Theme, convert } = require("color-tools");
+const { Color, Theme, convert } = require("@mattbrannon/color-tools");
 ```
 
 ## Color
