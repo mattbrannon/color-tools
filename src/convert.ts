@@ -251,19 +251,80 @@ function hwbToRgb(hwb: number[]) {
   return rgb;
 }
 
+function rgbToCmyk(rgb: number[]) {
+  const [ r, g, b ] = rgb.map((n) => n / 255);
+  const k = 1 - Math.max(r, g, b);
+  const [ c, m, y ] = [ r, g, b ].map((n) =>
+    Math.round(((1 - n - k) / (1 - k)) * 100)
+  );
+  return [ c, m, y, Math.round(k * 100) ];
+}
+
+function hexToCmyk(hex: string) {
+  const rgb = hexToRgb(hex);
+  const cmyk = rgbToCmyk(rgb);
+  return cmyk;
+}
+
+function hslToCmyk(hsl: number[]) {
+  const rgb = hslToRgb(hsl);
+  const cmyk = rgbToCmyk(rgb);
+  return cmyk;
+}
+
+function hsvToCmyk(hsv: number[]) {
+  const rgb = hsvToRgb(hsv);
+  const cmyk = rgbToCmyk(rgb);
+  return cmyk;
+}
+
+function cmykToRgb(cmyk: number[]) {
+  const k = Number(cmyk.slice(-1));
+  return cmyk
+    .map((n) => {
+      return Math.round(255 * (1 - ((n / 100) * (1 - k / 100) + k / 100)));
+    })
+    .slice(0, 3);
+}
+
+function cmykToHex(cmyk: number[]) {
+  const rgb = cmykToRgb(cmyk);
+  const hex = rgbToHex(rgb);
+  return hex;
+}
+
+function cmykToHsl(cmyk: number[]) {
+  const rgb = cmykToRgb(cmyk);
+  const hsl = rgbToHsl(rgb);
+  return hsl;
+}
+function cmykToHsv(cmyk: number[]) {
+  const rgb = cmykToRgb(cmyk);
+  const hsv = rgbToHsv(rgb);
+  return hsv;
+}
+
 export const convert = {
   hexToHsl,
   hexToHsv,
   hexToRgb,
+  hexToCmyk,
   rgbToHex,
   rgbToHsl,
   rgbToHsv,
+  rgbToCmyk,
   hslToHex,
   hslToRgb,
   hslToHsv,
+  hslToCmyk,
   hsvToHex,
   hsvToHsl,
   hsvToRgb,
+  hsvToCmyk,
+  cmykToHex,
+  cmykToHsl,
+  cmykToHsv,
+  cmykToRgb,
   rgbToHwb,
   hwbToRgb,
 };
